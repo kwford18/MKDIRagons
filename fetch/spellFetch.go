@@ -1,4 +1,6 @@
-package api
+package fetch
+
+import "fmt"
 
 type Spell struct {
 	HigherLevel   []string     `json:"higher_level"`
@@ -27,4 +29,8 @@ type SpellDamage struct {
 
 func (s *Spell) GetEndpoint() string {
 	return "spells/" + s.Index
+}
+
+func (s *Spell) Print() {
+	fmt.Printf("Spell: %s", s.Name)
 }

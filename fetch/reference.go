@@ -1,4 +1,4 @@
-package api
+package fetch
 
 type Reference struct {
 	Index string `json:"index"`
@@ -9,4 +9,8 @@ type Reference struct {
 // Interface for getting endpoints with different 5e API resources
 type Fetchable interface {
 	GetEndpoint() string
+}
+
+type Printer interface {
+	Print()
 }

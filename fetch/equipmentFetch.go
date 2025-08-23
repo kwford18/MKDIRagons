@@ -1,4 +1,6 @@
-package api
+package fetch
+
+import "fmt"
 
 type Equipment struct {
 	Desc              []string    `json:"desc"`
@@ -34,4 +36,8 @@ type WeaponRange struct {
 
 func (e *Equipment) GetEndpoint() string {
 	return "equipment/" + e.Index
+}
+
+func (e *Equipment) Print() {
+	fmt.Printf("Equipment: %v", e.Name)
 }

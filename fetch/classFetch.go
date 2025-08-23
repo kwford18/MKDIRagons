@@ -1,4 +1,6 @@
-package api
+package fetch
+
+import "fmt"
 
 type Class struct {
 	Index                    string                 `json:"index"`
@@ -92,4 +94,8 @@ type SpellcastingInfo struct {
 
 func (c *Class) GetEndpoint() string {
 	return "classes/" + c.Index
+}
+
+func (c *Class) Print() {
+	fmt.Printf("Class: %s", c.Name)
 }
