@@ -28,7 +28,7 @@ type SpellDamage struct {
 }
 
 func (s *Spell) GetEndpoint() string {
-	return "spells/" + s.Index
+	return "spells/"
 }
 
 func (s *Spell) Print() {

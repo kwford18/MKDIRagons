@@ -93,7 +93,7 @@ type SpellcastingInfo struct {
 }
 
 func (c *Class) GetEndpoint() string {
-	return "classes/" + c.Index
+	return "classes/"
 }
 
 func (c *Class) Print() {

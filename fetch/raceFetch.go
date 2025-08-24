@@ -27,7 +27,7 @@ type Race struct {
 }
 
 func (e *Race) GetEndpoint() string {
-	return "races/" + e.Index
+	return "races/"
 }
 
 func (r *Race) Print() {

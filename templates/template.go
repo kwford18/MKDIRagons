@@ -7,7 +7,7 @@ import (
 )
 
 // Character represents the TOML structure
-type Template struct {
+type TemplateCharacter struct {
 	Name      string `toml:"name"`
 	Race      string `toml:"race"`
 	Subrace   string `toml:"subrace"`
@@ -32,7 +32,7 @@ func (c *Character) Print() {
 	fmt.Printf("Equipment: %v\n", c.Equipment.Name)
 }
 
-func (t *Template) Print() {
+func (t *TemplateCharacter) Print() {
 	fmt.Printf("Name: %s\n", t.Name)
 	fmt.Printf("Race: %s\n", t.Race)
 	fmt.Printf("Subrace: %s\n", t.Subrace)

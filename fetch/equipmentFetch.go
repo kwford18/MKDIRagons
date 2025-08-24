@@ -35,7 +35,7 @@ type WeaponRange struct {
 }
 
 func (e *Equipment) GetEndpoint() string {
-	return "equipment/" + e.Index
+	return "equipment/"
 }
 
 func (e *Equipment) Print() {
