@@ -9,7 +9,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	"github.com/BurntSushi/toml"
 	"github.com/kwford18/MKDIRagons/fetch"
@@ -25,7 +24,7 @@ func fileArgs() (string, error) {
 	}
 
 	// Load file
-	path := "templates/characters/"
+	path := "templates/"
 
 	// Check if file extension was provided
 	if filepath.Ext(os.Args[1]) != ".toml" && filepath.Ext(os.Args[1]) != "" {
@@ -47,66 +46,124 @@ func tomlParse(fileName string) templates.TemplateCharacter {
 	return t
 }
 
-func fetchJSON[T any](url string, target *T, wg *sync.WaitGroup, errCh chan<- error) {
-	defer wg.Done()
+func saveJSON(character *templates.Character) {
+	// Ensure ./characters exists
+	dir := "characters"
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		panic(err)
+	}
 
-	resp, err := http.Get(url)
+	fileName := character.Name + ".json"
+
+	// Build file path inside ./characters
+	filePath := filepath.Join(dir, fileName)
+
+	// Convert to pretty JSON
+	data, err := json.MarshalIndent(character, "", "  ")
 	if err != nil {
-		errCh <- fmt.Errorf("failed request to %s: %w", url, err)
-		return
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		errCh <- fmt.Errorf("non-200 status code from %s: %d", url, resp.StatusCode)
-		return
+		panic(err)
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(target); err != nil {
-		errCh <- fmt.Errorf("failed to decode %s: %w", url, err)
+	// Open file with truncate + write-only + create
+	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	// Write JSON
+	if _, err := file.Write(data); err != nil {
+		panic(err)
 	}
 }
 
-func buildCharacter(base templates.TemplateCharacter, emptyRace *fetch.Race, emptyClass *fetch.Class, emptyEquipment *fetch.Equipment, emptySpells *fetch.Spell) (*templates.Character, error) {
-	var wg sync.WaitGroup
-	errs := make(chan error, 4)
-
+func fetchJSON(property fetch.Fetchable, input string) error {
 	baseURL := "https://www.dnd5eapi.co/api/2014/"
 
-	// Closure to build the endpoint for a fetchable property
-	endpoints := func(property fetch.Fetchable) string {
-		return baseURL + property.GetEndpoint()
+	// Format
+	endpoint := baseURL + property.GetEndpoint()
+	no_spaces := strings.ReplaceAll(input, " ", "-")
+	lowercase := strings.ToLower(no_spaces)
+	formatted_url := endpoint + strings.ReplaceAll(lowercase, "'", "")
+
+	fmt.Printf("Formatted URL: %s\n", formatted_url)
+
+	resp, err := http.Get(formatted_url)
+	if err != nil {
+		fmt.Printf("Error: %+v\n", err)
+		return err
+	}
+	defer resp.Body.Close()
+
+	if err := json.NewDecoder(resp.Body).Decode(property); err != nil {
+		fmt.Printf("Error: %+v\n", err)
+		return err
 	}
 
-	lower := func(base string) string {
-		return strings.ToLower(base)
+	// fmt.Printf("Fetched: %v\n", property)
+
+	return nil
+}
+
+func buildCharacter(base *templates.TemplateCharacter) (*templates.Character, error) {
+	var race fetch.Race
+	var class fetch.Class
+	var inventory fetch.Inventory
+
+	// Spellbook 2D slice to hold character's spells
+	spellbook := make([][]fetch.Spell, len(base.Spells.Level))
+	for level := range base.Spells.Level {
+		spellbook[level] = make([]fetch.Spell, len(base.Spells.Level[level]))
 	}
 
-	// Goroutine to fetch the data for a Character property
-	wg.Add(4)
-	go fetchJSON(endpoints(emptyRace)+lower(base.Race), emptyRace, &wg, errs)
-	go fetchJSON(endpoints(emptyClass)+lower(base.Class), emptyClass, &wg, errs)
-	go fetchJSON(endpoints(emptyEquipment)+lower(base.Equipment), emptyEquipment, &wg, errs)
-	go fetchJSON(endpoints(emptySpells)+lower(base.Spells), emptySpells, &wg, errs)
-	wg.Wait()
+	// TODO: Make concurrent
 
-	// Handle errs if any exist
-	close(errs)
-	var collected []error
-	for err := range errs {
-		collected = append(collected, err)
+	// Name, Class
+	if err := fetchJSON(&race, base.Race); err != nil {
+		return nil, err
 	}
-	if len(collected) > 0 {
-		return nil, fmt.Errorf("failed to build character: %v", collected)
+	if err := fetchJSON(&class, base.Class); err != nil {
+		return nil, err
 	}
 
-	// Return built Character struct reference
+	// Inventory
+	for _, armorName := range base.Inventory.Armor {
+		var armor fetch.Equipment
+		if err := fetchJSON(&armor, armorName); err != nil {
+			return nil, err
+		}
+		inventory.Armor = append(inventory.Armor, armor)
+	}
+	for _, weaponName := range base.Inventory.Weapons {
+		var weapon fetch.Equipment
+		if err := fetchJSON(&weapon, weaponName); err != nil {
+			return nil, err
+		}
+		inventory.Weapons = append(inventory.Weapons, weapon)
+	}
+	for _, itemName := range base.Inventory.Items {
+		var item fetch.Equipment
+		if err := fetchJSON(&item, itemName); err != nil {
+			return nil, err
+		}
+		inventory.Items = append(inventory.Items, item)
+	}
+
+	// Spells
+	for i := range spellbook {
+		for j := range spellbook[i] {
+			if err := fetchJSON(&spellbook[i][j], base.Spells.Level[i][j]); err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	return &templates.Character{
 		Name:      base.Name,
-		Race:      *emptyRace,
-		Class:     *emptyClass,
-		Equipment: *emptyEquipment,
-		Spells:    *emptySpells,
+		Race:      race,
+		Class:     class,
+		Inventory: inventory,
+		Spells:    spellbook,
 	}, nil
 }
 
@@ -116,17 +173,19 @@ func main() {
 		panic(err)
 	}
 
-	t := tomlParse(fileName)
+	base := tomlParse(fileName)
 
-	var race fetch.Race
-	var class fetch.Class
-	var equipment fetch.Equipment
-	var spells fetch.Spell
+	fmt.Println()
+	base.Print()
+	fmt.Println()
 
-	character, err := buildCharacter(t, &race, &class, &equipment, &spells)
+	character, err := buildCharacter(&base)
 	if err != nil {
 		log.Fatalf("Error building character: %v\n", err)
 	}
 
+	fmt.Println()
 	character.Print()
+
+	saveJSON(character)
 }

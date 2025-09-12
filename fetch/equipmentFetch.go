@@ -2,6 +2,8 @@ package fetch
 
 import "fmt"
 
+// =============================================================
+// EQUIPMENT
 type Equipment struct {
 	Desc              []string    `json:"desc"`
 	Special           []string    `json:"special"`
@@ -40,4 +42,39 @@ func (e *Equipment) GetEndpoint() string {
 
 func (e *Equipment) Print() {
 	fmt.Printf("Equipment: %v", e.Name)
+}
+
+// =============================================================
+// INVENTORY
+type Inventory struct {
+	Weapons, Armor, Items []Equipment
+}
+
+func (i *Inventory) GetEndpoint() string {
+	return "equipment/"
+}
+
+func (i *Inventory) Print() {
+	fmt.Printf("Inventory contains: %d armor, %d weapons, %d items\n",
+		len(i.Armor), len(i.Weapons), len(i.Items))
+}
+
+func (i *Inventory) PrintAll() {
+	// Equipment
+	fmt.Println("Equipment:")
+
+	fmt.Printf("    - Armor: \n")
+	for _, armor := range i.Armor {
+		fmt.Printf("	- %s", armor.Name)
+	}
+
+	fmt.Printf("    - Weapons: \n")
+	for _, weapons := range i.Weapons {
+		fmt.Printf("	- %s", weapons.Name)
+	}
+
+	fmt.Printf("    - Items: \n")
+	for _, items := range i.Items {
+		fmt.Printf("	- %s", items.Name)
+	}
 }

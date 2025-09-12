@@ -26,7 +26,7 @@ type Race struct {
 	URL                   string         `json:"url"`
 }
 
-func (e *Race) GetEndpoint() string {
+func (r *Race) GetEndpoint() string {
 	return "races/"
 }
 

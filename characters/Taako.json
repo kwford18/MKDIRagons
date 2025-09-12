@@ -1,0 +1,756 @@
+{
+  "Name": "Taako",
+  "Race": {
+    "index": "elf",
+    "name": "Elf",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": {
+          "index": "dex",
+          "name": "DEX",
+          "url": "/api/2014/ability-scores/dex"
+        },
+        "bonus": 2
+      }
+    ],
+    "age": "Although elves reach physical maturity at about the same age as humans, the elven understanding of adulthood goes beyond physical growth to encompass worldly experience. An elf typically claims adulthood and an adult name around the age of 100 and can live to be 750 years old.",
+    "alignment": "Elves love freedom, variety, and self-expression, so they lean strongly toward the gentler aspects of chaos. They value and protect others' freedom as well as their own, and they are more often good than not.",
+    "size": "Medium",
+    "size_description": "Elves range from under 5 to over 6 feet tall and have slender builds. Your size is Medium.",
+    "starting_proficiencies": [
+      {
+        "index": "skill-perception",
+        "name": "Skill: Perception",
+        "url": "/api/2014/proficiencies/skill-perception"
+      }
+    ],
+    "languages": [
+      {
+        "index": "common",
+        "name": "Common",
+        "url": "/api/2014/languages/common"
+      },
+      {
+        "index": "elvish",
+        "name": "Elvish",
+        "url": "/api/2014/languages/elvish"
+      }
+    ],
+    "language_desc": "You can speak, read, and write Common and Elvish. Elvish is fluid, with subtle intonations and intricate grammar. Elven literature is rich and varied, and their songs and poems are famous among other races. Many bards learn their language so they can add Elvish ballads to their repertoires.",
+    "traits": [
+      {
+        "index": "darkvision",
+        "name": "Darkvision",
+        "url": "/api/2014/traits/darkvision"
+      },
+      {
+        "index": "fey-ancestry",
+        "name": "Fey Ancestry",
+        "url": "/api/2014/traits/fey-ancestry"
+      },
+      {
+        "index": "trance",
+        "name": "Trance",
+        "url": "/api/2014/traits/trance"
+      },
+      {
+        "index": "keen-senses",
+        "name": "Keen Senses",
+        "url": "/api/2014/traits/keen-senses"
+      }
+    ],
+    "subraces": [
+      {
+        "index": "high-elf",
+        "name": "High Elf",
+        "url": "/api/2014/subraces/high-elf"
+      }
+    ],
+    "url": "/api/2014/races/elf"
+  },
+  "Class": {
+    "index": "wizard",
+    "name": "Wizard",
+    "hit_die": 6,
+    "proficiency_choices": [
+      {
+        "desc": "Choose two from Arcana, History, Insight, Investigation, Medicine, and Religion",
+        "choose": 2,
+        "type": "proficiencies",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-arcana",
+                "name": "Skill: Arcana",
+                "url": "/api/2014/proficiencies/skill-arcana"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-history",
+                "name": "Skill: History",
+                "url": "/api/2014/proficiencies/skill-history"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-insight",
+                "name": "Skill: Insight",
+                "url": "/api/2014/proficiencies/skill-insight"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-investigation",
+                "name": "Skill: Investigation",
+                "url": "/api/2014/proficiencies/skill-investigation"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-medicine",
+                "name": "Skill: Medicine",
+                "url": "/api/2014/proficiencies/skill-medicine"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-religion",
+                "name": "Skill: Religion",
+                "url": "/api/2014/proficiencies/skill-religion"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "proficiencies": [
+      {
+        "index": "daggers",
+        "name": "Daggers",
+        "url": "/api/2014/proficiencies/daggers"
+      },
+      {
+        "index": "darts",
+        "name": "Darts",
+        "url": "/api/2014/proficiencies/darts"
+      },
+      {
+        "index": "slings",
+        "name": "Slings",
+        "url": "/api/2014/proficiencies/slings"
+      },
+      {
+        "index": "quarterstaffs",
+        "name": "Quarterstaffs",
+        "url": "/api/2014/proficiencies/quarterstaffs"
+      },
+      {
+        "index": "crossbows-light",
+        "name": "Crossbows, light",
+        "url": "/api/2014/proficiencies/crossbows-light"
+      },
+      {
+        "index": "saving-throw-int",
+        "name": "Saving Throw: INT",
+        "url": "/api/2014/proficiencies/saving-throw-int"
+      },
+      {
+        "index": "saving-throw-wis",
+        "name": "Saving Throw: WIS",
+        "url": "/api/2014/proficiencies/saving-throw-wis"
+      }
+    ],
+    "saving_throws": [
+      {
+        "index": "int",
+        "name": "INT",
+        "url": "/api/2014/ability-scores/int"
+      },
+      {
+        "index": "wis",
+        "name": "WIS",
+        "url": "/api/2014/ability-scores/wis"
+      }
+    ],
+    "starting_equipment": [
+      {
+        "equipment": {
+          "index": "spellbook",
+          "name": "Spellbook",
+          "url": "/api/2014/equipment/spellbook"
+        },
+        "quantity": 1
+      }
+    ],
+    "starting_equipment_options": [
+      {
+        "desc": "(a) a quarterstaff or (b) a dagger",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "quarterstaff",
+                "name": "Quarterstaff",
+                "url": "/api/2014/equipment/quarterstaff"
+              }
+            },
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "dagger",
+                "name": "Dagger",
+                "url": "/api/2014/equipment/dagger"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "desc": "(a) a component pouch or (b) an arcane focus",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "component-pouch",
+                "name": "Component pouch",
+                "url": "/api/2014/equipment/component-pouch"
+              }
+            },
+            {
+              "option_type": "choice",
+              "choice": {
+                "desc": "arcane focus",
+                "choose": 1,
+                "type": "equipment",
+                "from": {
+                  "option_set_type": "equipment_category",
+                  "equipment_category": {
+                    "index": "arcane-foci",
+                    "name": "Arcane Foci",
+                    "url": "/api/2014/equipment-categories/arcane-foci"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "desc": "(a) a scholar’s pack or (b) an explorer’s pack",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "scholars-pack",
+                "name": "Scholar's Pack",
+                "url": "/api/2014/equipment/scholars-pack"
+              }
+            },
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "explorers-pack",
+                "name": "Explorer's Pack",
+                "url": "/api/2014/equipment/explorers-pack"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "class_levels": "/api/2014/classes/wizard/levels",
+    "multi_classing": {
+      "prerequisites": [
+        {
+          "ability_score": {
+            "index": "int",
+            "name": "INT",
+            "url": "/api/2014/ability-scores/int"
+          },
+          "minimum_score": 13
+        }
+      ],
+      "proficiencies": []
+    },
+    "subclasses": [
+      {
+        "index": "evocation",
+        "name": "Evocation",
+        "url": "/api/2014/subclasses/evocation"
+      }
+    ],
+    "spellcasting": {
+      "level": 1,
+      "spellcasting_ability": {
+        "index": "int",
+        "name": "INT",
+        "url": "/api/2014/ability-scores/int"
+      },
+      "info": [
+        {
+          "name": "Cantrips",
+          "desc": [
+            "At 1st level, you know three cantrips of your choice from the wizard spell list. You learn additional wizard cantrips of your choice at higher levels, as shown in the Cantrips Known column of the Wizard table."
+          ]
+        },
+        {
+          "name": "Spellbook",
+          "desc": [
+            "At 1st level, you have a spellbook containing six 1st- level wizard spells of your choice. Your spellbook is the repository of the wizard spells you know, except your cantrips, which are fixed in your mind."
+          ]
+        },
+        {
+          "name": "Preparing and Casting Spells",
+          "desc": [
+            "The Wizard table shows how many spell slots you have to cast your spells of 1st level and higher. To cast one of these spells, you must expend a slot of the spell's level or higher. You regain all expended spell slots when you finish a long rest.",
+            "You prepare the list of wizard spells that are available for you to cast. To do so, choose a number of wizard spells from your spellbook equal to your Intelligence modifier + your wizard level (minimum of one spell). The spells must be of a level for which you have spell slots.",
+            "For example, if you're a 3rd-level wizard, you have four 1st-level and two 2nd-level spell slots. With an Intelligence of 16, your list of prepared spells can include six spells of 1st or 2nd level, in any combination, chosen from your spellbook. If you prepare the 1st-level spell magic missile, you can cast it using a 1st-level or a 2nd-level slot. Casting the spell doesn't remove it from your list of prepared spells.",
+            "You can change your list of prepared spells when you finish a long rest. Preparing a new list of wizard spells requires time spent studying your spellbook and memorizing the incantations and gestures you must make to cast the spell: at least 1 minute per spell level for each spell on your list."
+          ]
+        },
+        {
+          "name": "Spellcasting Ability",
+          "desc": [
+            "Intelligence is your spellcasting ability for your wizard spells, since you learn your spells through dedicated study and memorization. You use your Intelligence whenever a spell refers to your spellcasting ability. In addition, you use your Intelligence modifier when setting the saving throw DC for a wizard spell you cast and when making an attack roll with one.",
+            "Spell save DC = 8 + your proficiency bonus + your Intelligence modifier.",
+            "Spell attack modifier = your proficiency bonus + your Intelligence modifier."
+          ]
+        },
+        {
+          "name": "Ritual Casting",
+          "desc": [
+            "You can cast a wizard spell as a ritual if that spell has the ritual tag and you have the spell in your spellbook. You don't need to have the spell prepared."
+          ]
+        },
+        {
+          "name": "Spellcasting Focus",
+          "desc": [
+            "You can use an arcane focus as a spellcasting focus for your wizard spells."
+          ]
+        }
+      ]
+    },
+    "spells": "/api/2014/classes/wizard/spells",
+    "url": "/api/2014/classes/wizard"
+  },
+  "Equipment": {
+    "desc": [],
+    "special": [],
+    "index": "padded-armor",
+    "name": "Padded Armor",
+    "equipment_category": {
+      "index": "armor",
+      "name": "Armor",
+      "url": "/api/2014/equipment-categories/armor"
+    },
+    "weapon_category": "",
+    "weapon_range": "",
+    "category_range": "",
+    "cost": {
+      "quantity": 5,
+      "unit": "gp"
+    },
+    "damage": {
+      "damage_dice": "",
+      "damage_type": {
+        "index": "",
+        "name": "",
+        "url": ""
+      }
+    },
+    "range": {
+      "normal": 0,
+      "long": 0
+    },
+    "weight": 8,
+    "properties": [],
+    "url": "/api/2014/equipment/padded-armor"
+  },
+  "Spells": [
+    [
+      {
+        "higher_level": [],
+        "index": "fire-bolt",
+        "name": "Fire Bolt",
+        "desc": [
+          "You hurl a mote of fire at a creature or object within range. Make a ranged spell attack against the target. On a hit, the target takes 1d10 fire damage. A flammable object hit by this spell ignites if it isn't being worn or carried.",
+          "This spell's damage increases by 1d10 when you reach 5th level (2d10), 11th level (3d10), and 17th level (4d10)."
+        ],
+        "range": "120 feet",
+        "components": [
+          "V",
+          "S"
+        ],
+        "ritual": false,
+        "duration": "Instantaneous",
+        "concentration": false,
+        "casting_time": "1 action",
+        "level": 0,
+        "attack_type": "ranged",
+        "damage": {
+          "damage_type": {
+            "index": "fire",
+            "name": "Fire",
+            "url": "/api/2014/damage-types/fire"
+          },
+          "damage_at_character_level": {
+            "1": "1d10",
+            "11": "3d10",
+            "17": "4d10",
+            "5": "2d10"
+          }
+        },
+        "school": {
+          "index": "evocation",
+          "name": "Evocation",
+          "url": "/api/2014/magic-schools/evocation"
+        },
+        "classes": [
+          {
+            "index": "sorcerer",
+            "name": "Sorcerer",
+            "url": "/api/2014/classes/sorcerer"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [],
+        "url": "/api/2014/spells/fire-bolt"
+      },
+      {
+        "higher_level": [],
+        "index": "acid-splash",
+        "name": "Acid Splash",
+        "desc": [
+          "You hurl a bubble of acid. Choose one creature within range, or choose two creatures within range that are within 5 feet of each other. A target must succeed on a dexterity saving throw or take 1d6 acid damage.",
+          "This spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6)."
+        ],
+        "range": "60 feet",
+        "components": [
+          "V",
+          "S"
+        ],
+        "ritual": false,
+        "duration": "Instantaneous",
+        "concentration": false,
+        "casting_time": "1 action",
+        "level": 0,
+        "attack_type": "",
+        "damage": {
+          "damage_type": {
+            "index": "acid",
+            "name": "Acid",
+            "url": "/api/2014/damage-types/acid"
+          },
+          "damage_at_character_level": {
+            "1": "1d6",
+            "11": "3d6",
+            "17": "4d6",
+            "5": "2d6"
+          }
+        },
+        "school": {
+          "index": "conjuration",
+          "name": "Conjuration",
+          "url": "/api/2014/magic-schools/conjuration"
+        },
+        "classes": [
+          {
+            "index": "sorcerer",
+            "name": "Sorcerer",
+            "url": "/api/2014/classes/sorcerer"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          }
+        ],
+        "url": "/api/2014/spells/acid-splash"
+      }
+    ],
+    [
+      {
+        "higher_level": [],
+        "index": "alarm",
+        "name": "Alarm",
+        "desc": [
+          "You set an alarm against unwanted intrusion. Choose a door, a window, or an area within range that is no larger than a 20-foot cube. Until the spell ends, an alarm alerts you whenever a Tiny or larger creature touches or enters the warded area. When you cast the spell, you can designate creatures that won't set off the alarm. You also choose whether the alarm is mental or audible.",
+          "A mental alarm alerts you with a ping in your mind if you are within 1 mile of the warded area. This ping awakens you if you are sleeping.",
+          "An audible alarm produces the sound of a hand bell for 10 seconds within 60 feet."
+        ],
+        "range": "30 feet",
+        "components": [
+          "V",
+          "S",
+          "M"
+        ],
+        "ritual": true,
+        "duration": "8 hours",
+        "concentration": false,
+        "casting_time": "1 minute",
+        "level": 1,
+        "attack_type": "",
+        "damage": null,
+        "school": {
+          "index": "abjuration",
+          "name": "Abjuration",
+          "url": "/api/2014/magic-schools/abjuration"
+        },
+        "classes": [
+          {
+            "index": "ranger",
+            "name": "Ranger",
+            "url": "/api/2014/classes/ranger"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          }
+        ],
+        "url": "/api/2014/spells/alarm"
+      },
+      {
+        "higher_level": [],
+        "index": "identify",
+        "name": "Identify",
+        "desc": [
+          "You choose one object that you must touch throughout the casting of the spell. If it is a magic item or some other magic-imbued object, you learn its properties and how to use them, whether it requires attunement to use, and how many charges it has, if any. You learn whether any spells are affecting the item and what they are. If the item was created by a spell, you learn which spell created it.",
+          "If you instead touch a creature throughout the casting, you learn what spells, if any, are currently affecting it."
+        ],
+        "range": "Touch",
+        "components": [
+          "V",
+          "S",
+          "M"
+        ],
+        "ritual": true,
+        "duration": "Instantaneous",
+        "concentration": false,
+        "casting_time": "1 minute",
+        "level": 1,
+        "attack_type": "",
+        "damage": null,
+        "school": {
+          "index": "divination",
+          "name": "Divination",
+          "url": "/api/2014/magic-schools/divination"
+        },
+        "classes": [
+          {
+            "index": "bard",
+            "name": "Bard",
+            "url": "/api/2014/classes/bard"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          }
+        ],
+        "url": "/api/2014/spells/identify"
+      },
+      {
+        "higher_level": [],
+        "index": "shield",
+        "name": "Shield",
+        "desc": [
+          "An invisible barrier of magical force appears and protects you. Until the start of your next turn, you have a +5 bonus to AC, including against the triggering attack, and you take no damage from magic missile."
+        ],
+        "range": "Self",
+        "components": [
+          "V",
+          "S"
+        ],
+        "ritual": false,
+        "duration": "1 round",
+        "concentration": false,
+        "casting_time": "1 reaction",
+        "level": 1,
+        "attack_type": "",
+        "damage": null,
+        "school": {
+          "index": "abjuration",
+          "name": "Abjuration",
+          "url": "/api/2014/magic-schools/abjuration"
+        },
+        "classes": [
+          {
+            "index": "sorcerer",
+            "name": "Sorcerer",
+            "url": "/api/2014/classes/sorcerer"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          }
+        ],
+        "url": "/api/2014/spells/shield"
+      }
+    ],
+    [
+      {
+        "higher_level": [],
+        "index": "blur",
+        "name": "Blur",
+        "desc": [
+          "Your body becomes blurred, shifting and wavering to all who can see you. For the duration, any creature has disadvantage on attack rolls against you. An attacker is immune to this effect if it doesn't rely on sight, as with blindsight, or can see through illusions, as with truesight."
+        ],
+        "range": "Self",
+        "components": [
+          "V"
+        ],
+        "ritual": false,
+        "duration": "Up to 1 minute",
+        "concentration": true,
+        "casting_time": "1 action",
+        "level": 2,
+        "attack_type": "",
+        "damage": null,
+        "school": {
+          "index": "illusion",
+          "name": "Illusion",
+          "url": "/api/2014/magic-schools/illusion"
+        },
+        "classes": [
+          {
+            "index": "sorcerer",
+            "name": "Sorcerer",
+            "url": "/api/2014/classes/sorcerer"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          },
+          {
+            "index": "land",
+            "name": "Land",
+            "url": "/api/2014/subclasses/land"
+          }
+        ],
+        "url": "/api/2014/spells/blur"
+      },
+      {
+        "higher_level": [],
+        "index": "continual-flame",
+        "name": "Continual Flame",
+        "desc": [
+          "A flame, equivalent in brightness to a torch, springs forth from an object that you touch. The effect looks like a regular flame, but it creates no heat and doesn't use oxygen. A continual flame can be covered or hidden but not smothered or quenched."
+        ],
+        "range": "Touch",
+        "components": [
+          "V",
+          "S",
+          "M"
+        ],
+        "ritual": false,
+        "duration": "Until dispelled",
+        "concentration": false,
+        "casting_time": "1 action",
+        "level": 2,
+        "attack_type": "",
+        "damage": null,
+        "school": {
+          "index": "evocation",
+          "name": "Evocation",
+          "url": "/api/2014/magic-schools/evocation"
+        },
+        "classes": [
+          {
+            "index": "cleric",
+            "name": "Cleric",
+            "url": "/api/2014/classes/cleric"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          }
+        ],
+        "url": "/api/2014/spells/continual-flame"
+      }
+    ],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ]
+}
