@@ -1,0 +1,29 @@
+# Purposely incorrect TOML structure (incorrect spelling)
+
+name = "Leki"
+race = "Tiefling"
+subrace = ""
+class = "Cleric"
+subclass = "Lfe"
+
+[proficiencies]
+skills = ["Arcana", "Insight"]
+
+[Inventory]
+weapons = ["Rapier"]
+armor = ["Padded Armor", "Leather Armor"]
+items = ["Amulet", "Abacus", "Acid Vial"]
+
+[spells]
+level = [
+    ["Acib Splash"],                 # Cantrip
+    ["Alarm", "Identify", "Shield"], # Level 1
+    ["Continual Flame"],             # Level 2
+    [],                              # Level 3
+    [],                              # Level 4
+    [],                              # Level 5
+    [],                              # Level 6
+    [],                              # Level 7
+    [],                              # Level 8
+    [],                              # Level 9
+]

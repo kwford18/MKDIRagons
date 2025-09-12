@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 
 	"github.com/BurntSushi/toml"
 	"github.com/kwford18/MKDIRagons/fetch"
@@ -82,13 +83,13 @@ func fetchJSON(property fetch.Fetchable, input string) error {
 
 	// Format
 	endpoint := baseURL + property.GetEndpoint()
-	no_spaces := strings.ReplaceAll(input, " ", "-")
-	lowercase := strings.ToLower(no_spaces)
-	formatted_url := endpoint + strings.ReplaceAll(lowercase, "'", "")
+	noSpaces := strings.ReplaceAll(input, " ", "-")
+	lowercase := strings.ToLower(noSpaces)
+	formattedURL := endpoint + strings.ReplaceAll(lowercase, "'", "")
 
-	fmt.Printf("Formatted URL: %s\n", formatted_url)
+	// fmt.Printf("Formatted URL: %s\n", formatted_url)
 
-	resp, err := http.Get(formatted_url)
+	resp, err := http.Get(formattedURL)
 	if err != nil {
 		fmt.Printf("Error: %+v\n", err)
 		return err
@@ -116,46 +117,112 @@ func buildCharacter(base *templates.TemplateCharacter) (*templates.Character, er
 		spellbook[level] = make([]fetch.Spell, len(base.Spells.Level[level]))
 	}
 
-	// TODO: Make concurrent
+	var wg sync.WaitGroup
+	var mu sync.Mutex
+	errs := make(chan error, 1)
 
-	// Name, Class
-	if err := fetchJSON(&race, base.Race); err != nil {
-		return nil, err
+	// Helper function to wrap fetchJSON in a goroutine
+	run := func(target fetch.Fetchable, input string) {
+		defer wg.Done()
+		if err := fetchJSON(target, input); err != nil {
+			// Only first error matters here
+			select {
+			case errs <- err:
+			default:
+			}
+		}
 	}
-	if err := fetchJSON(&class, base.Class); err != nil {
-		return nil, err
-	}
+
+	// Race, Class
+	wg.Add(1)
+	go run(&race, base.Race)
+	wg.Add(1)
+	go run(&class, base.Class)
 
 	// Inventory
+	// Loop over inventory components and spin up goroutine for each
 	for _, armorName := range base.Inventory.Armor {
-		var armor fetch.Equipment
-		if err := fetchJSON(&armor, armorName); err != nil {
-			return nil, err
-		}
-		inventory.Armor = append(inventory.Armor, armor)
+		wg.Add(1)
+		go func(name string) {
+			defer wg.Done()
+			var armor fetch.Equipment
+			if err := fetchJSON(&armor, name); err != nil {
+				select {
+				case errs <- err:
+				default:
+				}
+				return
+			}
+
+			// Append with lock to prevent data race
+			mu.Lock()
+			inventory.Armor = append(inventory.Armor, armor)
+			mu.Unlock()
+		}(armorName)
 	}
 	for _, weaponName := range base.Inventory.Weapons {
-		var weapon fetch.Equipment
-		if err := fetchJSON(&weapon, weaponName); err != nil {
-			return nil, err
-		}
-		inventory.Weapons = append(inventory.Weapons, weapon)
+		wg.Add(1)
+		go func(name string) {
+			defer wg.Done()
+			var weapon fetch.Equipment
+			if err := fetchJSON(&weapon, name); err != nil {
+				select {
+				case errs <- err:
+				default:
+				}
+				return
+			}
+
+			// Append with lock to prevent data race
+			mu.Lock()
+			inventory.Weapons = append(inventory.Weapons, weapon)
+			mu.Unlock()
+		}(weaponName)
 	}
 	for _, itemName := range base.Inventory.Items {
-		var item fetch.Equipment
-		if err := fetchJSON(&item, itemName); err != nil {
-			return nil, err
-		}
-		inventory.Items = append(inventory.Items, item)
+		wg.Add(1)
+		go func(name string) {
+			defer wg.Done()
+			var item fetch.Equipment
+			if err := fetchJSON(&item, name); err != nil {
+				select {
+				case errs <- err:
+				default:
+				}
+				return
+			}
+
+			// Append with lock to prevent data race
+			mu.Lock()
+			inventory.Items = append(inventory.Armor, item)
+			mu.Unlock()
+		}(itemName)
 	}
 
 	// Spells
+	// Loop over 2D array and spin up goroutine for each spell at index i, j
 	for i := range spellbook {
 		for j := range spellbook[i] {
-			if err := fetchJSON(&spellbook[i][j], base.Spells.Level[i][j]); err != nil {
-				return nil, err
-			}
+			wg.Add(1)
+			go func(i, j int) {
+				defer wg.Done()
+				if err := fetchJSON(&spellbook[i][j], base.Spells.Level[i][j]); err != nil {
+					select {
+					case errs <- err:
+					default:
+					}
+				}
+			}(i, j)
 		}
+	}
+
+	// Wait for goroutines to finish
+	wg.Wait()
+	close(errs)
+
+	// Return first err if any
+	if err, ok := <-errs; ok {
+		return nil, err
 	}
 
 	return &templates.Character{
@@ -170,7 +237,7 @@ func buildCharacter(base *templates.TemplateCharacter) (*templates.Character, er
 func main() {
 	fileName, err := fileArgs()
 	if err != nil {
-		panic(err)
+		log.Fatalf("Incorrect file arguments: %v\n", err)
 	}
 
 	base := tomlParse(fileName)

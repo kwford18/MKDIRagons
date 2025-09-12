@@ -500,17 +500,14 @@
     ],
     "Items": [
       {
-        "desc": [
-          "A holy symbol is a representation of a god or pantheon. It might be an amulet depicting a symbol representing a deity, the same symbol carefully engraved or inlaid as an emblem on a shield, or a tiny box holding a fragment of a sacred relic.",
-          "Appendix B lists the symbols commonly associated with many gods in the multiverse. A cleric or paladin can use a holy symbol as a spellcasting focus. To use the symbol in this way, the caster must hold it in hand, wear it visibly, or bear it on a shield."
-        ],
+        "desc": [],
         "special": [],
-        "index": "amulet",
-        "name": "Amulet",
+        "index": "padded-armor",
+        "name": "Padded Armor",
         "equipment_category": {
-          "index": "adventuring-gear",
-          "name": "Adventuring Gear",
-          "url": "/api/2014/equipment-categories/adventuring-gear"
+          "index": "armor",
+          "name": "Armor",
+          "url": "/api/2014/equipment-categories/armor"
         },
         "weapon_category": "",
         "weapon_range": "",
@@ -531,9 +528,42 @@
           "normal": 0,
           "long": 0
         },
-        "weight": 1,
+        "weight": 8,
         "properties": [],
-        "url": "/api/2014/equipment/amulet"
+        "url": "/api/2014/equipment/padded-armor"
+      },
+      {
+        "desc": [],
+        "special": [],
+        "index": "leather-armor",
+        "name": "Leather Armor",
+        "equipment_category": {
+          "index": "armor",
+          "name": "Armor",
+          "url": "/api/2014/equipment-categories/armor"
+        },
+        "weapon_category": "",
+        "weapon_range": "",
+        "category_range": "",
+        "cost": {
+          "quantity": 10,
+          "unit": "gp"
+        },
+        "damage": {
+          "damage_dice": "",
+          "damage_type": {
+            "index": "",
+            "name": "",
+            "url": ""
+          }
+        },
+        "range": {
+          "normal": 0,
+          "long": 0
+        },
+        "weight": 10,
+        "properties": [],
+        "url": "/api/2014/equipment/leather-armor"
       },
       {
         "desc": [],
@@ -567,42 +597,6 @@
         "weight": 2,
         "properties": [],
         "url": "/api/2014/equipment/abacus"
-      },
-      {
-        "desc": [
-          "As an action, you can splash the contents of this vial onto a creature within 5 feet of you or throw the vial up to 20 feet, shattering it on impact. In either case, make a ranged attack against a creature or object, treating the acid as an improvised weapon.",
-          "On a hit, the target takes 2d6 acid damage."
-        ],
-        "special": [],
-        "index": "acid-vial",
-        "name": "Acid (vial)",
-        "equipment_category": {
-          "index": "adventuring-gear",
-          "name": "Adventuring Gear",
-          "url": "/api/2014/equipment-categories/adventuring-gear"
-        },
-        "weapon_category": "",
-        "weapon_range": "",
-        "category_range": "",
-        "cost": {
-          "quantity": 25,
-          "unit": "gp"
-        },
-        "damage": {
-          "damage_dice": "",
-          "damage_type": {
-            "index": "",
-            "name": "",
-            "url": ""
-          }
-        },
-        "range": {
-          "normal": 0,
-          "long": 0
-        },
-        "weight": 1,
-        "properties": [],
-        "url": "/api/2014/equipment/acid-vial"
       }
     ]
   },
