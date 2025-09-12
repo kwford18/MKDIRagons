@@ -31,4 +31,11 @@ go.work.sum
 .idea/
 .vscode/
 
+# JSON representations of characters
 characters/
+
+# TOML character files
+templates/toml-characters/
+
+# TOML template file
+templates/template.toml

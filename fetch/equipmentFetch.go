@@ -36,18 +36,16 @@ type WeaponRange struct {
 	Long   int `json:"long"`
 }
 
+type Inventory struct {
+	Weapons, Armor, Items []Equipment
+}
+
 func (e *Equipment) GetEndpoint() string {
 	return "equipment/"
 }
 
 func (e *Equipment) Print() {
 	fmt.Printf("Equipment: %v", e.Name)
-}
-
-// =============================================================
-// INVENTORY
-type Inventory struct {
-	Weapons, Armor, Items []Equipment
 }
 
 func (i *Inventory) GetEndpoint() string {

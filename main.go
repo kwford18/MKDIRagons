@@ -25,7 +25,7 @@ func fileArgs() (string, error) {
 	}
 
 	// Load file
-	path := "templates/"
+	path := "templates/toml-characters/"
 
 	// Check if file extension was provided
 	if filepath.Ext(os.Args[1]) != ".toml" && filepath.Ext(os.Args[1]) != "" {
@@ -235,6 +235,11 @@ func buildCharacter(base *templates.TemplateCharacter) (*templates.Character, er
 }
 
 func main() {
+	err := templates.GenerateEmptyTOML()
+	if err != nil {
+		log.Fatalf("Error generating empty TOML: %v", err)
+	}
+
 	fileName, err := fileArgs()
 	if err != nil {
 		log.Fatalf("Incorrect file arguments: %v\n", err)

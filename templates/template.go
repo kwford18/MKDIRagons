@@ -18,22 +18,24 @@ type TemplateSpells struct {
 }
 
 type TemplateCharacter struct {
-	Name      string            `toml:"name"`
-	Race      string            `toml:"race"`
-	Subrace   string            `toml:"subrace"`
-	Class     string            `toml:"class"`
-	Subclass  string            `toml:"subclass"`
-	Inventory TemplateInventory `toml:"inventory"`
-	Spells    TemplateSpells    `toml:"spells"`
+	Name          string            `toml:"name"`
+	Race          string            `toml:"race"`
+	Subrace       string            `toml:"subrace"`
+	Class         string            `toml:"class"`
+	Subclass      string            `toml:"subclass"`
+	Proficiencies []string          `toml:"proficiencies"`
+	Inventory     TemplateInventory `toml:"inventory"`
+	Spells        TemplateSpells    `toml:"spells"`
 }
 
 // Character represents the TOML structure
 type Character struct {
-	Name      string
-	Race      fetch.Race
-	Class     fetch.Class
-	Inventory fetch.Inventory
-	Spells    [][]fetch.Spell
+	Name          string
+	Race          fetch.Race
+	Class         fetch.Class
+	Proficiencies []string
+	Inventory     fetch.Inventory
+	Spells        [][]fetch.Spell
 }
 
 func (c *Character) Print() {
