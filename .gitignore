@@ -39,3 +39,6 @@ templates/toml-characters/
 
 # TOML template file
 templates/template.toml
+
+# backups
+backup/
