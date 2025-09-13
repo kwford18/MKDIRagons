@@ -15,11 +15,19 @@ func GenerateEmptyTOML() error {
 	}
 
 	template := TemplateCharacter{
-		Name:          "",
-		Race:          "",
-		Subrace:       "",
-		Class:         "",
-		Subclass:      "",
+		Name:     "",
+		Race:     "",
+		Subrace:  "",
+		Class:    "",
+		Subclass: "",
+		AbilityScores: TemplateAbilityScores{
+			Strength:     10,
+			Dexterity:    10,
+			Constitution: 10,
+			Wisdom:       10,
+			Intelligence: 10,
+			Charisma:     10,
+		},
 		Proficiencies: []string{},
 		Inventory: TemplateInventory{
 			Armor:   []string{},

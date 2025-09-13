@@ -1,4 +1,4 @@
-package fetch
+package models
 
 type Reference struct {
 	Index string `json:"index"`

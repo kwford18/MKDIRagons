@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/kwford18/MKDIRagons/fetch"
+	"github.com/kwford18/MKDIRagons/models"
 	"github.com/kwford18/MKDIRagons/templates"
 )
 
-func fetchJSON(property fetch.Fetchable, input string) error {
+func fetchJSON(property models.Fetchable, input string) error {
 	baseURL := "https://www.dnd5eapi.co/api/2014/"
 
 	// Format
@@ -38,14 +38,14 @@ func fetchJSON(property fetch.Fetchable, input string) error {
 	return nil
 }
 
-func BuildCharacter(base *templates.TemplateCharacter) (*templates.Character, error) {
-	var race fetch.Race
-	var class fetch.Class
-	var inventory fetch.Inventory
+func BuildCharacter(base *templates.TemplateCharacter) (*models.Character, error) {
+	var race models.Race
+	var class models.Class
+	var inventory models.Inventory
 
 	spellbook := initSpellbook(base)
 
-	// concurrent fetch
+	// Concurrent fetch
 	if err := fetchRaceAndClass(base, &race, &class); err != nil {
 		return nil, err
 	}
@@ -56,10 +56,14 @@ func BuildCharacter(base *templates.TemplateCharacter) (*templates.Character, er
 		return nil, err
 	}
 
-	return &templates.Character{
+	// Build ability scores
+	ability_scores := buildAbilityScores(base)
+
+	return &models.Character{
 		Name:          base.Name,
 		Race:          race,
 		Class:         class,
+		AbilityScores: ability_scores,
 		Proficiencies: base.Proficiencies,
 		Inventory:     inventory,
 		Spells:        spellbook,

@@ -9,6 +9,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/kwford18/MKDIRagons/builder"
+	"github.com/kwford18/MKDIRagons/models"
 	"github.com/kwford18/MKDIRagons/templates"
 )
 
@@ -43,7 +44,7 @@ func tomlParse(fileName string) (templates.TemplateCharacter, error) {
 	return t, nil
 }
 
-func saveJSON(character *templates.Character) error {
+func saveJSON(character *models.Character) error {
 	// Ensure ./characters exists
 	dir := "characters"
 	if err := os.MkdirAll(dir, 0755); err != nil {

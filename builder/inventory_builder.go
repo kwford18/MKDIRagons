@@ -3,12 +3,12 @@ package builder
 import (
 	"sync"
 
-	"github.com/kwford18/MKDIRagons/fetch"
+	"github.com/kwford18/MKDIRagons/models"
 	"github.com/kwford18/MKDIRagons/templates"
 )
 
 // Handle concurrent fetching for Inventory components (Armor, Weapons, Items)
-func fetchInventory(base *templates.TemplateCharacter, inv *fetch.Inventory) error {
+func fetchInventory(base *templates.TemplateCharacter, inv *models.Inventory) error {
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	errs := make(chan error, len(base.Inventory.Armor)+len(base.Inventory.Weapons)+len(base.Inventory.Items))
@@ -17,7 +17,7 @@ func fetchInventory(base *templates.TemplateCharacter, inv *fetch.Inventory) err
 		wg.Add(1)
 		go func(name string) {
 			defer wg.Done()
-			var armor fetch.Equipment
+			var armor models.Equipment
 			if err := fetchJSON(&armor, name); err != nil {
 				errs <- err
 				return
@@ -32,7 +32,7 @@ func fetchInventory(base *templates.TemplateCharacter, inv *fetch.Inventory) err
 		wg.Add(1)
 		go func(name string) {
 			defer wg.Done()
-			var weapon fetch.Equipment
+			var weapon models.Equipment
 			if err := fetchJSON(&weapon, name); err != nil {
 				errs <- err
 				return
@@ -47,7 +47,7 @@ func fetchInventory(base *templates.TemplateCharacter, inv *fetch.Inventory) err
 		wg.Add(1)
 		go func(name string) {
 			defer wg.Done()
-			var item fetch.Equipment
+			var item models.Equipment
 			if err := fetchJSON(&item, name); err != nil {
 				errs <- err
 				return
