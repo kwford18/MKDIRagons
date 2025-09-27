@@ -6,13 +6,13 @@ type Reference struct {
 	URL   string `json:"url"`
 }
 
-// Interface for getting endpoints with different 5e API resources
+// Fetchable Interface for getting endpoints & printing different 5e API resources
 type Fetchable interface {
 	GetEndpoint() string
 	Print()
 }
 
-// Interface for common methods between models.Character and templates.TemplateCharacter
+// CharacterModel Interface for common methods between models.Character and templates.TemplateCharacter
 type CharacterModel interface {
 	Print()
 	ProficiencyBonus() int

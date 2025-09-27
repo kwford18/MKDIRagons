@@ -6,11 +6,11 @@ import (
 	"github.com/kwford18/MKDIRagons/models"
 )
 
-func buildStats(level int, ability_scores models.AbilityScore, class models.Class, armor *models.Armor) models.Stats {
+func buildStats(level int, abilityScores models.AbilityScore, class models.Class, armor *models.Armor) models.Stats {
 	var HP int
 	// Build HP based on level
 	for i := 1; i <= level; i++ {
-		HP += rand.IntN(class.HitDie) + 1 + ability_scores.Modifier(models.Constitution)
+		HP += rand.IntN(class.HitDie) + 1 + abilityScores.Modifier(models.Constitution)
 		// fmt.Printf("HP at %d Level: %d\n", i, HP)
 	}
 
@@ -23,17 +23,17 @@ func buildStats(level int, ability_scores models.AbilityScore, class models.Clas
 		// Armor equipped
 		AC = armor.ArmorClass.Base
 		if armor.ArmorClass.DexBonus {
-			AC += ability_scores.Modifier(models.Dexterity)
+			AC += abilityScores.Modifier(models.Dexterity)
 		}
 	} else if class.Name == "Barbarian" {
 		// Unarmored Defense for Barbarian
-		AC = 10 + ability_scores.Modifier(models.Dexterity) + ability_scores.Modifier(models.Constitution)
+		AC = 10 + abilityScores.Modifier(models.Dexterity) + abilityScores.Modifier(models.Constitution)
 	} else if class.Name == "Monk" {
 		// Unarmored Defense for Monk
-		AC = 10 + ability_scores.Modifier(models.Dexterity) + ability_scores.Modifier(models.Wisdom)
+		AC = 10 + abilityScores.Modifier(models.Dexterity) + abilityScores.Modifier(models.Wisdom)
 	} else {
 		// Default AC
-		AC = 10 + ability_scores.Modifier(models.Dexterity)
+		AC = 10 + abilityScores.Modifier(models.Dexterity)
 	}
 	return models.Stats{
 		HP:     HP,

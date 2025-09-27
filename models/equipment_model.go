@@ -2,7 +2,7 @@ package models
 
 import "fmt"
 
-// Base for all types of equipment
+// BaseEquipment for all types of equipment
 type BaseEquipment struct {
 	Desc              []string    `json:"desc"`
 	Special           []string    `json:"special"`
@@ -16,7 +16,7 @@ type BaseEquipment struct {
 	Contents          []Reference `json:"contents"`
 }
 
-// Basic items like abacus, amulet, alchemist fire
+// Item struct for items like abacus, amulet, alchemist fire
 type Item struct {
 	BaseEquipment
 	GearCategory    *Reference `json:"gear_category,omitempty"`
@@ -37,7 +37,7 @@ type ArmorClass struct {
 	DexBonus bool `json:"dex_bonus"`
 }
 
-// Weapons such as longbow or rapier
+// Weapon such as longbow or rapier
 type Weapon struct {
 	BaseEquipment
 	WeaponCategory  string      `json:"weapon_category"`
@@ -48,7 +48,7 @@ type Weapon struct {
 	TwoHandedDamage *Damage     `json:"two_handed_damage,omitempty"`
 }
 
-// Shared structs for various equipment types
+// Cost is shared for various equipment types
 type Cost struct {
 	Quantity int    `json:"quantity"`
 	Unit     string `json:"unit"`
@@ -70,11 +70,12 @@ type Inventory struct {
 	Weapons []Weapon
 }
 
-// Fetchable Methods
+// GetEndpoint Fetchable Method
 func (inv *Inventory) GetEndpoint() string {
 	return "equipment/"
 }
 
+// Print Fetchable method
 func (inv *Inventory) Print() {
 	fmt.Printf("Inventory contains: %d armor, %d weapons, %d items\n",
 		len(inv.Armor), len(inv.Weapons), len(inv.Items))

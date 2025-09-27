@@ -46,7 +46,10 @@ func BuildCharacter(base *templates.TemplateCharacter) (*models.Character, error
 	spellbook := initSpellbook(base)
 
 	// Concurrent fetch
-	if err := fetchRaceAndClass(base, &race, &class); err != nil {
+	if err := fetchRace(base, &race); err != nil {
+		return nil, err
+	}
+	if err := fetchClass(base, &class); err != nil {
 		return nil, err
 	}
 	if err := fetchInventory(base, &inventory); err != nil {
@@ -57,24 +60,24 @@ func BuildCharacter(base *templates.TemplateCharacter) (*models.Character, error
 	}
 
 	// Build ability scores & skills
-	ability_scores := buildAbilityScores(base, race)
-	skill_list := buildSkillList(base)
+	abilityScores := buildAbilityScores(base, race)
+	skillList := buildSkillList(base)
 
 	// Build Combat Stats
-	var first_armor *models.Armor
+	var firstArmor *models.Armor
 	if len(inventory.Armor) > 0 {
-		first_armor = &inventory.Armor[0]
+		firstArmor = &inventory.Armor[0]
 	}
-	combat_stats := buildStats(base.Level, ability_scores, class, first_armor)
+	combatStats := buildStats(base.Level, abilityScores, class, firstArmor)
 
 	return &models.Character{
 		Name:          base.Name,
 		Level:         base.Level,
 		Race:          race,
 		Class:         class,
-		Stats:         combat_stats,
-		AbilityScores: ability_scores,
-		Skills:        skill_list,
+		Stats:         combatStats,
+		AbilityScores: abilityScores,
+		Skills:        skillList,
 		Proficiencies: base.Proficiencies,
 		Inventory:     inventory,
 		Spells:        spellbook,

@@ -3,16 +3,16 @@ package models
 import "fmt"
 
 type Character struct {
-	Name          string
-	Level         int
-	Race          Race
-	Class         Class
-	Stats         Stats
-	Proficiencies []string
-	AbilityScores AbilityScore
-	Skills        SkillList
-	Inventory     Inventory
-	Spells        [][]Spell
+	Name          string       `json:"name"`
+	Level         int          `json:"level"`
+	Race          Race         `json:"race"`
+	Class         Class        `json:"class"`
+	Stats         Stats        `json:"stats"`
+	Proficiencies []string     `json:"proficiencies"`
+	AbilityScores AbilityScore `json:"ability_scores"`
+	Skills        SkillList    `json:"skills"`
+	Inventory     Inventory    `json:"inventory"`
+	Spells        [][]Spell    `json:"spells"`
 }
 
 func (c *Character) ProficiencyBonus() int {

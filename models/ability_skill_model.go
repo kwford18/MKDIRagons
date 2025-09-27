@@ -2,7 +2,7 @@ package models
 
 import "fmt"
 
-// Enum for Ability easier & more consistent lookup and assignment
+// Ability Enum for easier & more consistent lookup and assignment
 type Ability int
 
 const (
@@ -14,7 +14,7 @@ const (
 	Charisma
 )
 
-// Struct type to represent the player's ability scores
+// AbilityScore Struct type to represent the player's ability scores
 type AbilityScore struct {
 	Strength     int
 	Dexterity    int
@@ -24,7 +24,7 @@ type AbilityScore struct {
 	Charisma     int
 }
 
-// An individual skill
+// Skill single skill
 type Skill struct {
 	Name       string
 	Bonus      int
@@ -33,7 +33,7 @@ type Skill struct {
 	Expertise  bool
 }
 
-// List of skills, each of type Skill
+// SkillList for each of type Skill
 type SkillList struct {
 	Athletics      Skill
 	Acrobatics     Skill
@@ -60,7 +60,7 @@ func (a Ability) String() string {
 	return [...]string{"Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"}[a]
 }
 
-// Takes an ability and returns the modifier
+// Modifier takes an ability and returns the modifier
 func (ab *AbilityScore) Modifier(a Ability) int {
 	var score int
 	switch a {
@@ -80,7 +80,7 @@ func (ab *AbilityScore) Modifier(a Ability) int {
 	return (score - 10) / 2
 }
 
-// Fetchable interface methods
+// Print for Fetchable interface methods
 func (ab *AbilityScore) Print() {
 	fmt.Println("Ability Scores:")
 	fmt.Printf("    - Strength:     %d\n", ab.Strength)
