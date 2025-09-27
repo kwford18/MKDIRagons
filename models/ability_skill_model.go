@@ -81,6 +81,21 @@ func (ab *AbilityScore) Modifier(a Ability) int {
 }
 
 // Fetchable interface methods
+func (ab *AbilityScore) Print() {
+	fmt.Println("Ability Scores:")
+	fmt.Printf("    - Strength:     %d\n", ab.Strength)
+	fmt.Printf("    - Dexterity:    %d\n", ab.Dexterity)
+	fmt.Printf("    - Constitution: %d\n", ab.Constitution)
+	fmt.Printf("    - Wisdom:       %d\n", ab.Wisdom)
+	fmt.Printf("    - Intelligence: %d\n", ab.Intelligence)
+	fmt.Printf("    - Charisma:     %d\n", ab.Charisma)
+	fmt.Println()
+}
+
+func (ab *AbilityScore) GetEndpoint() string {
+	return "ability-scores/"
+}
+
 func (s *Skill) GetEndpoint() string {
 	return "skills/" + s.Name
 }

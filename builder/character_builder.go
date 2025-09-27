@@ -56,16 +56,23 @@ func BuildCharacter(base *templates.TemplateCharacter) (*models.Character, error
 		return nil, err
 	}
 
-	// Build ability scores
+	// Build ability scores & skills
 	ability_scores := buildAbilityScores(base, race)
-
 	skill_list := buildSkillList(base)
+
+	// Build Combat Stats
+	var first_armor *models.Armor
+	if len(inventory.Armor) > 0 {
+		first_armor = &inventory.Armor[0]
+	}
+	combat_stats := buildStats(base.Level, ability_scores, class, first_armor)
 
 	return &models.Character{
 		Name:          base.Name,
 		Level:         base.Level,
 		Race:          race,
 		Class:         class,
+		Stats:         combat_stats,
 		AbilityScores: ability_scores,
 		Skills:        skill_list,
 		Proficiencies: base.Proficiencies,

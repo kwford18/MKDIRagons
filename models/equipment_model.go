@@ -2,8 +2,6 @@ package models
 
 import "fmt"
 
-// EQUIPMENT
-
 // Base for all types of equipment
 type BaseEquipment struct {
 	Desc              []string    `json:"desc"`

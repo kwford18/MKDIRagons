@@ -7,7 +7,7 @@ type Character struct {
 	Level         int
 	Race          Race
 	Class         Class
-	Stats         CombatStats
+	Stats         Stats
 	Proficiencies []string
 	AbilityScores AbilityScore
 	Skills        SkillList
@@ -50,28 +50,17 @@ func (c *Character) GetSkillAbility(name string) Ability {
 }
 
 func (c *Character) Print() {
-	// Name, Race, Class
+	// Name, Level, Race, Class, Basic Stats
 	fmt.Printf("Name: %s\n", c.Name)
-	fmt.Printf("Race: %s\n", c.Race.Name)
-	fmt.Printf("Class: %s\n", c.Class.Name)
+	fmt.Printf("Level: %d\n", c.Level)
+	c.Race.Print()
+	c.Class.Print()
+	c.Stats.Print()
+
+	fmt.Println()
 
 	// Equipment
-	fmt.Println("Equipment:")
-
-	fmt.Printf("    - Armor: \n")
-	for _, armor := range c.Inventory.Armor {
-		fmt.Printf("	- %s\n", armor.Name)
-	}
-
-	fmt.Printf("    - Weapons: \n")
-	for _, weapons := range c.Inventory.Weapons {
-		fmt.Printf("	- %s\n", weapons.Name)
-	}
-
-	fmt.Printf("    - Equipment: \n")
-	for _, items := range c.Inventory.Items {
-		fmt.Printf("	- %s\n", items.Name)
-	}
+	c.Inventory.Print()
 
 	// Spells
 	fmt.Println("Spells:")
@@ -86,13 +75,7 @@ func (c *Character) Print() {
 	}
 
 	// Ability Scores
-	fmt.Println("Ability Scores:")
-	fmt.Printf("    - Strength:     %d\n", c.AbilityScores.Strength)
-	fmt.Printf("    - Dexterity:    %d\n", c.AbilityScores.Dexterity)
-	fmt.Printf("    - Constitution: %d\n", c.AbilityScores.Constitution)
-	fmt.Printf("    - Wisdom:       %d\n", c.AbilityScores.Wisdom)
-	fmt.Printf("    - Intelligence: %d\n", c.AbilityScores.Intelligence)
-	fmt.Printf("    - Charisma:     %d\n", c.AbilityScores.Charisma)
+	c.AbilityScores.Print()
 
 	// Proficiencies
 	fmt.Println("Proficiencies:")

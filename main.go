@@ -94,7 +94,8 @@ func main() {
 		log.Fatalf("Failed to parse file: %v\n", err)
 	}
 
-	fmt.Println()
+	// Print base character
+	fmt.Println("TOML BASE:")
 	base.Print()
 	fmt.Println()
 
@@ -103,7 +104,8 @@ func main() {
 		log.Fatalf("Error building character: %v\n", err)
 	}
 
-	fmt.Println()
+	// Print built character
+	fmt.Println("BUILT CHARACTER:")
 	character.Print()
 
 	if err := saveJSON(character); err != nil {

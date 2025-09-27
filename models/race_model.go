@@ -31,5 +31,5 @@ func (r *Race) GetEndpoint() string {
 }
 
 func (r *Race) Print() {
-	fmt.Printf("Race: %s", r.Name)
+	fmt.Printf("Race: %s\n", r.Name)
 }

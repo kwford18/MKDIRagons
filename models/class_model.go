@@ -97,5 +97,5 @@ func (c *Class) GetEndpoint() string {
 }
 
 func (c *Class) Print() {
-	fmt.Printf("Class: %s", c.Name)
+	fmt.Printf("Class: %s\n", c.Name)
 }
