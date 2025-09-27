@@ -1,26 +1,29 @@
-package models
+package inventory
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/kwford18/MKDIRagons/internal/reference"
+)
 
 // BaseEquipment for all types of equipment
 type BaseEquipment struct {
-	Desc              []string    `json:"desc"`
-	Special           []string    `json:"special"`
-	Index             string      `json:"index"`
-	Name              string      `json:"name"`
-	EquipmentCategory Reference   `json:"equipment_category"`
-	Cost              Cost        `json:"cost"`
-	Weight            int         `json:"weight"`
-	URL               string      `json:"url"`
-	Properties        []Reference `json:"properties"`
-	Contents          []Reference `json:"contents"`
+	Desc              []string              `json:"desc"`
+	Special           []string              `json:"special"`
+	Index             string                `json:"index"`
+	Name              string                `json:"name"`
+	EquipmentCategory reference.Reference   `json:"equipment_category"`
+	Cost              Cost                  `json:"cost"`
+	Weight            int                   `json:"weight"`
+	URL               string                `json:"url"`
+	Properties        []reference.Reference `json:"properties"`
+	Contents          []reference.Reference `json:"contents"`
 }
 
 // Item struct for items like abacus, amulet, alchemist fire
 type Item struct {
 	BaseEquipment
-	GearCategory    *Reference `json:"gear_category,omitempty"`
-	VehicleCategory string     `json:"vehicle_category,omitempty"`
+	GearCategory    *reference.Reference `json:"gear_category,omitempty"`
+	VehicleCategory string               `json:"vehicle_category,omitempty"`
 }
 
 // Armor such as padded, leather, etc
@@ -55,8 +58,8 @@ type Cost struct {
 }
 
 type Damage struct {
-	DamageDice string    `json:"damage_dice"`
-	DamageType Reference `json:"damage_type"`
+	DamageDice string              `json:"damage_dice"`
+	DamageType reference.Reference `json:"damage_type"`
 }
 
 type WeaponRange struct {

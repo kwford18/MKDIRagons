@@ -1,4 +1,4 @@
-package models
+package reference
 
 type Reference struct {
 	Index string `json:"index"`
@@ -10,12 +10,4 @@ type Reference struct {
 type Fetchable interface {
 	GetEndpoint() string
 	Print()
-}
-
-// CharacterModel Interface for common methods between models.Character and templates.TemplateCharacter
-type CharacterModel interface {
-	Print()
-	ProficiencyBonus() int
-	GetSkillAbility(string) Ability
-	Modifier(Ability) int
 }

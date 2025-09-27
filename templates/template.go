@@ -2,8 +2,7 @@ package templates
 
 import (
 	"fmt"
-
-	"github.com/kwford18/MKDIRagons/models"
+	"github.com/kwford18/MKDIRagons/internal/core"
 )
 
 // Template character parsed from a TOML file
@@ -70,38 +69,39 @@ func (t *TemplateCharacter) ProficiencyBonus() int {
 	}
 }
 
-func (t *TemplateCharacter) GetSkillAbility(name string) models.Ability {
+// GetSkillAbility takes a skill name and returns which ability score it uses
+func (t *TemplateCharacter) GetSkillAbility(name string) core.Ability {
 	switch name {
 	case "Athletics":
-		return models.Strength
+		return core.Strength
 	case "Acrobatics", "SleightOfHand", "Stealth":
-		return models.Dexterity
+		return core.Dexterity
 	case "Arcana", "History", "Investigation", "Nature", "Religion":
-		return models.Intelligence
+		return core.Intelligence
 	case "AnimalHandling", "Insight", "Medicine", "Perception", "Survival":
-		return models.Wisdom
+		return core.Wisdom
 	case "Deception", "Intimidation", "Performance", "Persuasion":
-		return models.Charisma
+		return core.Charisma
 	default:
-		return models.Ability(0) // POTENTIAL CHANGE
+		return core.Ability(0) // POTENTIAL CHANGE
 	}
 }
 
-// Takes an ability and returns the modifier
-func (ab *TemplateAbilityScores) Modifier(a models.Ability) int {
+// Modifier takes an ability and returns the modifier
+func (ab *TemplateAbilityScores) Modifier(a core.Ability) int {
 	var score int
 	switch a {
-	case models.Strength:
+	case core.Strength:
 		score = ab.Strength
-	case models.Dexterity:
+	case core.Dexterity:
 		score = ab.Dexterity
-	case models.Constitution:
+	case core.Constitution:
 		score = ab.Constitution
-	case models.Intelligence:
+	case core.Intelligence:
 		score = ab.Intelligence
-	case models.Wisdom:
+	case core.Wisdom:
 		score = ab.Wisdom
-	case models.Charisma:
+	case core.Charisma:
 		score = ab.Charisma
 	}
 	return (score - 10) / 2

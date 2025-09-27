@@ -1,18 +1,28 @@
-package models
+package character
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/kwford18/MKDIRagons/internal/abilities"
+	"github.com/kwford18/MKDIRagons/internal/class"
+	"github.com/kwford18/MKDIRagons/internal/core"
+	"github.com/kwford18/MKDIRagons/internal/inventory"
+	"github.com/kwford18/MKDIRagons/internal/race"
+	"github.com/kwford18/MKDIRagons/internal/skills"
+	"github.com/kwford18/MKDIRagons/internal/spells"
+	"github.com/kwford18/MKDIRagons/internal/stats"
+)
 
 type Character struct {
-	Name          string       `json:"name"`
-	Level         int          `json:"level"`
-	Race          Race         `json:"race"`
-	Class         Class        `json:"class"`
-	Stats         Stats        `json:"stats"`
-	Proficiencies []string     `json:"proficiencies"`
-	AbilityScores AbilityScore `json:"ability_scores"`
-	Skills        SkillList    `json:"skills"`
-	Inventory     Inventory    `json:"inventory"`
-	Spells        [][]Spell    `json:"spells"`
+	Name          string                 `json:"name"`
+	Level         int                    `json:"level"`
+	Race          race.Race              `json:"race"`
+	Class         class.Class            `json:"class"`
+	Stats         stats.Stats            `json:"stats"`
+	Proficiencies []string               `json:"proficiencies"`
+	AbilityScores abilities.AbilityScore `json:"ability_scores"`
+	Skills        skills.SkillList       `json:"skills"`
+	Inventory     inventory.Inventory    `json:"inventory"`
+	Spells        [][]spells.Spell       `json:"spells"`
 }
 
 func (c *Character) ProficiencyBonus() int {
@@ -32,20 +42,20 @@ func (c *Character) ProficiencyBonus() int {
 	}
 }
 
-func (c *Character) GetSkillAbility(name string) Ability {
+func (c *Character) GetSkillAbility(name string) core.Ability {
 	switch name {
 	case "Athletics":
-		return Strength
+		return core.Strength
 	case "Acrobatics", "SleightOfHand", "Stealth":
-		return Dexterity
+		return core.Dexterity
 	case "Arcana", "History", "Investigation", "Nature", "Religion":
-		return Intelligence
+		return core.Intelligence
 	case "AnimalHandling", "Insight", "Medicine", "Perception", "Survival":
-		return Wisdom
+		return core.Wisdom
 	case "Deception", "Intimidation", "Performance", "Persuasion":
-		return Charisma
+		return core.Charisma
 	default:
-		return Ability(0) // POTENTIAL CHANGE
+		return core.Ability(0) // POTENTIAL CHANGE
 	}
 }
 

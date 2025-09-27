@@ -1,19 +1,22 @@
-package models
+package class
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/kwford18/MKDIRagons/internal/reference"
+)
 
 type Class struct {
 	Index                    string                 `json:"index"`
 	Name                     string                 `json:"name"`
 	HitDie                   int                    `json:"hit_die"`
 	ProficiencyChoices       []ProficiencyChoice    `json:"proficiency_choices"`
-	Proficiencies            []Reference            `json:"proficiencies"`
-	SavingThrows             []Reference            `json:"saving_throws"`
+	Proficiencies            []reference.Reference  `json:"proficiencies"`
+	SavingThrows             []reference.Reference  `json:"saving_throws"`
 	StartingEquipment        []StartingEquipment    `json:"starting_equipment"`
 	StartingEquipmentOptions []EquipmentOptionGroup `json:"starting_equipment_options"`
 	ClassLevels              string                 `json:"class_levels"`
 	MultiClassing            MultiClassing          `json:"multi_classing"`
-	Subclasses               []Reference            `json:"subclasses"`
+	Subclasses               []reference.Reference  `json:"subclasses"`
 	Spellcasting             Spellcasting           `json:"spellcasting"`
 	Spells                   string                 `json:"spells"`
 	URL                      string                 `json:"url"`
@@ -34,11 +37,11 @@ type OptionGroup struct {
 }
 
 type Option struct {
-	OptionType string       `json:"option_type"`
-	Item       *Reference   `json:"item,omitempty"`
-	Count      int          `json:"count,omitempty"`
-	Of         *Reference   `json:"of,omitempty"`
-	Choice     *ChoiceGroup `json:"choice,omitempty"`
+	OptionType string               `json:"option_type"`
+	Item       *reference.Reference `json:"item,omitempty"`
+	Count      int                  `json:"count,omitempty"`
+	Of         *reference.Reference `json:"of,omitempty"`
+	Choice     *ChoiceGroup         `json:"choice,omitempty"`
 }
 
 type ChoiceGroup struct {
@@ -49,15 +52,15 @@ type ChoiceGroup struct {
 }
 
 type EquipmentCategory struct {
-	OptionSetType     string    `json:"option_set_type"`
-	EquipmentCategory Reference `json:"equipment_category"`
+	OptionSetType     string              `json:"option_set_type"`
+	EquipmentCategory reference.Reference `json:"equipment_category"`
 }
 
 // --- Starting Equipment ---
 
 type StartingEquipment struct {
-	Equipment Reference `json:"equipment"`
-	Quantity  int       `json:"quantity"`
+	Equipment reference.Reference `json:"equipment"`
+	Quantity  int                 `json:"quantity"`
 }
 
 type EquipmentOptionGroup struct {
@@ -75,16 +78,16 @@ type MultiClassing struct {
 }
 
 type Prerequisite struct {
-	AbilityScore Reference `json:"ability_score"`
-	MinimumScore int       `json:"minimum_score"`
+	AbilityScore reference.Reference `json:"ability_score"`
+	MinimumScore int                 `json:"minimum_score"`
 }
 
 // --- Spellcasting ---
 
 type Spellcasting struct {
-	Level               int                `json:"level"`
-	SpellcastingAbility Reference          `json:"spellcasting_ability"`
-	Info                []SpellcastingInfo `json:"info"`
+	Level               int                 `json:"level"`
+	SpellcastingAbility reference.Reference `json:"spellcasting_ability"`
+	Info                []SpellcastingInfo  `json:"info"`
 }
 
 type SpellcastingInfo struct {

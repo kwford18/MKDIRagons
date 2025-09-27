@@ -1,19 +1,19 @@
-package builder
+package race
 
 import (
-	"github.com/kwford18/MKDIRagons/models"
+	"github.com/kwford18/MKDIRagons/internal/core"
 	"github.com/kwford18/MKDIRagons/templates"
 	"sync"
 )
 
-func fetchRace(base *templates.TemplateCharacter, race *models.Race) error {
+func FetchRace(base *templates.TemplateCharacter, race *Race) error {
 	var wg sync.WaitGroup
 	errs := make(chan error, 2)
 
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		if err := fetchJSON(race, base.Race); err != nil {
+		if err := core.FetchJSON(race, base.Race); err != nil {
 			errs <- err
 		}
 	}()

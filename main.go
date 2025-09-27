@@ -3,13 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/kwford18/MKDIRagons/internal/character"
 	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/BurntSushi/toml"
-	"github.com/kwford18/MKDIRagons/builder"
-	"github.com/kwford18/MKDIRagons/models"
 	"github.com/kwford18/MKDIRagons/templates"
 )
 
@@ -44,7 +43,7 @@ func tomlParse(fileName string) (templates.TemplateCharacter, error) {
 	return t, nil
 }
 
-func saveJSON(character *models.Character) error {
+func saveJSON(character *character.Character) error {
 	// Ensure ./characters exists
 	dir := "characters"
 	if err := os.MkdirAll(dir, 0755); err != nil {
@@ -99,16 +98,16 @@ func main() {
 	base.Print()
 	fmt.Println()
 
-	character, err := builder.BuildCharacter(&base)
+	char, err := character.BuildCharacter(&base)
 	if err != nil {
 		log.Fatalf("Error building character: %v\n", err)
 	}
 
 	// Print built character
 	fmt.Println("BUILT CHARACTER:")
-	character.Print()
+	char.Print()
 
-	if err := saveJSON(character); err != nil {
+	if err := saveJSON(char); err != nil {
 		log.Fatalf("Failed to save character as JSON\n")
 	}
 }

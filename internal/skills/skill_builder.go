@@ -1,44 +1,10 @@
-package builder
+package skills
 
 import (
-	"github.com/kwford18/MKDIRagons/models"
 	"github.com/kwford18/MKDIRagons/templates"
 )
 
-// Build AbilityScore struct using values from base TemplateCharacter
-func buildAbilityScores(base *templates.TemplateCharacter, race models.Race) models.AbilityScore {
-	// Apply Racial bonus
-OuterLoop:
-	for _, ability := range race.AbilityBonuses {
-		switch ability.AbilityScore.Name {
-		case "STR":
-			base.AbilityScores.Strength += ability.Bonus
-		case "DEX":
-			base.AbilityScores.Dexterity += ability.Bonus
-		case "CON":
-			base.AbilityScores.Constitution += ability.Bonus
-		case "WIS":
-			base.AbilityScores.Wisdom += ability.Bonus
-		case "INT":
-			base.AbilityScores.Intelligence += ability.Bonus
-		case "CHA":
-			base.AbilityScores.Charisma += ability.Bonus
-		default:
-			break OuterLoop
-		}
-	}
-
-	return models.AbilityScore{
-		Strength:     base.AbilityScores.Strength,
-		Dexterity:    base.AbilityScores.Dexterity,
-		Constitution: base.AbilityScores.Constitution,
-		Wisdom:       base.AbilityScores.Wisdom,
-		Intelligence: base.AbilityScores.Intelligence,
-		Charisma:     base.AbilityScores.Charisma,
-	}
-}
-
-func buildSkill(base *templates.TemplateCharacter, name string) models.Skill {
+func buildSkill(base *templates.TemplateCharacter, name string) Skill {
 	// Calculate bonus by getting the modifier of input skill
 	bonus := base.AbilityScores.Modifier(base.GetSkillAbility(name))
 
@@ -62,7 +28,7 @@ func buildSkill(base *templates.TemplateCharacter, name string) models.Skill {
 		}
 	}
 
-	return models.Skill{
+	return Skill{
 		Name:       name,
 		Bonus:      bonus,
 		Ability:    base.GetSkillAbility(name),
@@ -71,8 +37,8 @@ func buildSkill(base *templates.TemplateCharacter, name string) models.Skill {
 	}
 }
 
-func buildSkillList(base *templates.TemplateCharacter) models.SkillList {
-	return models.SkillList{
+func BuildSkillList(base *templates.TemplateCharacter) SkillList {
+	return SkillList{
 		Athletics:      buildSkill(base, "Athletics"),
 		Acrobatics:     buildSkill(base, "Acrobatics"),
 		SleightOfHand:  buildSkill(base, "SleightOfHand"),
