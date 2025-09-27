@@ -1,35 +1,91 @@
 package builder
 
 import (
-	"fmt"
-	"strings"
-
+	"github.com/kwford18/MKDIRagons/models"
 	"github.com/kwford18/MKDIRagons/templates"
 )
 
-func FormatKeys(input string) (string, error) {
-	if len(input) < 3 {
-		return "undefined", fmt.Errorf("input is not valid: %s", input)
+// Build AbilityScore struct using values from base TemplateCharacter
+func buildAbilityScores(base *templates.TemplateCharacter, race models.Race) models.AbilityScore {
+	// Apply Racial bonus
+OuterLoop:
+	for _, ability := range race.AbilityBonuses {
+		switch ability.AbilityScore.Name {
+		case "STR":
+			base.AbilityScores.Strength += ability.Bonus
+		case "DEX":
+			base.AbilityScores.Dexterity += ability.Bonus
+		case "CON":
+			base.AbilityScores.Constitution += ability.Bonus
+		case "WIS":
+			base.AbilityScores.Wisdom += ability.Bonus
+		case "INT":
+			base.AbilityScores.Intelligence += ability.Bonus
+		case "CHA":
+			base.AbilityScores.Charisma += ability.Bonus
+		default:
+			break OuterLoop
+		}
 	}
-	lower := strings.ToLower(input)
-	key := lower[:3]
 
-	return key, nil
+	return models.AbilityScore{
+		Strength:     base.AbilityScores.Strength,
+		Dexterity:    base.AbilityScores.Dexterity,
+		Constitution: base.AbilityScores.Constitution,
+		Wisdom:       base.AbilityScores.Wisdom,
+		Intelligence: base.AbilityScores.Intelligence,
+		Charisma:     base.AbilityScores.Charisma,
+	}
 }
 
-func buildAbilityScores(base *templates.TemplateCharacter) map[string]int {
-	ability_scores := make(map[string]int, 10)
+func buildSkill(base *templates.TemplateCharacter, name string) models.Skill {
+	bonus := base.AbilityScores.Modifier(base.GetSkillAbility(name))
+	proficient := false
+	expert := false
 
-	ability_scores["str"] = base.AbilityScores.Strength
-	ability_scores["dex"] = base.AbilityScores.Dexterity
-	ability_scores["con"] = base.AbilityScores.Constitution
-	ability_scores["wis"] = base.AbilityScores.Wisdom
-	ability_scores["int"] = base.AbilityScores.Intelligence
-	ability_scores["cha"] = base.AbilityScores.Charisma
+	for _, prof := range base.Proficiencies {
+		if prof == name {
+			bonus += base.ProficiencyBonus()
+			proficient = true
+			break
+		}
+	}
+	for _, exp := range base.Expertise {
+		if exp == name {
+			bonus += base.ProficiencyBonus()
+			expert = true
+			break
+		}
+	}
 
-	return ability_scores
+	return models.Skill{
+		Name:       name,
+		Bonus:      bonus,
+		Ability:    base.GetSkillAbility(name),
+		Proficient: proficient,
+		Expertise:  expert,
+	}
 }
 
-// func buildSkillBonuses(character *templates.Character) map[string]int {
-
-// }
+func buildSkillList(base *templates.TemplateCharacter) models.SkillList {
+	return models.SkillList{
+		Athletics:      buildSkill(base, "Athletics"),
+		Acrobatics:     buildSkill(base, "Acrobatics"),
+		SleightOfHand:  buildSkill(base, "SleightOfHand"),
+		Stealth:        buildSkill(base, "Stealth"),
+		Arcana:         buildSkill(base, "Arcana"),
+		History:        buildSkill(base, "History"),
+		Investigation:  buildSkill(base, "Investigation"),
+		Nature:         buildSkill(base, "Nature"),
+		Religion:       buildSkill(base, "Religion"),
+		AnimalHandling: buildSkill(base, "AnimalHandling"),
+		Insight:        buildSkill(base, "Insight"),
+		Medicine:       buildSkill(base, "Medicine"),
+		Perception:     buildSkill(base, "Perception"),
+		Survival:       buildSkill(base, "Survival"),
+		Deception:      buildSkill(base, "Deception"),
+		Intimidation:   buildSkill(base, "Intimidation"),
+		Performance:    buildSkill(base, "Performance"),
+		Persuasion:     buildSkill(base, "Persuasion"),
+	}
+}

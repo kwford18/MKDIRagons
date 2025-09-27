@@ -16,6 +16,7 @@ func GenerateEmptyTOML() error {
 
 	template := TemplateCharacter{
 		Name:     "",
+		Level:    1,
 		Race:     "",
 		Subrace:  "",
 		Class:    "",

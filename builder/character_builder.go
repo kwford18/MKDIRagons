@@ -57,13 +57,17 @@ func BuildCharacter(base *templates.TemplateCharacter) (*models.Character, error
 	}
 
 	// Build ability scores
-	ability_scores := buildAbilityScores(base)
+	ability_scores := buildAbilityScores(base, race)
+
+	skill_list := buildSkillList(base)
 
 	return &models.Character{
 		Name:          base.Name,
+		Level:         base.Level,
 		Race:          race,
 		Class:         class,
 		AbilityScores: ability_scores,
+		Skills:        skill_list,
 		Proficiencies: base.Proficiencies,
 		Inventory:     inventory,
 		Spells:        spellbook,

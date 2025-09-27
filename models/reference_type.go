@@ -11,3 +11,11 @@ type Fetchable interface {
 	GetEndpoint() string
 	Print()
 }
+
+// Interface for common methods between models.Character and templates.TemplateCharacter
+type CharacterModel interface {
+	Print()
+	ProficiencyBonus() int
+	GetSkillAbility(string) Ability
+	Modifier(Ability) int
+}
