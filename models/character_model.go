@@ -7,6 +7,7 @@ type Character struct {
 	Level         int
 	Race          Race
 	Class         Class
+	Stats         CombatStats
 	Proficiencies []string
 	AbilityScores AbilityScore
 	Skills        SkillList
@@ -98,4 +99,8 @@ func (c *Character) Print() {
 	for _, prof := range c.Proficiencies {
 		fmt.Printf("	- %s\n", prof)
 	}
+
+	// Skills
+	fmt.Println()
+	c.Skills.Print()
 }

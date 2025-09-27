@@ -39,10 +39,14 @@ OuterLoop:
 }
 
 func buildSkill(base *templates.TemplateCharacter, name string) models.Skill {
+	// Calculate bonus by getting the modifier of input skill
 	bonus := base.AbilityScores.Modifier(base.GetSkillAbility(name))
+
+	// proficiencies & expertise are false by default
 	proficient := false
 	expert := false
 
+	// Check for proficiency & expertise
 	for _, prof := range base.Proficiencies {
 		if prof == name {
 			bonus += base.ProficiencyBonus()

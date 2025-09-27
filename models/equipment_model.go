@@ -2,25 +2,55 @@ package models
 
 import "fmt"
 
-// =============================================================
 // EQUIPMENT
-type Equipment struct {
+
+// Base for all types of equipment
+type BaseEquipment struct {
 	Desc              []string    `json:"desc"`
 	Special           []string    `json:"special"`
 	Index             string      `json:"index"`
 	Name              string      `json:"name"`
 	EquipmentCategory Reference   `json:"equipment_category"`
-	WeaponCategory    string      `json:"weapon_category"`
-	WeaponRange       string      `json:"weapon_range"`
-	CategoryRange     string      `json:"category_range"`
 	Cost              Cost        `json:"cost"`
-	Damage            Damage      `json:"damage"`
-	Range             WeaponRange `json:"range"`
 	Weight            int         `json:"weight"`
-	Properties        []Reference `json:"properties"`
 	URL               string      `json:"url"`
+	Properties        []Reference `json:"properties"`
+	Contents          []Reference `json:"contents"`
 }
 
+// Basic items like abacus, amulet, alchemist fire
+type Item struct {
+	BaseEquipment
+	GearCategory    *Reference `json:"gear_category,omitempty"`
+	VehicleCategory string     `json:"vehicle_category,omitempty"`
+}
+
+// Armor such as padded, leather, etc
+type Armor struct {
+	BaseEquipment
+	ArmorCategory       string     `json:"armor_category"`
+	ArmorClass          ArmorClass `json:"armor_class"`
+	StrMinimum          int        `json:"str_minimum"`
+	StealthDisadvantage bool       `json:"stealth_disadvantage"`
+}
+
+type ArmorClass struct {
+	Base     int  `json:"base"`
+	DexBonus bool `json:"dex_bonus"`
+}
+
+// Weapons such as longbow or rapier
+type Weapon struct {
+	BaseEquipment
+	WeaponCategory  string      `json:"weapon_category"`
+	WeaponRange     string      `json:"weapon_range"`
+	CategoryRange   string      `json:"category_range"`
+	Damage          Damage      `json:"damage"`
+	Range           WeaponRange `json:"range"`
+	TwoHandedDamage *Damage     `json:"two_handed_damage,omitempty"`
+}
+
+// Shared structs for various equipment types
 type Cost struct {
 	Quantity int    `json:"quantity"`
 	Unit     string `json:"unit"`
@@ -37,42 +67,56 @@ type WeaponRange struct {
 }
 
 type Inventory struct {
-	Weapons, Armor, Items []Equipment
+	Items   []Item
+	Armor   []Armor
+	Weapons []Weapon
 }
 
-func (e *Equipment) GetEndpoint() string {
+// Fetchable Methods
+func (inv *Inventory) GetEndpoint() string {
 	return "equipment/"
 }
 
-func (e *Equipment) Print() {
-	fmt.Printf("Equipment: %v", e.Name)
-}
-
-func (i *Inventory) GetEndpoint() string {
-	return "equipment/"
-}
-
-func (i *Inventory) Print() {
+func (inv *Inventory) Print() {
 	fmt.Printf("Inventory contains: %d armor, %d weapons, %d items\n",
-		len(i.Armor), len(i.Weapons), len(i.Items))
-}
-
-func (i *Inventory) PrintAll() {
-	// Equipment
-	fmt.Println("Equipment:")
+		len(inv.Armor), len(inv.Weapons), len(inv.Items))
 
 	fmt.Printf("    - Armor: \n")
-	for _, armor := range i.Armor {
-		fmt.Printf("	- %s", armor.Name)
+	for _, armor := range inv.Armor {
+		fmt.Printf("	- %s\n", armor.Name)
 	}
 
 	fmt.Printf("    - Weapons: \n")
-	for _, weapons := range i.Weapons {
-		fmt.Printf("	- %s", weapons.Name)
+	for _, weapons := range inv.Weapons {
+		fmt.Printf("	- %s\n", weapons.Name)
 	}
 
 	fmt.Printf("    - Items: \n")
-	for _, items := range i.Items {
-		fmt.Printf("	- %s", items.Name)
+	for _, items := range inv.Items {
+		fmt.Printf("	- %s\n", items.Name)
 	}
+}
+
+func (i *Item) GetEndpoint() string {
+	return "equipment/" + i.Index
+}
+
+func (i *Item) Print() {
+	fmt.Printf("Item: %s\n", i.Name)
+}
+
+func (a *Armor) GetEndpoint() string {
+	return "equipment/" + a.Index
+}
+
+func (a *Armor) Print() {
+	fmt.Printf("Armor: %s\n", a.Name)
+}
+
+func (w *Weapon) GetEndpoint() string {
+	return "equipment/" + w.Index
+}
+
+func (w *Weapon) Print() {
+	fmt.Printf("Weapon: %s\n", w.Name)
 }
