@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/kwford18/MKDIRagons/internal/character"
 )
@@ -15,7 +16,7 @@ func SaveJSON(character *character.Character) error {
 		return err
 	}
 
-	fileName := character.Name + ".json"
+	fileName := strings.ToLower(character.Name) + ".json"
 
 	// Build file path inside ./characters
 	filePath := filepath.Join(dir, fileName)

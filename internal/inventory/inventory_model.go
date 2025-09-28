@@ -2,6 +2,7 @@ package inventory
 
 import (
 	"fmt"
+
 	"github.com/kwford18/MKDIRagons/internal/reference"
 )
 
@@ -83,7 +84,7 @@ func (inv *Inventory) Print() {
 	fmt.Printf("Inventory contains: %d armor, %d weapons, %d items\n",
 		len(inv.Armor), len(inv.Weapons), len(inv.Items))
 
-	fmt.Printf("    - Armor: \n")
+	fmt.Printf("    - Armor (1st equipped): \n")
 	for _, armor := range inv.Armor {
 		fmt.Printf("	- %s\n", armor.Name)
 	}

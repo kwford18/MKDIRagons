@@ -41,12 +41,12 @@ func GenerateEmptyTOML() error {
 	}
 
 	// Create template directory if it doesn't exist already
-	if err := os.MkdirAll("templates", 0755); err != nil {
+	if err := os.MkdirAll("toml-characters", 0755); err != nil {
 		return fmt.Errorf("error creating directory: %w", err)
 	}
 
 	// Create file if it doesn't exit (or truncate if it does)
-	file, err := os.Create("templates/template.toml")
+	file, err := os.Create("toml-characters/template.toml")
 	if err != nil {
 		return fmt.Errorf("error creating template file: %w", err)
 	}

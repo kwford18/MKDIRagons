@@ -2,6 +2,7 @@ package character
 
 import (
 	"fmt"
+
 	"github.com/kwford18/MKDIRagons/internal/abilities"
 	"github.com/kwford18/MKDIRagons/internal/class"
 	"github.com/kwford18/MKDIRagons/internal/core"
@@ -72,6 +73,8 @@ func (c *Character) Print() {
 	// Equipment
 	c.Inventory.Print()
 
+	fmt.Println()
+
 	// Spells
 	fmt.Println("Spells:")
 	for i, level := range c.Spells {
@@ -84,6 +87,8 @@ func (c *Character) Print() {
 		}
 	}
 
+	fmt.Println()
+
 	// Ability Scores
 	c.AbilityScores.Print()
 
@@ -93,7 +98,8 @@ func (c *Character) Print() {
 		fmt.Printf("	- %s\n", prof)
 	}
 
-	// Skills
 	fmt.Println()
+
+	// Skills
 	c.Skills.Print()
 }

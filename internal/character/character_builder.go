@@ -12,7 +12,7 @@ import (
 	"github.com/kwford18/MKDIRagons/templates"
 )
 
-func BuildCharacter(base *templates.TemplateCharacter) (*Character, error) {
+func BuildCharacter(base *templates.TemplateCharacter, rollHP bool) (*Character, error) {
 	var playerRace race.Race
 	var playerClass class.Class
 	var playerInventory inventory.Inventory
@@ -42,7 +42,10 @@ func BuildCharacter(base *templates.TemplateCharacter) (*Character, error) {
 	if len(playerInventory.Armor) > 0 {
 		firstArmor = &playerInventory.Armor[0]
 	}
-	combatStats := stats.BuildStats(base.Level, abilityScores, playerClass, firstArmor)
+	combatStats, err := stats.BuildStats(base.Level, abilityScores, playerClass, rollHP, firstArmor)
+	if err != nil {
+		return nil, err
+	}
 
 	return &Character{
 		Name:          base.Name,

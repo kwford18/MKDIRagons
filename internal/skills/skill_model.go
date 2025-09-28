@@ -2,6 +2,7 @@ package skills
 
 import (
 	"fmt"
+
 	"github.com/kwford18/MKDIRagons/internal/core"
 )
 
@@ -75,6 +76,7 @@ func (sl *SkillList) Print() {
 	}
 
 	for _, skill := range skills {
-		fmt.Printf("Skill: %s, Bonus: %d\n", skill.Name, skill.Bonus)
+		// %-20s means left-align the string in a field 20 characters wide
+		fmt.Printf("%-20s %d\n", skill.Name+":", skill.Bonus)
 	}
 }

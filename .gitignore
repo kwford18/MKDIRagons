@@ -35,10 +35,7 @@ go.work.sum
 characters/
 
 # TOML character files
-templates/toml-characters/
-
-# TOML template file
-templates/template.toml
+toml-characters/
 
 # backups
 backup/
