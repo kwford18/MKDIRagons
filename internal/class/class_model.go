@@ -95,6 +95,11 @@ type SpellcastingInfo struct {
 	Desc []string `json:"desc"`
 }
 
+// PrintFeatures TODO:  prints the class features
+func (c *Class) PrintFeatures() {
+
+}
+
 func (c *Class) GetEndpoint() string {
 	return "classes/"
 }

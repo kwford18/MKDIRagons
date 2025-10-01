@@ -37,7 +37,6 @@ func (ab *AbilityScore) Modifier(a core.Ability) int {
 
 // Print for Fetchable interface methods
 func (ab *AbilityScore) Print() {
-	fmt.Println("Ability Scores:")
 	fmt.Printf("    - Strength:     %d\n", ab.Strength)
 	fmt.Printf("    - Dexterity:    %d\n", ab.Dexterity)
 	fmt.Printf("    - Constitution: %d\n", ab.Constitution)

@@ -33,8 +33,9 @@ func BuildCharacter(base *templates.TemplateCharacter, rollHP bool) (*Character,
 		return nil, err
 	}
 
-	// Build ability scores & skills
+	// Build ability scores, saves, & skills
 	abilityScores := abilities.BuildAbilityScores(base, playerRace)
+	savingThrows := abilities.BuildSavingThrows(base, abilityScores, &playerClass)
 	skillList := skills.BuildSkillList(base)
 
 	// Build Combat Stats
@@ -54,6 +55,7 @@ func BuildCharacter(base *templates.TemplateCharacter, rollHP bool) (*Character,
 		Class:         playerClass,
 		Stats:         combatStats,
 		AbilityScores: abilityScores,
+		SavingThrows:  savingThrows,
 		Skills:        skillList,
 		Proficiencies: base.Proficiencies,
 		Inventory:     playerInventory,

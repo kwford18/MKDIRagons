@@ -22,6 +22,7 @@ type Character struct {
 	Proficiencies []string               `json:"proficiencies"`
 	AbilityScores abilities.AbilityScore `json:"ability_scores"`
 	Skills        skills.SkillList       `json:"skills"`
+	SavingThrows  abilities.AbilityScore `json:"saving_throws"`
 	Inventory     inventory.Inventory    `json:"inventory"`
 	Spells        [][]spells.Spell       `json:"spells"`
 }
@@ -90,7 +91,12 @@ func (c *Character) Print() {
 	fmt.Println()
 
 	// Ability Scores
+	fmt.Println("Ability Scores:")
 	c.AbilityScores.Print()
+
+	// Saving throws
+	fmt.Println("Saving Throws:")
+	c.SavingThrows.Print()
 
 	// Proficiencies
 	fmt.Println("Proficiencies:")
