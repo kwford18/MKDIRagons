@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kwford18/MKDIRagons/internal/reference"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -24,7 +25,24 @@ func FetchJSON(property reference.Fetchable, input string) error {
 		fmt.Printf("Error: %+v\n", err)
 		return err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
+		}
+	}(resp.Body)
+
+	// Check for 404 or other non-200 responses
+	if resp.StatusCode == http.StatusNotFound {
+		return fmt.Errorf("resource not found (404): %s", formattedURL)
+	}
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("unexpected HTTP status: %s", resp.Status)
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(property); err != nil {
+		return fmt.Errorf("failed to decode JSON: %w", err)
+	}
 
 	if err := json.NewDecoder(resp.Body).Decode(property); err != nil {
 		fmt.Printf("Error: %+v\n", err)
