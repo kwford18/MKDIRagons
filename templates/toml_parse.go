@@ -17,7 +17,7 @@ func validateScore(name string, score int) error {
 }
 
 // Validate all ability scores
-func (a TemplateAbilityScores) Validate() error {
+func (a *TemplateAbilityScores) Validate() error {
 	if err := validateScore("Strength", a.Strength); err != nil {
 		return err
 	}
@@ -59,11 +59,7 @@ func verifyTOML(t TemplateCharacter) error {
 		"tiefling",
 	}
 	baseRace := strings.ToLower(t.Race)
-	found := false
-	if slices.Contains(valid5eRace, baseRace) {
-		found = true
-	}
-	if !found {
+	if !slices.Contains(valid5eRace, baseRace) {
 		return fmt.Errorf("no valid 5e 2014 race provided")
 	}
 
@@ -83,10 +79,7 @@ func verifyTOML(t TemplateCharacter) error {
 		"wizard",
 	}
 	baseClass := strings.ToLower(t.Class)
-	if slices.Contains(validClass, baseClass) {
-		found = true
-	}
-	if !found {
+	if !slices.Contains(validClass, baseClass) {
 		return fmt.Errorf("no valid 5e 2014 class provided")
 	}
 
@@ -98,7 +91,7 @@ func verifyTOML(t TemplateCharacter) error {
 	return nil
 }
 
-// Parses the provided TOML file into the Template struct
+// TomlParse parses the provided TOML file into the Template struct
 func TomlParse(fileName string) (TemplateCharacter, error) {
 	var t TemplateCharacter
 	_, err := toml.DecodeFile(fileName, &t)
