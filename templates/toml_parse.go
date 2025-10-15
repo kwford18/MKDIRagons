@@ -17,23 +17,23 @@ func validateScore(name string, score int) error {
 }
 
 // Validate all ability scores
-func (a *TemplateAbilityScores) Validate() error {
-	if err := validateScore("Strength", a.Strength); err != nil {
+func (ta *TemplateAbilityScores) Validate() error {
+	if err := validateScore("Strength", ta.Strength); err != nil {
 		return err
 	}
-	if err := validateScore("Dexterity", a.Dexterity); err != nil {
+	if err := validateScore("Dexterity", ta.Dexterity); err != nil {
 		return err
 	}
-	if err := validateScore("Constitution", a.Constitution); err != nil {
+	if err := validateScore("Constitution", ta.Constitution); err != nil {
 		return err
 	}
-	if err := validateScore("Intelligence", a.Intelligence); err != nil {
+	if err := validateScore("Intelligence", ta.Intelligence); err != nil {
 		return err
 	}
-	if err := validateScore("Wisdom", a.Wisdom); err != nil {
+	if err := validateScore("Wisdom", ta.Wisdom); err != nil {
 		return err
 	}
-	if err := validateScore("Charisma", a.Charisma); err != nil {
+	if err := validateScore("Charisma", ta.Charisma); err != nil {
 		return err
 	}
 	return nil
