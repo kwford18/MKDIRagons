@@ -59,11 +59,7 @@ func verifyTOML(t TemplateCharacter) error {
 		"tiefling",
 	}
 	baseRace := strings.ToLower(t.Race)
-	found := false
 	if slices.Contains(valid5eRace, baseRace) {
-		found = true
-	}
-	if !found {
 		return fmt.Errorf("no valid 5e 2014 race provided")
 	}
 
@@ -84,9 +80,6 @@ func verifyTOML(t TemplateCharacter) error {
 	}
 	baseClass := strings.ToLower(t.Class)
 	if slices.Contains(validClass, baseClass) {
-		found = true
-	}
-	if !found {
 		return fmt.Errorf("no valid 5e 2014 class provided")
 	}
 
