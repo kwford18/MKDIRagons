@@ -88,7 +88,7 @@ func (t *TemplateCharacter) GetSkillAbility(name string) core.Ability {
 }
 
 // Modifier takes an ability and returns the modifier
-func (ab *TemplateAbilityScores) Modifier(a core.Ability) int {
+func (ab TemplateAbilityScores) Modifier(a core.Ability) int {
 	var score int
 	switch a {
 	case core.Strength:

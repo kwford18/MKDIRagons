@@ -30,13 +30,13 @@ func BuildStats(level int, abilityScores abilities.AbilityScore, class class.Cla
 	var HP int
 
 	// Ability score bonuses to avoid repeat calls
-	con_bonus := abilityScores.Modifier(core.Constitution)
-	dex_bonus := abilityScores.Modifier(core.Dexterity)
+	conBonus := abilityScores.Modifier(core.Constitution)
+	dexBonus := abilityScores.Modifier(core.Dexterity)
 
 	if rollHP {
 		// Build HP based on level
 		for i := 1; i <= level; i++ {
-			HP += rand.IntN(class.HitDie) + 1 + con_bonus
+			HP += rand.IntN(class.HitDie) + 1 + conBonus
 			// fmt.Printf("HP at %d Level: %d\n", i, HP)
 		}
 	} else {
@@ -45,7 +45,7 @@ func BuildStats(level int, abilityScores abilities.AbilityScore, class class.Cla
 			return Stats{}, err
 		}
 		for i := 1; i <= level; i++ {
-			HP += avgHP + con_bonus
+			HP += avgHP + conBonus
 		}
 	}
 
@@ -58,17 +58,17 @@ func BuildStats(level int, abilityScores abilities.AbilityScore, class class.Cla
 		// Armor equipped
 		AC = armor.ArmorClass.Base
 		if armor.ArmorClass.DexBonus {
-			AC += dex_bonus
+			AC += dexBonus
 		}
 	} else if class.Name == "Barbarian" {
 		// Unarmored Defense for Barbarian
-		AC = 10 + dex_bonus + con_bonus
+		AC = 10 + dexBonus + conBonus
 	} else if class.Name == "Monk" {
 		// Unarmored Defense for Monk
-		AC = 10 + dex_bonus + abilityScores.Modifier(core.Wisdom) // Only time calculating wisdom mod, no need to pre-compute
+		AC = 10 + dexBonus + abilityScores.Modifier(core.Wisdom) // Only time calculating wisdom mod, no need to pre-compute
 	} else {
 		// Default AC
-		AC = 10 + dex_bonus
+		AC = 10 + dexBonus
 	}
 	return Stats{
 		HP:     HP,

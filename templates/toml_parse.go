@@ -17,23 +17,23 @@ func validateScore(name string, score int) error {
 }
 
 // Validate all ability scores
-func (a TemplateAbilityScores) Validate() error {
-	if err := validateScore("Strength", a.Strength); err != nil {
+func (ab TemplateAbilityScores) Validate() error {
+	if err := validateScore("Strength", ab.Strength); err != nil {
 		return err
 	}
-	if err := validateScore("Dexterity", a.Dexterity); err != nil {
+	if err := validateScore("Dexterity", ab.Dexterity); err != nil {
 		return err
 	}
-	if err := validateScore("Constitution", a.Constitution); err != nil {
+	if err := validateScore("Constitution", ab.Constitution); err != nil {
 		return err
 	}
-	if err := validateScore("Intelligence", a.Intelligence); err != nil {
+	if err := validateScore("Intelligence", ab.Intelligence); err != nil {
 		return err
 	}
-	if err := validateScore("Wisdom", a.Wisdom); err != nil {
+	if err := validateScore("Wisdom", ab.Wisdom); err != nil {
 		return err
 	}
-	if err := validateScore("Charisma", a.Charisma); err != nil {
+	if err := validateScore("Charisma", ab.Charisma); err != nil {
 		return err
 	}
 	return nil
@@ -98,7 +98,7 @@ func verifyTOML(t TemplateCharacter) error {
 	return nil
 }
 
-// Parses the provided TOML file into the Template struct
+// TomlParse Parses the provided TOML file into the Template struct
 func TomlParse(fileName string) (TemplateCharacter, error) {
 	var t TemplateCharacter
 	_, err := toml.DecodeFile(fileName, &t)
