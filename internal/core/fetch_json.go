@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/kwford18/MKDIRagons/internal/reference"
+	"io"
 	"net/http"
 	"strings"
 )
@@ -25,6 +26,13 @@ func FetchJSON(property reference.Fetchable, input string) error {
 		return err
 	}
 	defer resp.Body.Close()
+
+	// Handle non-200 responses
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("FetchJSON: request to %s returned status %d (%s): %s",
+			formattedURL, resp.StatusCode, resp.Status, string(body))
+	}
 
 	if err := json.NewDecoder(resp.Body).Decode(property); err != nil {
 		fmt.Printf("Error: %+v\n", err)
