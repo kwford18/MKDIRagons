@@ -3,27 +3,34 @@ package core
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/kwford18/MKDIRagons/internal/reference"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/kwford18/MKDIRagons/internal/reference"
 )
 
-func FetchJSON(property reference.Fetchable, input string) error {
-	baseURL := "https://www.dnd5eapi.co/api/2014/"
+const defaultBaseURL = "https://www.dnd5eapi.co/api/2014/"
 
-	// Format
+// FetchJSON fetches and unmarshals JSON from the D&D API using default settings.
+// This is the main function that production code should use.
+func FetchJSON(property reference.Fetchable, input string) error {
+	return FetchJSONWithClient(http.DefaultClient, defaultBaseURL, property, input)
+}
+
+// fetchJSONWithClient is an internal function that allows dependency injection
+// for testing purposes. It accepts a custom HTTP client and base URL.
+func FetchJSONWithClient(client *http.Client, baseURL string, property reference.Fetchable, input string) error {
+	// Format the input
 	endpoint := baseURL + property.GetEndpoint()
 	noSpaces := strings.ReplaceAll(input, " ", "-")
 	lowercase := strings.ToLower(noSpaces)
 	formattedURL := endpoint + strings.ReplaceAll(lowercase, "'", "")
 
-	// fmt.Printf("Formatted URL: %s\n", formatted_url)
-
-	resp, err := http.Get(formattedURL)
+	// Make the HTTP request
+	resp, err := client.Get(formattedURL)
 	if err != nil {
-		fmt.Printf("Error: %+v\n", err)
-		return err
+		return fmt.Errorf("FetchJSON: failed to make request to %s: %w", formattedURL, err)
 	}
 	defer resp.Body.Close()
 
@@ -34,12 +41,10 @@ func FetchJSON(property reference.Fetchable, input string) error {
 			formattedURL, resp.StatusCode, resp.Status, string(body))
 	}
 
+	// Decode JSON response
 	if err := json.NewDecoder(resp.Body).Decode(property); err != nil {
-		fmt.Printf("Error: %+v\n", err)
-		return err
+		return fmt.Errorf("FetchJSON: failed to decode JSON from %s: %w", formattedURL, err)
 	}
-
-	// fmt.Printf("Fetched: %v\n", property)
 
 	return nil
 }
