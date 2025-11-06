@@ -39,3 +39,9 @@ toml-characters/
 
 # backups
 backup/
+
+# Executable files
+*.exe
+
+# Named binary
+*MKDIRagons*
