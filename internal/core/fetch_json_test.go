@@ -74,16 +74,16 @@ func TestFetchJSON_Class_Success(t *testing.T) {
 	server := CreateMockServer(t, http.StatusOK, mockResponse)
 	defer server.Close()
 
-	class := &class.Class{}
-	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", class, "wizard")
+	testClass := &class.Class{}
+	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", testClass, "wizard")
 
 	require.NoError(t, err)
-	assert.Equal(t, "wizard", class.Index)
-	assert.Equal(t, "Wizard", class.Name)
-	assert.Equal(t, 6, class.HitDie)
-	assert.Len(t, class.SavingThrows, 2)
-	assert.Equal(t, 1, class.Spellcasting.Level)
-	assert.Equal(t, "int", class.Spellcasting.SpellcastingAbility.Index)
+	assert.Equal(t, "wizard", testClass.Index)
+	assert.Equal(t, "Wizard", testClass.Name)
+	assert.Equal(t, 6, testClass.HitDie)
+	assert.Len(t, testClass.SavingThrows, 2)
+	assert.Equal(t, 1, testClass.Spellcasting.Level)
+	assert.Equal(t, "int", testClass.Spellcasting.SpellcastingAbility.Index)
 }
 
 func TestFetchJSON_Race_Success(t *testing.T) {
@@ -112,16 +112,16 @@ func TestFetchJSON_Race_Success(t *testing.T) {
 	server := CreateMockServer(t, http.StatusOK, mockResponse)
 	defer server.Close()
 
-	race := &race.Race{}
-	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", race, "elf")
+	testRace := &race.Race{}
+	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", testRace, "elf")
 
 	require.NoError(t, err)
-	assert.Equal(t, "elf", race.Index)
-	assert.Equal(t, "Elf", race.Name)
-	assert.Equal(t, 30, race.Speed)
-	assert.Equal(t, "Medium", race.Size)
-	assert.Len(t, race.AbilityBonuses, 1)
-	assert.Equal(t, 2, race.AbilityBonuses[0].Bonus)
+	assert.Equal(t, "elf", testRace.Index)
+	assert.Equal(t, "Elf", testRace.Name)
+	assert.Equal(t, 30, testRace.Speed)
+	assert.Equal(t, "Medium", testRace.Size)
+	assert.Len(t, testRace.AbilityBonuses, 1)
+	assert.Equal(t, 2, testRace.AbilityBonuses[0].Bonus)
 }
 
 func TestFetchJSON_Spell_Success(t *testing.T) {
@@ -312,10 +312,13 @@ func TestFetchJSON_InputFormatting(t *testing.T) {
 			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				requestedPath = r.URL.Path
 				w.WriteHeader(http.StatusOK)
-				json.NewEncoder(w).Encode(map[string]string{
+				err := json.NewEncoder(w).Encode(map[string]string{
 					"index": "test",
 					"name":  "Test",
 				})
+				if err != nil {
+					return
+				}
 			}))
 			defer server.Close()
 
@@ -333,8 +336,8 @@ func TestFetchJSON_NotFound(t *testing.T) {
 	})
 	defer server.Close()
 
-	class := &class.Class{}
-	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", class, "nonexistent")
+	testClass := &class.Class{}
+	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", testClass, "nonexistent")
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "status 404")
@@ -356,12 +359,15 @@ func TestFetchJSON_ServerError(t *testing.T) {
 func TestFetchJSON_InvalidJSON(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("invalid json{{{"))
+		_, err := w.Write([]byte("invalid json{{{"))
+		if err != nil {
+			return
+		}
 	}))
 	defer server.Close()
 
-	race := &race.Race{}
-	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", race, "elf")
+	testRace := &race.Race{}
+	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", testRace, "elf")
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to decode JSON")
@@ -369,8 +375,8 @@ func TestFetchJSON_InvalidJSON(t *testing.T) {
 
 func TestFetchJSON_NetworkError(t *testing.T) {
 	// Use an invalid URL to simulate network error
-	class := &class.Class{}
-	err := core.FetchJSONWithClient(http.DefaultClient, "http://invalid-url-that-does-not-exist.local/", class, "wizard")
+	testClass := &class.Class{}
+	err := core.FetchJSONWithClient(http.DefaultClient, "http://invalid-url-that-does-not-exist.local/", testClass, "wizard")
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to make request")
@@ -379,7 +385,10 @@ func TestFetchJSON_NetworkError(t *testing.T) {
 func TestFetchJSON_EmptyResponse(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("{}"))
+		_, err := w.Write([]byte("{}"))
+		if err != nil {
+			return
+		}
 	}))
 	defer server.Close()
 
@@ -410,9 +419,9 @@ func TestFetchJSON_AllTypes_TableDriven(t *testing.T) {
 				"hit_die": 6,
 			},
 			validate: func(t *testing.T, f reference.Fetchable) {
-				class := f.(*class.Class)
-				assert.Equal(t, "wizard", class.Index)
-				assert.Equal(t, 6, class.HitDie)
+				testClass := f.(*class.Class)
+				assert.Equal(t, "wizard", testClass.Index)
+				assert.Equal(t, 6, testClass.HitDie)
 			},
 		},
 		{
@@ -426,9 +435,9 @@ func TestFetchJSON_AllTypes_TableDriven(t *testing.T) {
 				"size":  "Medium",
 			},
 			validate: func(t *testing.T, f reference.Fetchable) {
-				race := f.(*race.Race)
-				assert.Equal(t, "elf", race.Index)
-				assert.Equal(t, 30, race.Speed)
+				testRace := f.(*race.Race)
+				assert.Equal(t, "elf", testRace.Index)
+				assert.Equal(t, 30, testRace.Speed)
 			},
 		},
 		{
