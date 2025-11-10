@@ -21,62 +21,62 @@ func TestFetchJSON_RealJSON_Wizard(t *testing.T) {
 	server := CreateMockServer(t, http.StatusOK, mockResponse)
 	defer server.Close()
 
-	class := &class.Class{}
-	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", class, "wizard")
+	testClass := &class.Class{}
+	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", testClass, "wizard")
 	require.NoError(t, err)
 
 	// Basic fields
-	assert.Equal(t, "wizard", class.Index)
-	assert.Equal(t, "Wizard", class.Name)
-	assert.Equal(t, 6, class.HitDie)
-	assert.Equal(t, "/api/2014/classes/wizard", class.URL)
+	assert.Equal(t, "wizard", testClass.Index)
+	assert.Equal(t, "Wizard", testClass.Name)
+	assert.Equal(t, 6, testClass.HitDie)
+	assert.Equal(t, "/api/2014/classes/wizard", testClass.URL)
 
 	// Proficiency choices (complex nested structure)
-	require.Len(t, class.ProficiencyChoices, 1)
+	require.Len(t, testClass.ProficiencyChoices, 1)
 	assert.Equal(t, "Choose two from Arcana, History, Insight, Investigation, Medicine, and Religion",
-		class.ProficiencyChoices[0].Desc)
-	assert.Equal(t, 2, class.ProficiencyChoices[0].Choose)
-	assert.Equal(t, "proficiencies", class.ProficiencyChoices[0].Type)
-	assert.Equal(t, "options_array", class.ProficiencyChoices[0].From.OptionSetType)
-	assert.Len(t, class.ProficiencyChoices[0].From.Options, 6)
+		testClass.ProficiencyChoices[0].Desc)
+	assert.Equal(t, 2, testClass.ProficiencyChoices[0].Choose)
+	assert.Equal(t, "proficiencies", testClass.ProficiencyChoices[0].Type)
+	assert.Equal(t, "options_array", testClass.ProficiencyChoices[0].From.OptionSetType)
+	assert.Len(t, testClass.ProficiencyChoices[0].From.Options, 6)
 
 	// Proficiencies
-	assert.Len(t, class.Proficiencies, 7)
-	assert.Equal(t, "daggers", class.Proficiencies[0].Index)
-	assert.Equal(t, "saving-throw-int", class.Proficiencies[5].Index)
+	assert.Len(t, testClass.Proficiencies, 7)
+	assert.Equal(t, "daggers", testClass.Proficiencies[0].Index)
+	assert.Equal(t, "saving-throw-int", testClass.Proficiencies[5].Index)
 
 	// Saving throws
-	require.Len(t, class.SavingThrows, 2)
-	assert.Equal(t, "int", class.SavingThrows[0].Index)
-	assert.Equal(t, "wis", class.SavingThrows[1].Index)
+	require.Len(t, testClass.SavingThrows, 2)
+	assert.Equal(t, "int", testClass.SavingThrows[0].Index)
+	assert.Equal(t, "wis", testClass.SavingThrows[1].Index)
 
 	// Starting equipment
-	require.Len(t, class.StartingEquipment, 1)
-	assert.Equal(t, "spellbook", class.StartingEquipment[0].Equipment.Index)
-	assert.Equal(t, 1, class.StartingEquipment[0].Quantity)
+	require.Len(t, testClass.StartingEquipment, 1)
+	assert.Equal(t, "spellbook", testClass.StartingEquipment[0].Equipment.Index)
+	assert.Equal(t, 1, testClass.StartingEquipment[0].Quantity)
 
 	// Starting equipment options (very complex nested structure)
-	require.Len(t, class.StartingEquipmentOptions, 3)
-	firstOption := class.StartingEquipmentOptions[0]
+	require.Len(t, testClass.StartingEquipmentOptions, 3)
+	firstOption := testClass.StartingEquipmentOptions[0]
 	assert.Equal(t, "(a) a quarterstaff or (b) a dagger", firstOption.Desc)
 	assert.Equal(t, 1, firstOption.Choose)
 	assert.Len(t, firstOption.From.Options, 2)
 
 	// Spellcasting
-	assert.Equal(t, 1, class.Spellcasting.Level)
-	assert.Equal(t, "int", class.Spellcasting.SpellcastingAbility.Index)
-	require.Len(t, class.Spellcasting.Info, 6)
-	assert.Equal(t, "Cantrips", class.Spellcasting.Info[0].Name)
-	assert.Contains(t, class.Spellcasting.Info[0].Desc[0], "three cantrips")
+	assert.Equal(t, 1, testClass.Spellcasting.Level)
+	assert.Equal(t, "int", testClass.Spellcasting.SpellcastingAbility.Index)
+	require.Len(t, testClass.Spellcasting.Info, 6)
+	assert.Equal(t, "Cantrips", testClass.Spellcasting.Info[0].Name)
+	assert.Contains(t, testClass.Spellcasting.Info[0].Desc[0], "three cantrips")
 
 	// Multiclassing
-	require.Len(t, class.MultiClassing.Prerequisites, 1)
-	assert.Equal(t, "int", class.MultiClassing.Prerequisites[0].AbilityScore.Index)
-	assert.Equal(t, 13, class.MultiClassing.Prerequisites[0].MinimumScore)
+	require.Len(t, testClass.MultiClassing.Prerequisites, 1)
+	assert.Equal(t, "int", testClass.MultiClassing.Prerequisites[0].AbilityScore.Index)
+	assert.Equal(t, 13, testClass.MultiClassing.Prerequisites[0].MinimumScore)
 
 	// Subclasses
-	require.Len(t, class.Subclasses, 1)
-	assert.Equal(t, "evocation", class.Subclasses[0].Index)
+	require.Len(t, testClass.Subclasses, 1)
+	assert.Equal(t, "evocation", testClass.Subclasses[0].Index)
 }
 
 func TestFetchJSON_RealJSON_Dwarf(t *testing.T) {
@@ -85,43 +85,43 @@ func TestFetchJSON_RealJSON_Dwarf(t *testing.T) {
 	server := CreateMockServer(t, http.StatusOK, mockResponse)
 	defer server.Close()
 
-	race := &race.Race{}
-	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", race, "dwarf")
+	testRace := &race.Race{}
+	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", testRace, "dwarf")
 	require.NoError(t, err)
 
 	// Basic fields
-	assert.Equal(t, "dwarf", race.Index)
-	assert.Equal(t, "Dwarf", race.Name)
-	assert.Equal(t, 25, race.Speed)
-	assert.Equal(t, "Medium", race.Size)
-	assert.Equal(t, "/api/2014/races/dwarf", race.URL)
+	assert.Equal(t, "dwarf", testRace.Index)
+	assert.Equal(t, "Dwarf", testRace.Name)
+	assert.Equal(t, 25, testRace.Speed)
+	assert.Equal(t, "Medium", testRace.Size)
+	assert.Equal(t, "/api/2014/races/dwarf", testRace.URL)
 
 	// Ability bonuses
-	require.Len(t, race.AbilityBonuses, 1)
-	assert.Equal(t, "con", race.AbilityBonuses[0].AbilityScore.Index)
-	assert.Equal(t, "CON", race.AbilityBonuses[0].AbilityScore.Name)
-	assert.Equal(t, 2, race.AbilityBonuses[0].Bonus)
+	require.Len(t, testRace.AbilityBonuses, 1)
+	assert.Equal(t, "con", testRace.AbilityBonuses[0].AbilityScore.Index)
+	assert.Equal(t, "CON", testRace.AbilityBonuses[0].AbilityScore.Name)
+	assert.Equal(t, 2, testRace.AbilityBonuses[0].Bonus)
 
 	// Text descriptions
-	assert.Contains(t, race.Alignment, "Most dwarves are lawful")
-	assert.Contains(t, race.Age, "350 years")
-	assert.Contains(t, race.SizeDescription, "4 and 5 feet tall")
-	assert.Contains(t, race.LanguageDesc, "Common and Dwarvish")
+	assert.Contains(t, testRace.Alignment, "Most dwarves are lawful")
+	assert.Contains(t, testRace.Age, "350 years")
+	assert.Contains(t, testRace.SizeDescription, "4 and 5 feet tall")
+	assert.Contains(t, testRace.LanguageDesc, "Common and Dwarvish")
 
 	// Languages
-	require.Len(t, race.Languages, 2)
-	assert.Equal(t, "common", race.Languages[0].Index)
-	assert.Equal(t, "dwarvish", race.Languages[1].Index)
+	require.Len(t, testRace.Languages, 2)
+	assert.Equal(t, "common", testRace.Languages[0].Index)
+	assert.Equal(t, "dwarvish", testRace.Languages[1].Index)
 
 	// Traits
-	require.Len(t, race.Traits, 5)
-	assert.Equal(t, "darkvision", race.Traits[0].Index)
-	assert.Equal(t, "dwarven-resilience", race.Traits[1].Index)
-	assert.Equal(t, "stonecunning", race.Traits[2].Index)
+	require.Len(t, testRace.Traits, 5)
+	assert.Equal(t, "darkvision", testRace.Traits[0].Index)
+	assert.Equal(t, "dwarven-resilience", testRace.Traits[1].Index)
+	assert.Equal(t, "stonecunning", testRace.Traits[2].Index)
 
 	// Subraces
-	require.Len(t, race.Subraces, 1)
-	assert.Equal(t, "hill-dwarf", race.Subraces[0].Index)
+	require.Len(t, testRace.Subraces, 1)
+	assert.Equal(t, "hill-dwarf", testRace.Subraces[0].Index)
 }
 
 func TestFetchJSON_RealJSON_Fireball(t *testing.T) {
@@ -236,11 +236,11 @@ func TestFetchJSON_AllRealJSON(t *testing.T) {
 			fetchable: &class.Class{},
 			input:     "wizard",
 			validateFunc: func(t *testing.T, f reference.Fetchable) {
-				class := f.(*class.Class)
-				assert.Equal(t, "wizard", class.Index)
-				assert.Equal(t, 6, class.HitDie)
-				assert.Len(t, class.ProficiencyChoices, 1)
-				assert.Len(t, class.Spellcasting.Info, 6)
+				testClass := f.(*class.Class)
+				assert.Equal(t, "wizard", testClass.Index)
+				assert.Equal(t, 6, testClass.HitDie)
+				assert.Len(t, testClass.ProficiencyChoices, 1)
+				assert.Len(t, testClass.Spellcasting.Info, 6)
 			},
 		},
 		{
@@ -249,11 +249,11 @@ func TestFetchJSON_AllRealJSON(t *testing.T) {
 			fetchable: &race.Race{},
 			input:     "dwarf",
 			validateFunc: func(t *testing.T, f reference.Fetchable) {
-				race := f.(*race.Race)
-				assert.Equal(t, "dwarf", race.Index)
-				assert.Equal(t, 25, race.Speed)
-				assert.Len(t, race.Traits, 5)
-				assert.Len(t, race.Languages, 2)
+				testRace := f.(*race.Race)
+				assert.Equal(t, "dwarf", testRace.Index)
+				assert.Equal(t, 25, testRace.Speed)
+				assert.Len(t, testRace.Traits, 5)
+				assert.Len(t, testRace.Languages, 2)
 			},
 		},
 		{
@@ -302,23 +302,23 @@ func TestFetchJSON_AllRealJSON(t *testing.T) {
 // This tests that your structs can properly unmarshal the real API JSON
 func TestUnmarshal_RealJSON_Direct(t *testing.T) {
 	t.Run("Wizard", func(t *testing.T) {
-		class := &class.Class{}
-		core.LoadFixtureInto(t, "wizard.json", class)
+		testClass := &class.Class{}
+		core.LoadFixtureInto(t, "wizard.json", testClass)
 
-		assert.Equal(t, "wizard", class.Index)
-		assert.Equal(t, 6, class.HitDie)
-		assert.NotEmpty(t, class.ProficiencyChoices)
-		assert.Len(t, class.Spellcasting.Info, 6)
+		assert.Equal(t, "wizard", testClass.Index)
+		assert.Equal(t, 6, testClass.HitDie)
+		assert.NotEmpty(t, testClass.ProficiencyChoices)
+		assert.Len(t, testClass.Spellcasting.Info, 6)
 	})
 
 	t.Run("Dwarf", func(t *testing.T) {
-		race := &race.Race{}
-		core.LoadFixtureInto(t, "dwarf.json", race)
+		testRace := &race.Race{}
+		core.LoadFixtureInto(t, "dwarf.json", testRace)
 
-		assert.Equal(t, "dwarf", race.Index)
-		assert.Equal(t, 25, race.Speed)
-		assert.Len(t, race.Traits, 5)
-		assert.Len(t, race.Languages, 2)
+		assert.Equal(t, "dwarf", testRace.Index)
+		assert.Equal(t, 25, testRace.Speed)
+		assert.Len(t, testRace.Traits, 5)
+		assert.Len(t, testRace.Languages, 2)
 	})
 
 	t.Run("Fireball", func(t *testing.T) {
