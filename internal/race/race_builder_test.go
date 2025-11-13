@@ -10,7 +10,7 @@ import (
 	"github.com/kwford18/MKDIRagons/internal/core"
 	"github.com/kwford18/MKDIRagons/internal/race"
 	"github.com/kwford18/MKDIRagons/internal/reference"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
@@ -34,13 +34,13 @@ func (m *MockFetcher) FetchJSON(property reference.Fetchable, input string) erro
 type FetchRaceUnitTestSuite struct {
 	suite.Suite
 	mockFetcher *MockFetcher
-	base        *templates.TemplateCharacter
+	base        *template.Character
 	testRace    *race.Race
 }
 
 func (suite *FetchRaceUnitTestSuite) SetupTest() {
 	suite.mockFetcher = new(MockFetcher)
-	suite.base = &templates.TemplateCharacter{
+	suite.base = &template.Character{
 		Race: "elf",
 	}
 	suite.testRace = &race.Race{}
@@ -114,7 +114,7 @@ func (suite *FetchRaceUnitTestSuite) TestFetchRaceDifferentRaces() {
 	for _, tc := range testCases {
 		suite.Run(tc.raceName, func() {
 			mockFetcher := new(MockFetcher)
-			base := &templates.TemplateCharacter{Race: tc.raceName}
+			base := &template.Character{Race: tc.raceName}
 			testRace := &race.Race{}
 
 			mockFetcher.On("FetchJSON", testRace, tc.raceName).Return(nil).Run(func(args mock.Arguments) {
@@ -250,7 +250,7 @@ func (suite *FetchRaceIntegrationTestSuite) TearDownSuite() {
 }
 
 func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceElfSuccess() {
-	base := &templates.TemplateCharacter{Race: "elf"}
+	base := &template.Character{Race: "elf"}
 	testRace := &race.Race{}
 
 	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
@@ -270,7 +270,7 @@ func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceElfSuccess() {
 }
 
 func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceDwarfSuccess() {
-	base := &templates.TemplateCharacter{Race: "dwarf"}
+	base := &template.Character{Race: "dwarf"}
 	testRace := &race.Race{}
 
 	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
@@ -284,7 +284,7 @@ func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceDwarfSuccess() {
 }
 
 func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceWithComplexData() {
-	base := &templates.TemplateCharacter{Race: "half-elf"}
+	base := &template.Character{Race: "half-elf"}
 	testRace := &race.Race{}
 
 	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
@@ -298,7 +298,7 @@ func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceWithComplexData() {
 }
 
 func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceServerError() {
-	base := &templates.TemplateCharacter{Race: "error"}
+	base := &template.Character{Race: "error"}
 	testRace := &race.Race{}
 
 	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
@@ -308,7 +308,7 @@ func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceServerError() {
 }
 
 func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceInvalidJSON() {
-	base := &templates.TemplateCharacter{Race: "invalid-json"}
+	base := &template.Character{Race: "invalid-json"}
 	testRace := &race.Race{}
 
 	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
@@ -318,7 +318,7 @@ func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceInvalidJSON() {
 }
 
 func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceNotFound() {
-	base := &templates.TemplateCharacter{Race: "not-found"}
+	base := &template.Character{Race: "not-found"}
 	testRace := &race.Race{}
 
 	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
@@ -332,7 +332,7 @@ func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceMultipleSequential() {
 	races := []string{"elf", "dwarf", "half-elf"}
 
 	for _, raceName := range races {
-		base := &templates.TemplateCharacter{Race: raceName}
+		base := &template.Character{Race: raceName}
 		testRace := &race.Race{}
 
 		err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
@@ -353,7 +353,7 @@ func TestFetchRaceWithRealAPI(t *testing.T) {
 		t.Skip("Skipping integration test with real API in short mode")
 	}
 
-	base := &templates.TemplateCharacter{Race: "elf"}
+	base := &template.Character{Race: "elf"}
 	testRace := &race.Race{}
 
 	err := race.FetchRace(base, testRace)
@@ -373,7 +373,7 @@ func BenchmarkFetchRaceWithMock(b *testing.B) {
 	mockFetcher := new(MockFetcher)
 	mockFetcher.On("FetchJSON", mock.Anything, "elf").Return(nil)
 
-	base := &templates.TemplateCharacter{Race: "elf"}
+	base := &template.Character{Race: "elf"}
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -393,7 +393,7 @@ func BenchmarkFetchRaceWithHTTPServer(b *testing.B) {
 		Client:  server.Client(),
 		BaseURL: server.URL + "/",
 	}
-	base := &templates.TemplateCharacter{Race: "elf"}
+	base := &template.Character{Race: "elf"}
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -405,7 +405,7 @@ func BenchmarkFetchRaceWithHTTPServer(b *testing.B) {
 // ========== Example Tests ==========
 
 func ExampleFetchRace() {
-	base := &templates.TemplateCharacter{
+	base := &template.Character{
 		Race: "elf",
 	}
 	testRace := &race.Race{}
@@ -425,7 +425,7 @@ func ExampleFetchRaceWithFetcher() {
 	// Create a custom fetcher (e.g., for testing)
 	fetcher := core.NewFetcher()
 
-	base := &templates.TemplateCharacter{
+	base := &template.Character{
 		Race: "dwarf",
 	}
 	testRace := &race.Race{}

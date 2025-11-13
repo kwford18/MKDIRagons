@@ -9,7 +9,7 @@ import (
 	"github.com/kwford18/MKDIRagons/internal/core"
 	"github.com/kwford18/MKDIRagons/internal/inventory"
 	"github.com/kwford18/MKDIRagons/internal/reference"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -150,8 +150,8 @@ func (suite *FetchInventoryIntegrationTestSuite) TearDownSuite() {
 // ======= Tests =======
 
 func (suite *FetchInventoryIntegrationTestSuite) TestFetchInventoryComplete() {
-	base := &templates.TemplateCharacter{
-		Inventory: templates.TemplateInventory{
+	base := &template.Character{
+		Inventory: template.Inventory{
 			Armor:   []string{"leather-armor", "shield"},
 			Weapons: []string{"longsword", "shortbow"},
 			Items:   []string{"rope", "torch"},
@@ -169,8 +169,8 @@ func (suite *FetchInventoryIntegrationTestSuite) TestFetchInventoryComplete() {
 }
 
 func (suite *FetchInventoryIntegrationTestSuite) TestFetchInventoryLargeInventory() {
-	base := &templates.TemplateCharacter{
-		Inventory: templates.TemplateInventory{
+	base := &template.Character{
+		Inventory: template.Inventory{
 			Armor:   []string{"leather-armor", "shield", "chain-mail"},
 			Weapons: []string{"longsword", "shortbow", "dagger"},
 			Items:   []string{"rope", "torch", "backpack"},
@@ -187,8 +187,8 @@ func (suite *FetchInventoryIntegrationTestSuite) TestFetchInventoryLargeInventor
 }
 
 func (suite *FetchInventoryIntegrationTestSuite) TestFetchInventoryOnlyWeapons() {
-	base := &templates.TemplateCharacter{
-		Inventory: templates.TemplateInventory{
+	base := &template.Character{
+		Inventory: template.Inventory{
 			Armor:   []string{},
 			Weapons: []string{"longsword", "dagger"},
 			Items:   []string{},

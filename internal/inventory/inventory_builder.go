@@ -2,12 +2,12 @@ package inventory
 
 import (
 	"github.com/kwford18/MKDIRagons/internal/core"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 	"sync"
 )
 
 // FetchInventoryWithFetcher allows using a custom fetcher for testing
-func FetchInventoryWithFetcher(fetcher core.Fetcher, base *templates.TemplateCharacter, inv *Inventory) error {
+func FetchInventoryWithFetcher(fetcher core.Fetcher, base *template.Character, inv *Inventory) error {
 	if base == nil {
 		panic("FetchInventoryWithFetcher: nil base TemplateCharacter provided")
 	}
@@ -77,6 +77,6 @@ func FetchInventoryWithFetcher(fetcher core.Fetcher, base *templates.TemplateCha
 }
 
 // FetchInventory uses the default fetcher for production
-func FetchInventory(base *templates.TemplateCharacter, inv *Inventory) error {
+func FetchInventory(base *template.Character, inv *Inventory) error {
 	return FetchInventoryWithFetcher(core.DefaultFetcher, base, inv)
 }

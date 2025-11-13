@@ -3,10 +3,10 @@ package abilities
 import (
 	"github.com/kwford18/MKDIRagons/internal/class"
 	"github.com/kwford18/MKDIRagons/internal/core"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 )
 
-func BuildSavingThrows(base *templates.TemplateCharacter, abilities AbilityScore, charClass *class.Class) AbilityScore {
+func BuildSavingThrows(base *template.Character, abilities AbilityScore, charClass *class.Class) AbilityScore {
 	profBonus := base.ProficiencyBonus()
 
 	// start from modifiers for all abilities

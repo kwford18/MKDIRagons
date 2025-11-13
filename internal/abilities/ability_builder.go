@@ -2,11 +2,11 @@ package abilities
 
 import (
 	"github.com/kwford18/MKDIRagons/internal/race"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 )
 
 // BuildAbilityScores builds struct using values from base TemplateCharacter
-func BuildAbilityScores(base *templates.TemplateCharacter, race race.Race) AbilityScore {
+func BuildAbilityScores(base *template.Character, race race.Race) AbilityScore {
 	// Apply Racial bonus
 OuterLoop:
 	for _, ability := range race.AbilityBonuses {

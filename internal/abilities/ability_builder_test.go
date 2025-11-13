@@ -6,7 +6,7 @@ import (
 	"github.com/kwford18/MKDIRagons/internal/abilities"
 	"github.com/kwford18/MKDIRagons/internal/race"
 	"github.com/kwford18/MKDIRagons/internal/reference"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -14,13 +14,13 @@ import (
 // BuildAbilityScoresTestSuite defines the test suite for BuildAbilityScores
 type BuildAbilityScoresTestSuite struct {
 	suite.Suite
-	base *templates.TemplateCharacter
+	base *template.Character
 }
 
 // SetupTest runs before each test
 func (suite *BuildAbilityScoresTestSuite) SetupTest() {
-	suite.base = &templates.TemplateCharacter{
-		AbilityScores: templates.TemplateAbilityScores{
+	suite.base = &template.Character{
+		AbilityScores: template.AbilityScores{
 			Strength:     10,
 			Dexterity:    12,
 			Constitution: 14,
@@ -296,7 +296,7 @@ func TestBuildAbilityScoresTestSuite(t *testing.T) {
 func TestBuildAbilityScoresTableDriven(t *testing.T) {
 	testCases := []struct {
 		name        string
-		baseScores  templates.TemplateAbilityScores
+		baseScores  template.AbilityScores
 		racialBonus []race.AbilityBonus
 		expectedSTR int
 		expectedDEX int
@@ -304,7 +304,7 @@ func TestBuildAbilityScoresTableDriven(t *testing.T) {
 	}{
 		{
 			name: "No bonuses",
-			baseScores: templates.TemplateAbilityScores{
+			baseScores: template.AbilityScores{
 				Strength: 10, Dexterity: 10, Constitution: 10,
 			},
 			racialBonus: []race.AbilityBonus{},
@@ -312,7 +312,7 @@ func TestBuildAbilityScoresTableDriven(t *testing.T) {
 		},
 		{
 			name: "STR +2",
-			baseScores: templates.TemplateAbilityScores{
+			baseScores: template.AbilityScores{
 				Strength: 15, Dexterity: 10, Constitution: 10,
 			},
 			racialBonus: []race.AbilityBonus{
@@ -322,7 +322,7 @@ func TestBuildAbilityScoresTableDriven(t *testing.T) {
 		},
 		{
 			name: "Multiple bonuses",
-			baseScores: templates.TemplateAbilityScores{
+			baseScores: template.AbilityScores{
 				Strength: 14, Dexterity: 12, Constitution: 13,
 			},
 			racialBonus: []race.AbilityBonus{
@@ -335,7 +335,7 @@ func TestBuildAbilityScoresTableDriven(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			base := &templates.TemplateCharacter{
+			base := &template.Character{
 				AbilityScores: tc.baseScores,
 			}
 			playerRace := race.Race{
@@ -353,8 +353,8 @@ func TestBuildAbilityScoresTableDriven(t *testing.T) {
 
 // BenchmarkBuildAbilityScoresNoBonus benchmarks with no racial bonuses
 func BenchmarkBuildAbilityScoresNoBonus(b *testing.B) {
-	base := &templates.TemplateCharacter{
-		AbilityScores: templates.TemplateAbilityScores{
+	base := &template.Character{
+		AbilityScores: template.AbilityScores{
 			Strength: 10, Dexterity: 12, Constitution: 14,
 			Intelligence: 13, Wisdom: 15, Charisma: 8,
 		},
@@ -369,8 +369,8 @@ func BenchmarkBuildAbilityScoresNoBonus(b *testing.B) {
 
 // BenchmarkBuildAbilityScoresMultipleBonus benchmarks with multiple bonuses
 func BenchmarkBuildAbilityScoresMultipleBonus(b *testing.B) {
-	base := &templates.TemplateCharacter{
-		AbilityScores: templates.TemplateAbilityScores{
+	base := &template.Character{
+		AbilityScores: template.AbilityScores{
 			Strength: 10, Dexterity: 12, Constitution: 14,
 			Intelligence: 13, Wisdom: 15, Charisma: 8,
 		},
@@ -391,8 +391,8 @@ func BenchmarkBuildAbilityScoresMultipleBonus(b *testing.B) {
 
 // ExampleBuildAbilityScores demonstrates basic usage
 func ExampleBuildAbilityScores() {
-	base := &templates.TemplateCharacter{
-		AbilityScores: templates.TemplateAbilityScores{
+	base := &template.Character{
+		AbilityScores: template.AbilityScores{
 			Strength:     10,
 			Dexterity:    14,
 			Constitution: 12,

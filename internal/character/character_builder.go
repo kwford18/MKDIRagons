@@ -11,11 +11,11 @@ import (
 	"github.com/kwford18/MKDIRagons/internal/skills"
 	"github.com/kwford18/MKDIRagons/internal/spells"
 	"github.com/kwford18/MKDIRagons/internal/stats"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 )
 
 // BuildCharacterWithFetcher builds a character using a custom fetcher (for testing)
-func BuildCharacterWithFetcher(fetcher core.Fetcher, base *templates.TemplateCharacter, rollHP bool) (*Character, error) {
+func BuildCharacterWithFetcher(fetcher core.Fetcher, base *template.Character, rollHP bool) (*Character, error) {
 	var playerRace race.Race
 	var playerClass class.Class
 	var playerInventory inventory.Inventory
@@ -101,6 +101,6 @@ func BuildCharacterWithFetcher(fetcher core.Fetcher, base *templates.TemplateCha
 }
 
 // BuildCharacter builds a character using the default fetcher (for production)
-func BuildCharacter(base *templates.TemplateCharacter, rollHP bool) (*Character, error) {
+func BuildCharacter(base *template.Character, rollHP bool) (*Character, error) {
 	return BuildCharacterWithFetcher(core.DefaultFetcher, base, rollHP)
 }

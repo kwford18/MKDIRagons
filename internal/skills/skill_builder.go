@@ -1,10 +1,10 @@
 package skills
 
 import (
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 )
 
-func buildSkill(base *templates.TemplateCharacter, name string) Skill {
+func buildSkill(base *template.Character, name string) Skill {
 	// Calculate bonus by getting the modifier of input skill
 	bonus := base.AbilityScores.Modifier(base.GetSkillAbility(name))
 
@@ -37,7 +37,7 @@ func buildSkill(base *templates.TemplateCharacter, name string) Skill {
 	}
 }
 
-func BuildSkillList(base *templates.TemplateCharacter) SkillList {
+func BuildSkillList(base *template.Character) SkillList {
 	return SkillList{
 		Athletics:      buildSkill(base, "Athletics"),
 		Acrobatics:     buildSkill(base, "Acrobatics"),

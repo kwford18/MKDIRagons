@@ -2,12 +2,12 @@ package spells
 
 import (
 	"github.com/kwford18/MKDIRagons/internal/core"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 	"sync"
 )
 
 // InitSpellbook initializes 2D spellbook array to hold character spells
-func InitSpellbook(base *templates.TemplateCharacter) [][]Spell {
+func InitSpellbook(base *template.Character) [][]Spell {
 	spellbook := make([][]Spell, len(base.Spells.Level))
 	for level := range base.Spells.Level {
 		spellbook[level] = make([]Spell, len(base.Spells.Level[level]))
@@ -16,7 +16,7 @@ func InitSpellbook(base *templates.TemplateCharacter) [][]Spell {
 }
 
 // FetchSpellsWithFetcher concurrently fetches spells using a custom fetcher
-func FetchSpellsWithFetcher(fetcher core.Fetcher, base *templates.TemplateCharacter, spellbook [][]Spell) error {
+func FetchSpellsWithFetcher(fetcher core.Fetcher, base *template.Character, spellbook [][]Spell) error {
 	if fetcher == nil {
 		panic("FetchSpellsWithFetcher: fetcher cannot be nil")
 	}
@@ -58,6 +58,6 @@ func FetchSpellsWithFetcher(fetcher core.Fetcher, base *templates.TemplateCharac
 }
 
 // FetchSpells concurrently fetches spells using the default fetcher
-func FetchSpells(base *templates.TemplateCharacter, spellbook [][]Spell) error {
+func FetchSpells(base *template.Character, spellbook [][]Spell) error {
 	return FetchSpellsWithFetcher(core.DefaultFetcher, base, spellbook)
 }

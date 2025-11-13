@@ -6,7 +6,7 @@ import (
 	"github.com/kwford18/MKDIRagons/internal/abilities"
 	"github.com/kwford18/MKDIRagons/internal/class"
 	"github.com/kwford18/MKDIRagons/internal/reference"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -14,13 +14,13 @@ import (
 // BuildSavingThrowsTestSuite defines the test suite for BuildSavingThrows
 type BuildSavingThrowsTestSuite struct {
 	suite.Suite
-	base          *templates.TemplateCharacter
+	base          *template.Character
 	abilityScores abilities.AbilityScore
 }
 
 // SetupTest runs before each test
 func (suite *BuildSavingThrowsTestSuite) SetupTest() {
-	suite.base = &templates.TemplateCharacter{
+	suite.base = &template.Character{
 		Level: 1,
 	}
 	suite.abilityScores = abilities.AbilityScore{
@@ -350,7 +350,7 @@ func TestBuildSavingThrowsTableDriven(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			base := &templates.TemplateCharacter{Level: tc.level}
+			base := &template.Character{Level: tc.level}
 			abilityScores := abilities.AbilityScore{Strength: tc.strScore}
 
 			var savingThrows []reference.Reference
@@ -368,7 +368,7 @@ func TestBuildSavingThrowsTableDriven(t *testing.T) {
 
 // BenchmarkBuildSavingThrowsNoProficiency benchmarks with no proficiencies
 func BenchmarkBuildSavingThrowsNoProficiency(b *testing.B) {
-	base := &templates.TemplateCharacter{Level: 1}
+	base := &template.Character{Level: 1}
 	abilityScores := abilities.AbilityScore{
 		Strength: 16, Dexterity: 14, Constitution: 15,
 		Intelligence: 12, Wisdom: 10, Charisma: 8,
@@ -383,7 +383,7 @@ func BenchmarkBuildSavingThrowsNoProficiency(b *testing.B) {
 
 // BenchmarkBuildSavingThrowsWithProficiencies benchmarks with proficiencies
 func BenchmarkBuildSavingThrowsWithProficiencies(b *testing.B) {
-	base := &templates.TemplateCharacter{Level: 1}
+	base := &template.Character{Level: 1}
 	abilityScores := abilities.AbilityScore{
 		Strength: 16, Dexterity: 14, Constitution: 15,
 		Intelligence: 12, Wisdom: 10, Charisma: 8,
@@ -403,7 +403,7 @@ func BenchmarkBuildSavingThrowsWithProficiencies(b *testing.B) {
 
 // ExampleBuildSavingThrows demonstrates basic usage
 func ExampleBuildSavingThrows() {
-	base := &templates.TemplateCharacter{Level: 1}
+	base := &template.Character{Level: 1}
 	abilityScores := abilities.AbilityScore{
 		Strength:     16,
 		Dexterity:    14,

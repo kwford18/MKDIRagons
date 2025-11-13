@@ -11,7 +11,7 @@ import (
 	"github.com/kwford18/MKDIRagons/internal/core"
 	"github.com/kwford18/MKDIRagons/internal/reference"
 	"github.com/kwford18/MKDIRagons/internal/spells"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
@@ -36,14 +36,14 @@ func (m *MockFetcher) FetchJSON(property reference.Fetchable, input string) erro
 type FetchSpellsUnitTestSuite struct {
 	suite.Suite
 	mockFetcher *MockFetcher
-	base        *templates.TemplateCharacter
+	base        *template.Character
 	spellbook   [][]spells.Spell
 }
 
 func (suite *FetchSpellsUnitTestSuite) SetupTest() {
 	suite.mockFetcher = new(MockFetcher)
-	suite.base = &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	suite.base = &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"fire-bolt", "mage-hand"},  // Level 0 (cantrips)
 				{"magic-missile", "shield"}, // Level 1
@@ -121,7 +121,7 @@ func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsError() {
 }
 
 func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsEmptySpellbook() {
-	suite.base.Spells = templates.TemplateSpells{
+	suite.base.Spells = template.Spells{
 		Level: [][]string{},
 	}
 	suite.spellbook = spells.InitSpellbook(suite.base)
@@ -133,7 +133,7 @@ func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsEmptySpellbook() {
 }
 
 func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsOnlyCantrips() {
-	suite.base.Spells = templates.TemplateSpells{
+	suite.base.Spells = template.Spells{
 		Level: [][]string{
 			{"fire-bolt", "mage-hand"},
 		},
@@ -320,8 +320,8 @@ func (suite *FetchSpellsIntegrationTestSuite) TearDownSuite() {
 }
 
 func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsComplete() {
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"fire-bolt", "mage-hand"},
 				{"magic-missile", "shield"},
@@ -353,8 +353,8 @@ func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsComplete() {
 }
 
 func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsLargeSpellbook() {
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"fire-bolt", "mage-hand", "prestidigitation"},
 				{"magic-missile", "shield", "detect-magic"},
@@ -376,8 +376,8 @@ func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsLargeSpellbook() {
 }
 
 func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsOnlyCantrips() {
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"fire-bolt", "mage-hand"},
 			},
@@ -393,8 +393,8 @@ func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsOnlyCantrips() {
 }
 
 func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsServerError() {
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"error"},
 			},
@@ -409,8 +409,8 @@ func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsServerError() {
 }
 
 func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsInvalidJSON() {
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"invalid"},
 			},
@@ -424,8 +424,8 @@ func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsInvalidJSON() {
 }
 
 func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsNotFound() {
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"nonexistent-spell"},
 			},
@@ -441,8 +441,8 @@ func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsNotFound() {
 
 func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsConcurrency() {
 	// Test that concurrent fetches don't cause race conditions
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"fire-bolt", "mage-hand", "prestidigitation"},
 				{"magic-missile", "shield", "detect-magic"},
@@ -483,8 +483,8 @@ func BenchmarkFetchSpellsSmall(b *testing.B) {
 		BaseURL: server.URL + "/",
 	}
 
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"fire-bolt"},
 			},
@@ -515,8 +515,8 @@ func BenchmarkFetchSpellsLarge(b *testing.B) {
 		BaseURL: server.URL + "/",
 	}
 
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"s1", "s2", "s3", "s4"},
 				{"s5", "s6", "s7"},
@@ -539,8 +539,8 @@ func BenchmarkFetchSpellsLarge(b *testing.B) {
 // ========== Example Tests ==========
 
 func ExampleInitSpellbook() {
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"fire-bolt", "mage-hand"},
 				{"magic-missile"},
@@ -557,8 +557,8 @@ func ExampleInitSpellbook() {
 }
 
 func ExampleFetchSpells() {
-	base := &templates.TemplateCharacter{
-		Spells: templates.TemplateSpells{
+	base := &template.Character{
+		Spells: template.Spells{
 			Level: [][]string{
 				{"fire-bolt", "mage-hand"},
 				{"magic-missile"},

@@ -97,7 +97,7 @@ func TestModifierCalculationEdgeCases(t *testing.T) {
 		score    int
 		expected int
 	}{
-		{"Score of 1", 1, -5},   // (1-10)/2 = -4.5 -> -4
+		{"Score of 1", 1, -5},   // (1-10)/2 = -4.5 -> -5
 		{"Score of 3", 3, -4},   // (3-10)/2 = -3.5 -> -4
 		{"Score of 8", 8, -1},   // (8-10)/2 = -1
 		{"Score of 9", 9, -1},   // (9-10)/2 = -0.5 -> -1
