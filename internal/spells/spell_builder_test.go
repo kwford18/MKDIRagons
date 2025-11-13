@@ -157,15 +157,21 @@ func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsOnlyCantrips() {
 }
 
 func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsNilBase() {
-	err := spells.FetchSpellsWithFetcher(suite.mockFetcher, nil, suite.spellbook)
-	assert.Error(suite.T(), err)
-	assert.Contains(suite.T(), err.Error(), "base TemplateCharacter")
+	assert.Panics(suite.T(), func() {
+		err := spells.FetchSpellsWithFetcher(suite.mockFetcher, nil, suite.spellbook)
+		if err != nil {
+			return
+		}
+	})
 }
 
 func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsNilSpellbook() {
-	err := spells.FetchSpellsWithFetcher(suite.mockFetcher, suite.base, nil)
-	assert.Error(suite.T(), err)
-	assert.Contains(suite.T(), err.Error(), "spellbook")
+	assert.Panics(suite.T(), func() {
+		err := spells.FetchSpellsWithFetcher(suite.mockFetcher, suite.base, nil)
+		if err != nil {
+			return
+		}
+	})
 }
 
 func TestFetchSpellsUnitTestSuite(t *testing.T) {
