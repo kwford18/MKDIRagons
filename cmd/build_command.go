@@ -31,7 +31,7 @@ var buildCmd = &cobra.Command{
 
 		base, err := templates.TomlParse(buildFile)
 		if err != nil {
-			return fmt.Errorf("failed to parse file: %w", err)
+			return fmt.Errorf("%w", err)
 		}
 
 		char, err := character.BuildCharacter(&base, rollHP)
