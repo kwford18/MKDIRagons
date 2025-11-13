@@ -3,6 +3,7 @@ package abilities
 import (
 	"fmt"
 	"github.com/kwford18/MKDIRagons/internal/core"
+	"math"
 )
 
 // AbilityScore Struct type to represent the player's ability scores
@@ -17,6 +18,7 @@ type AbilityScore struct {
 
 // Modifier takes an ability and returns the modifier
 func (ab *AbilityScore) Modifier(a core.Ability) int {
+	// Get the value for a given ability score
 	var score int
 	switch a {
 	case core.Strength:
@@ -32,7 +34,9 @@ func (ab *AbilityScore) Modifier(a core.Ability) int {
 	case core.Charisma:
 		score = ab.Charisma
 	}
-	return (score - 10) / 2
+
+	// Formula to calculate the bonus: (ability score value - 10)/2, rounded down
+	return int(math.Floor(float64(score-10) / 2.0))
 }
 
 // Print for Fetchable interface methods
