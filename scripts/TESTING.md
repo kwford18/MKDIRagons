@@ -8,7 +8,7 @@ This document explains how to use test fixtures in the MKDIRagons project.
 
 ```bash
 chmod +x setup_fixtures.sh
-./setup_fixtures.sh
+./setup_fixtures.sh internal/core/
 ```
 
 This creates `internal/core/testdata/` with real API responses.

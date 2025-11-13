@@ -5,7 +5,7 @@
 
 set -e
 
-TESTDATA_DIR="internal/core/testdata"
+TESTDATA_DIR="$1" + "testdata"
 
 echo "Creating testdata directory..."
 mkdir -p "$TESTDATA_DIR"
