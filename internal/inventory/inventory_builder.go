@@ -8,6 +8,13 @@ import (
 
 // FetchInventoryWithFetcher allows using a custom fetcher for testing
 func FetchInventoryWithFetcher(fetcher core.Fetcher, base *templates.TemplateCharacter, inv *Inventory) error {
+	if base == nil {
+		panic("FetchInventoryWithFetcher: nil base TemplateCharacter provided")
+	}
+	if inv == nil {
+		panic("FetchInventoryWithFetcher: nil Inventory provided")
+	}
+
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	errs := make(chan error, len(base.Inventory.Armor)+len(base.Inventory.Weapons)+len(base.Inventory.Items))

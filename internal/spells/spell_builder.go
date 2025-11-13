@@ -1,7 +1,6 @@
 package spells
 
 import (
-	"fmt"
 	"github.com/kwford18/MKDIRagons/internal/core"
 	"github.com/kwford18/MKDIRagons/templates"
 	"sync"
@@ -19,13 +18,13 @@ func InitSpellbook(base *templates.TemplateCharacter) [][]Spell {
 // FetchSpellsWithFetcher concurrently fetches spells using a custom fetcher
 func FetchSpellsWithFetcher(fetcher core.Fetcher, base *templates.TemplateCharacter, spellbook [][]Spell) error {
 	if fetcher == nil {
-		return fmt.Errorf("fetcher cannot be nil")
+		panic("FetchSpellsWithFetcher: fetcher cannot be nil")
 	}
 	if base == nil {
-		return fmt.Errorf("base TemplateCharacter cannot be nil")
+		panic("FetchSpellsWithFetcher: base TemplateCharacter cannot be nil")
 	}
 	if spellbook == nil {
-		return fmt.Errorf("spellbook cannot be nil")
+		panic("FetchSpellsWithFetcher: spellbook cannot be nil")
 	}
 
 	var wg sync.WaitGroup
