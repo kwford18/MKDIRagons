@@ -3,26 +3,14 @@ package class
 import (
 	"github.com/kwford18/MKDIRagons/internal/core"
 	"github.com/kwford18/MKDIRagons/templates"
-	"sync"
 )
 
+// FetchClassWithFetcher fetches this race's data from the API
+func FetchClassWithFetcher(fetcher core.Fetcher, base *templates.TemplateCharacter, class *Class) error {
+	return fetcher.FetchJSON(class, base.Class)
+}
+
+// FetchClass allows using a custom fetcher for testing
 func FetchClass(base *templates.TemplateCharacter, class *Class) error {
-	var wg sync.WaitGroup
-	errs := make(chan error, 2)
-
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		if err := core.FetchJSON(class, base.Class); err != nil {
-			errs <- err
-		}
-	}()
-
-	wg.Wait()
-	close(errs)
-
-	if err, ok := <-errs; ok {
-		return err
-	}
-	return nil
+	return core.FetchJSON(class, base.Class)
 }

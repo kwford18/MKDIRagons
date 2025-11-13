@@ -1,35 +1,72 @@
 package character
 
 import (
+	"sync"
+
 	"github.com/kwford18/MKDIRagons/internal/abilities"
 	"github.com/kwford18/MKDIRagons/internal/class"
+	"github.com/kwford18/MKDIRagons/internal/core"
 	"github.com/kwford18/MKDIRagons/internal/inventory"
 	"github.com/kwford18/MKDIRagons/internal/race"
 	"github.com/kwford18/MKDIRagons/internal/skills"
 	"github.com/kwford18/MKDIRagons/internal/spells"
 	"github.com/kwford18/MKDIRagons/internal/stats"
-
 	"github.com/kwford18/MKDIRagons/templates"
 )
 
-func BuildCharacter(base *templates.TemplateCharacter, rollHP bool) (*Character, error) {
+// BuildCharacterWithFetcher builds a character using a custom fetcher (for testing)
+func BuildCharacterWithFetcher(fetcher core.Fetcher, base *templates.TemplateCharacter, rollHP bool) (*Character, error) {
 	var playerRace race.Race
 	var playerClass class.Class
 	var playerInventory inventory.Inventory
-
 	spellbook := spells.InitSpellbook(base)
 
-	// Concurrent fetch
-	if err := race.FetchRace(base, &playerRace); err != nil {
-		return nil, err
-	}
-	if err := class.FetchClass(base, &playerClass); err != nil {
-		return nil, err
-	}
-	if err := inventory.FetchInventory(base, &playerInventory); err != nil {
-		return nil, err
-	}
-	if err := spells.FetchSpells(base, spellbook); err != nil {
+	// Concurrent fetch of all character components
+	var wg sync.WaitGroup
+	errs := make(chan error, 4) // Buffer size = number of parallel fetch operations
+
+	// Fetch race
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := race.FetchRaceWithFetcher(fetcher, base, &playerRace); err != nil {
+			errs <- err
+		}
+	}()
+
+	// Fetch class
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := class.FetchClassWithFetcher(fetcher, base, &playerClass); err != nil {
+			errs <- err
+		}
+	}()
+
+	// Fetch inventory (internally fetches multiple items in parallel)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := inventory.FetchInventoryWithFetcher(fetcher, base, &playerInventory); err != nil {
+			errs <- err
+		}
+	}()
+
+	// Fetch spells (internally fetches multiple spells in parallel)
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		if err := spells.FetchSpellsWithFetcher(fetcher, base, spellbook); err != nil {
+			errs <- err
+		}
+	}()
+
+	// Wait for all goroutines to finish
+	wg.Wait()
+	close(errs)
+
+	// Check if any fetch operation failed
+	if err, ok := <-errs; ok {
 		return nil, err
 	}
 
@@ -61,4 +98,9 @@ func BuildCharacter(base *templates.TemplateCharacter, rollHP bool) (*Character,
 		Inventory:     playerInventory,
 		Spells:        spellbook,
 	}, nil
+}
+
+// BuildCharacter builds a character using the default fetcher (for production)
+func BuildCharacter(base *templates.TemplateCharacter, rollHP bool) (*Character, error) {
+	return BuildCharacterWithFetcher(core.DefaultFetcher, base, rollHP)
 }
