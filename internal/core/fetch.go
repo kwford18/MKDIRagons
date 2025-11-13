@@ -12,13 +12,7 @@ import (
 
 const DefaultBaseURL = "https://www.dnd5eapi.co/api/2014/"
 
-// FetchJSON fetches and unmarshals JSON from the D&D API using default settings.
-// This is the main function that production code should use.
-func FetchJSON(property reference.Fetchable, input string) error {
-	return FetchJSONWithClient(http.DefaultClient, DefaultBaseURL, property, input)
-}
-
-// fetchJSONWithClient is an internal function that allows dependency injection
+// FetchJSONWithClient is an internal function that allows dependency injection
 // for testing purposes. It accepts a custom HTTP client and base URL.
 func FetchJSONWithClient(client *http.Client, baseURL string, property reference.Fetchable, input string) error {
 	// Format the input
