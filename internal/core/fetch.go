@@ -10,12 +10,12 @@ import (
 	"github.com/kwford18/MKDIRagons/internal/reference"
 )
 
-const defaultBaseURL = "https://www.dnd5eapi.co/api/2014/"
+const DefaultBaseURL = "https://www.dnd5eapi.co/api/2014/"
 
 // FetchJSON fetches and unmarshals JSON from the D&D API using default settings.
 // This is the main function that production code should use.
 func FetchJSON(property reference.Fetchable, input string) error {
-	return FetchJSONWithClient(http.DefaultClient, defaultBaseURL, property, input)
+	return FetchJSONWithClient(http.DefaultClient, DefaultBaseURL, property, input)
 }
 
 // fetchJSONWithClient is an internal function that allows dependency injection

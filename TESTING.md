@@ -105,21 +105,21 @@ Add your new test case to `TestFetchJSON_AllRealJSON` in `fetch_json_fixtures_te
 
 ## Helper Functions
 
-### `loadFixture(t, filename)`
+### `LoadFixture(t, filename)`
 Loads a JSON file and returns it as `map[string]interface{}`
 
 ```go
 mockResponse := loadFixture(t, "wizard.json")
 ```
 
-### `loadFixtureRaw(t, filename)`
+### `LoadFixtureRaw(t, filename)`
 Loads raw JSON bytes (useful for testing malformed JSON)
 
 ```go
 rawJSON := loadFixtureRaw(t, "wizard.json")
 ```
 
-### `loadFixtureInto(t, filename, target)`
+### `LoadFixtureInto(t, filename, target)`
 Loads and unmarshals directly into a struct
 
 ```go
