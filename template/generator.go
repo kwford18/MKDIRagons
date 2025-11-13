@@ -14,14 +14,14 @@ func GenerateEmptyTOML() error {
 		levels[i] = []string{}
 	}
 
-	template := TemplateCharacter{
+	template := Character{
 		Name:     "",
 		Level:    1,
 		Race:     "",
 		Subrace:  "",
 		Class:    "",
 		Subclass: "",
-		AbilityScores: TemplateAbilityScores{
+		AbilityScores: AbilityScores{
 			Strength:     10,
 			Dexterity:    10,
 			Constitution: 10,
@@ -30,12 +30,12 @@ func GenerateEmptyTOML() error {
 			Charisma:     10,
 		},
 		Proficiencies: []string{},
-		Inventory: TemplateInventory{
+		Inventory: Inventory{
 			Armor:   []string{},
 			Weapons: []string{},
 			Items:   []string{},
 		},
-		Spells: TemplateSpells{
+		Spells: Spells{
 			Level: levels,
 		},
 	}

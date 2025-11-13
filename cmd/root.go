@@ -9,7 +9,7 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "MKDIRagons",
-	Short: "A D&D character generator using TOML templates or TUI",
+	Short: "A D&D character generator using TOML template or TUI",
 	Long: `A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
 

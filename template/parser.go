@@ -17,7 +17,7 @@ func validateScore(name string, score int) error {
 }
 
 // Validate all ability scores
-func (ab TemplateAbilityScores) Validate() error {
+func (ab AbilityScores) Validate() error {
 	if err := validateScore("Strength", ab.Strength); err != nil {
 		return err
 	}
@@ -40,7 +40,7 @@ func (ab TemplateAbilityScores) Validate() error {
 }
 
 // verifyTOML checks relevant fields parsed into TemplateCharacter and ensures they are valid
-func verifyTOML(t TemplateCharacter) error {
+func verifyTOML(t Character) error {
 	// Validate character level
 	if t.Level < 1 || t.Level > 20 {
 		return fmt.Errorf("invalid level")
@@ -92,8 +92,8 @@ func verifyTOML(t TemplateCharacter) error {
 }
 
 // TomlParse Parses the provided TOML file into the Template struct
-func TomlParse(fileName string) (TemplateCharacter, error) {
-	var t TemplateCharacter
+func TomlParse(fileName string) (Character, error) {
+	var t Character
 	_, err := toml.DecodeFile(fileName, &t)
 	if err != nil {
 		return t, fmt.Errorf("failed to parse file: %w", err)
@@ -101,7 +101,7 @@ func TomlParse(fileName string) (TemplateCharacter, error) {
 
 	err = verifyTOML(t)
 	if err != nil {
-		return TemplateCharacter{}, err
+		return Character{}, err
 	}
 
 	return t, nil

@@ -3,11 +3,12 @@ package template
 import (
 	"fmt"
 	"github.com/kwford18/MKDIRagons/internal/core"
+	"math"
 )
 
 // Template character parsed from a TOML file
 
-type TemplateAbilityScores struct {
+type AbilityScores struct {
 	Strength     int
 	Dexterity    int
 	Constitution int
@@ -16,31 +17,31 @@ type TemplateAbilityScores struct {
 	Charisma     int
 }
 
-type TemplateInventory struct {
+type Inventory struct {
 	Weapons []string
 	Armor   []string
 	Items   []string
 }
 
-type TemplateSpells struct {
+type Spells struct {
 	Level [][]string
 }
 
-type TemplateCharacter struct {
-	Name          string                `toml:"name"`
-	Level         int                   `toml:"level"`
-	Race          string                `toml:"race"`
-	Subrace       string                `toml:"subrace,omitempty"`
-	Class         string                `toml:"class"`
-	Subclass      string                `toml:"subclass,omitempty"`
-	AbilityScores TemplateAbilityScores `toml:"ability_scores"`
-	Proficiencies []string              `toml:"proficiencies"`
-	Expertise     []string              `toml:"expertise,omitempty"`
-	Inventory     TemplateInventory     `toml:"inventory"`
-	Spells        TemplateSpells        `toml:"spells"`
+type Character struct {
+	Name          string        `toml:"name"`
+	Level         int           `toml:"level"`
+	Race          string        `toml:"race"`
+	Subrace       string        `toml:"subrace,omitempty"`
+	Class         string        `toml:"class"`
+	Subclass      string        `toml:"subclass,omitempty"`
+	AbilityScores AbilityScores `toml:"ability_scores"`
+	Proficiencies []string      `toml:"proficiencies"`
+	Expertise     []string      `toml:"expertise,omitempty"`
+	Inventory     Inventory     `toml:"inventory"`
+	Spells        Spells        `toml:"spells"`
 }
 
-func (t *TemplateCharacter) Print() {
+func (t *Character) Print() {
 	fmt.Printf("Name: %s\n", t.Name)
 	fmt.Printf("Race: %s\n", t.Race)
 	fmt.Printf("Subrace: %s\n", t.Subrace)
@@ -52,7 +53,7 @@ func (t *TemplateCharacter) Print() {
 	fmt.Printf("Spells: %v\n", t.Spells)
 }
 
-func (t *TemplateCharacter) ProficiencyBonus() int {
+func (t *Character) ProficiencyBonus() int {
 	switch t.Level {
 	case 1, 2, 3, 4:
 		return 2
@@ -70,7 +71,7 @@ func (t *TemplateCharacter) ProficiencyBonus() int {
 }
 
 // GetSkillAbility takes a skill name and returns which ability score it uses
-func (t *TemplateCharacter) GetSkillAbility(name string) core.Ability {
+func (t *Character) GetSkillAbility(name string) core.Ability {
 	switch name {
 	case "Athletics":
 		return core.Strength
@@ -88,21 +89,21 @@ func (t *TemplateCharacter) GetSkillAbility(name string) core.Ability {
 }
 
 // Modifier takes an ability and returns the modifier
-func (ab TemplateAbilityScores) Modifier(a core.Ability) int {
+func (t AbilityScores) Modifier(a core.Ability) int {
 	var score int
 	switch a {
 	case core.Strength:
-		score = ab.Strength
+		score = t.Strength
 	case core.Dexterity:
-		score = ab.Dexterity
+		score = t.Dexterity
 	case core.Constitution:
-		score = ab.Constitution
+		score = t.Constitution
 	case core.Intelligence:
-		score = ab.Intelligence
+		score = t.Intelligence
 	case core.Wisdom:
-		score = ab.Wisdom
+		score = t.Wisdom
 	case core.Charisma:
-		score = ab.Charisma
+		score = t.Charisma
 	}
-	return (score - 10) / 2
+	return int(math.Floor(float64(score-10) / 2.0))
 }

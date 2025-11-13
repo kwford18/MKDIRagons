@@ -6,7 +6,7 @@ import (
 
 	"github.com/kwford18/MKDIRagons/internal/character"
 	"github.com/kwford18/MKDIRagons/internal/io"
-	"github.com/kwford18/MKDIRagons/templates"
+	"github.com/kwford18/MKDIRagons/template"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +29,7 @@ var buildCmd = &cobra.Command{
 			buildFile = "toml-characters/" + buildFile
 		}
 
-		base, err := templates.TomlParse(buildFile)
+		base, err := template.TomlParse(buildFile)
 		if err != nil {
 			return fmt.Errorf("%w", err)
 		}
