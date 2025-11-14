@@ -10,30 +10,32 @@ import (
 
 // Helper to validate a single score
 func validateScore(name string, score int) error {
-	if score < 0 || score > 20 {
-		return fmt.Errorf("invalid ability score for %s -> %d. Must be in range [0, 20]", name, score)
+	if score < 0 {
+		return fmt.Errorf("ability score for %s is too low -> %d. Must be in range [0, 20]", name, score)
+	} else if score > 20 {
+		return fmt.Errorf("ability score for %s is too high -> %d. Must be in range [0, 20]", name, score)
 	}
 	return nil
 }
 
 // Validate all ability scores
-func (ab AbilityScores) Validate() error {
-	if err := validateScore("Strength", ab.Strength); err != nil {
+func (t AbilityScores) Validate() error {
+	if err := validateScore("Strength", t.Strength); err != nil {
 		return err
 	}
-	if err := validateScore("Dexterity", ab.Dexterity); err != nil {
+	if err := validateScore("Dexterity", t.Dexterity); err != nil {
 		return err
 	}
-	if err := validateScore("Constitution", ab.Constitution); err != nil {
+	if err := validateScore("Constitution", t.Constitution); err != nil {
 		return err
 	}
-	if err := validateScore("Intelligence", ab.Intelligence); err != nil {
+	if err := validateScore("Intelligence", t.Intelligence); err != nil {
 		return err
 	}
-	if err := validateScore("Wisdom", ab.Wisdom); err != nil {
+	if err := validateScore("Wisdom", t.Wisdom); err != nil {
 		return err
 	}
-	if err := validateScore("Charisma", ab.Charisma); err != nil {
+	if err := validateScore("Charisma", t.Charisma); err != nil {
 		return err
 	}
 	return nil
