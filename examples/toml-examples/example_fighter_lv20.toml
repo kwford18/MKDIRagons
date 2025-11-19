@@ -1,0 +1,21 @@
+name = "Ram"
+level = 20
+race = "Half-Elf"
+class = "Fighter"
+proficiencies = ["Athletics", "Insight"]
+
+[ability_scores]
+Strength = 20
+Dexterity = 19
+Constitution = 20
+Wisdom = 17
+Intelligence = 20
+Charisma = 18
+
+[inventory]
+Weapons = ["Rapier", "Greataxe"]
+Armor = ["Plate Armor"]
+Items = ["Abacus", "alchemists-supplies", "Book"]
+
+[spells]
+Level = [[], [], [], [], [], [], [], [], [], []]

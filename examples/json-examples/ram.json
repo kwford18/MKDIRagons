@@ -1,0 +1,690 @@
+{
+  "name": "Ram",
+  "level": 20,
+  "race": {
+    "index": "half-elf",
+    "name": "Half-Elf",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": {
+          "index": "cha",
+          "name": "CHA",
+          "url": "/api/2014/ability-scores/cha"
+        },
+        "bonus": 2
+      }
+    ],
+    "age": "Half-elves mature at the same rate humans do and reach adulthood around the age of 20. They live much longer than humans, however, often exceeding 180 years.",
+    "alignment": "Half-elves share the chaotic bent of their elven heritage. They value both personal freedom and creative expression, demonstrating neither love of leaders nor desire for followers. They chafe at rules, resent others' demands, and sometimes prove unreliable, or at least unpredictable.",
+    "size": "Medium",
+    "size_description": "Half-elves are about the same size as humans, ranging from 5 to 6 feet tall. Your size is Medium.",
+    "starting_proficiencies": null,
+    "languages": [
+      {
+        "index": "common",
+        "name": "Common",
+        "url": "/api/2014/languages/common"
+      },
+      {
+        "index": "elvish",
+        "name": "Elvish",
+        "url": "/api/2014/languages/elvish"
+      }
+    ],
+    "language_desc": "You can speak, read, and write Common, Elvish, and one extra language of your choice.",
+    "traits": [
+      {
+        "index": "darkvision",
+        "name": "Darkvision",
+        "url": "/api/2014/traits/darkvision"
+      },
+      {
+        "index": "fey-ancestry",
+        "name": "Fey Ancestry",
+        "url": "/api/2014/traits/fey-ancestry"
+      },
+      {
+        "index": "skill-versatility",
+        "name": "Skill Versatility",
+        "url": "/api/2014/traits/skill-versatility"
+      }
+    ],
+    "subraces": [],
+    "url": "/api/2014/races/half-elf"
+  },
+  "class": {
+    "index": "fighter",
+    "name": "Fighter",
+    "hit_die": 10,
+    "proficiency_choices": [
+      {
+        "desc": "Choose two skills from Acrobatics, Animal Handling, Athletics, History, Insight, Intimidation, Perception, and Survival",
+        "choose": 2,
+        "type": "proficiencies",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-acrobatics",
+                "name": "Skill: Acrobatics",
+                "url": "/api/2014/proficiencies/skill-acrobatics"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-animal-handling",
+                "name": "Skill: Animal Handling",
+                "url": "/api/2014/proficiencies/skill-animal-handling"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-athletics",
+                "name": "Skill: Athletics",
+                "url": "/api/2014/proficiencies/skill-athletics"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-history",
+                "name": "Skill: History",
+                "url": "/api/2014/proficiencies/skill-history"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-insight",
+                "name": "Skill: Insight",
+                "url": "/api/2014/proficiencies/skill-insight"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-intimidation",
+                "name": "Skill: Intimidation",
+                "url": "/api/2014/proficiencies/skill-intimidation"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-perception",
+                "name": "Skill: Perception",
+                "url": "/api/2014/proficiencies/skill-perception"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-survival",
+                "name": "Skill: Survival",
+                "url": "/api/2014/proficiencies/skill-survival"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "proficiencies": [
+      {
+        "index": "all-armor",
+        "name": "All armor",
+        "url": "/api/2014/proficiencies/all-armor"
+      },
+      {
+        "index": "shields",
+        "name": "Shields",
+        "url": "/api/2014/proficiencies/shields"
+      },
+      {
+        "index": "simple-weapons",
+        "name": "Simple Weapons",
+        "url": "/api/2014/proficiencies/simple-weapons"
+      },
+      {
+        "index": "martial-weapons",
+        "name": "Martial Weapons",
+        "url": "/api/2014/proficiencies/martial-weapons"
+      },
+      {
+        "index": "saving-throw-str",
+        "name": "Saving Throw: STR",
+        "url": "/api/2014/proficiencies/saving-throw-str"
+      },
+      {
+        "index": "saving-throw-con",
+        "name": "Saving Throw: CON",
+        "url": "/api/2014/proficiencies/saving-throw-con"
+      }
+    ],
+    "saving_throws": [
+      {
+        "index": "str",
+        "name": "STR",
+        "url": "/api/2014/ability-scores/str"
+      },
+      {
+        "index": "con",
+        "name": "CON",
+        "url": "/api/2014/ability-scores/con"
+      }
+    ],
+    "starting_equipment": [],
+    "starting_equipment_options": [
+      {
+        "desc": "(a) chain mail or (b) leather armor, longbow, and 20 arrows",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "chain-mail",
+                "name": "Chain Mail",
+                "url": "/api/2014/equipment/chain-mail"
+              }
+            },
+            {
+              "option_type": "multiple"
+            }
+          ]
+        }
+      },
+      {
+        "desc": "(a) a martial weapon and a shield or (b) two martial weapons",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "multiple"
+            },
+            {
+              "option_type": "choice",
+              "choice": {
+                "desc": "two martial weapons",
+                "choose": 2,
+                "type": "equipment",
+                "from": {
+                  "option_set_type": "equipment_category",
+                  "equipment_category": {
+                    "index": "martial-weapons",
+                    "name": "Martial Weapons",
+                    "url": "/api/2014/equipment-categories/martial-weapons"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "desc": "(a) a light crossbow and 20 bolts or (b) two handaxes",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "multiple"
+            },
+            {
+              "option_type": "counted_reference",
+              "count": 2,
+              "of": {
+                "index": "handaxe",
+                "name": "Handaxe",
+                "url": "/api/2014/equipment/handaxe"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "desc": "(a) a dungeoneer’s pack or (b) an explorer’s pack",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "dungeoneers-pack",
+                "name": "Dungeoneer's Pack",
+                "url": "/api/2014/equipment/dungeoneers-pack"
+              }
+            },
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "explorers-pack",
+                "name": "Explorer's Pack",
+                "url": "/api/2014/equipment/explorers-pack"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "class_levels": "/api/2014/classes/fighter/levels",
+    "multi_classing": {
+      "prerequisites": null,
+      "proficiencies": [
+        {
+          "index": "light-armor",
+          "name": "Light Armor",
+          "url": "/api/2014/proficiencies/light-armor"
+        },
+        {
+          "index": "medium-armor",
+          "name": "Medium Armor",
+          "url": "/api/2014/proficiencies/medium-armor"
+        },
+        {
+          "index": "shields",
+          "name": "Shields",
+          "url": "/api/2014/proficiencies/shields"
+        },
+        {
+          "index": "simple-weapons",
+          "name": "Simple Weapons",
+          "url": "/api/2014/proficiencies/simple-weapons"
+        },
+        {
+          "index": "martial-weapons",
+          "name": "Martial Weapons",
+          "url": "/api/2014/proficiencies/martial-weapons"
+        }
+      ]
+    },
+    "subclasses": [
+      {
+        "index": "champion",
+        "name": "Champion",
+        "url": "/api/2014/subclasses/champion"
+      }
+    ],
+    "spellcasting": {
+      "level": 0,
+      "spellcasting_ability": {
+        "index": "",
+        "name": "",
+        "url": ""
+      },
+      "info": null
+    },
+    "spells": "",
+    "url": "/api/2014/classes/fighter"
+  },
+  "stats": {
+    "HP": 218,
+    "TempHP": 0,
+    "AC": 18,
+    "Speed": 30
+  },
+  "proficiencies": [
+    "Athletics",
+    "Insight"
+  ],
+  "ability_scores": {
+    "Strength": 20,
+    "Dexterity": 19,
+    "Constitution": 20,
+    "Intelligence": 20,
+    "Wisdom": 17,
+    "Charisma": 20
+  },
+  "skills": {
+    "Athletics": {
+      "Name": "Athletics",
+      "Bonus": 11,
+      "Ability": 0,
+      "Proficient": true,
+      "Expertise": false
+    },
+    "Acrobatics": {
+      "Name": "Acrobatics",
+      "Bonus": 4,
+      "Ability": 1,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "SleightOfHand": {
+      "Name": "SleightOfHand",
+      "Bonus": 4,
+      "Ability": 1,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Stealth": {
+      "Name": "Stealth",
+      "Bonus": 4,
+      "Ability": 1,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Arcana": {
+      "Name": "Arcana",
+      "Bonus": 5,
+      "Ability": 3,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "History": {
+      "Name": "History",
+      "Bonus": 5,
+      "Ability": 3,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Investigation": {
+      "Name": "Investigation",
+      "Bonus": 5,
+      "Ability": 3,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Nature": {
+      "Name": "Nature",
+      "Bonus": 5,
+      "Ability": 3,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Religion": {
+      "Name": "Religion",
+      "Bonus": 5,
+      "Ability": 3,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "AnimalHandling": {
+      "Name": "AnimalHandling",
+      "Bonus": 3,
+      "Ability": 4,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Insight": {
+      "Name": "Insight",
+      "Bonus": 9,
+      "Ability": 4,
+      "Proficient": true,
+      "Expertise": false
+    },
+    "Medicine": {
+      "Name": "Medicine",
+      "Bonus": 3,
+      "Ability": 4,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Perception": {
+      "Name": "Perception",
+      "Bonus": 3,
+      "Ability": 4,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Survival": {
+      "Name": "Survival",
+      "Bonus": 3,
+      "Ability": 4,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Deception": {
+      "Name": "Deception",
+      "Bonus": 5,
+      "Ability": 5,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Intimidation": {
+      "Name": "Intimidation",
+      "Bonus": 5,
+      "Ability": 5,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Performance": {
+      "Name": "Performance",
+      "Bonus": 5,
+      "Ability": 5,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Persuasion": {
+      "Name": "Persuasion",
+      "Bonus": 5,
+      "Ability": 5,
+      "Proficient": false,
+      "Expertise": false
+    }
+  },
+  "saving_throws": {
+    "Strength": 11,
+    "Dexterity": 4,
+    "Constitution": 11,
+    "Intelligence": 5,
+    "Wisdom": 3,
+    "Charisma": 5
+  },
+  "inventory": {
+    "Items": [
+      {
+        "desc": [
+          "These special tools include the items needed to pursue a craft or trade. The table shows examples of the most common types of tools, each providing items related to a single craft. Proficiency with a set of artisan's tools lets you add your proficiency bonus to any ability checks you make using the tools in your craft. Each type of artisan's tools requires a separate proficiency."
+        ],
+        "special": [],
+        "index": "alchemists-supplies",
+        "name": "Alchemist's Supplies",
+        "equipment_category": {
+          "index": "tools",
+          "name": "Tools",
+          "url": "/api/2014/equipment-categories/tools"
+        },
+        "cost": {
+          "quantity": 50,
+          "unit": "gp"
+        },
+        "weight": 8,
+        "url": "/api/2014/equipment/alchemists-supplies",
+        "properties": [],
+        "contents": []
+      },
+      {
+        "desc": [],
+        "special": [],
+        "index": "abacus",
+        "name": "Abacus",
+        "equipment_category": {
+          "index": "adventuring-gear",
+          "name": "Adventuring Gear",
+          "url": "/api/2014/equipment-categories/adventuring-gear"
+        },
+        "cost": {
+          "quantity": 2,
+          "unit": "gp"
+        },
+        "weight": 2,
+        "url": "/api/2014/equipment/abacus",
+        "properties": [],
+        "contents": [],
+        "gear_category": {
+          "index": "standard-gear",
+          "name": "Standard Gear",
+          "url": "/api/2014/equipment-categories/standard-gear"
+        }
+      },
+      {
+        "desc": [
+          "A book might contain poetry, historical accounts, information pertaining to a particular field of lore, diagrams and notes on gnomish contraptions, or just about anything else that can be represented using text or pictures. A book of spells is a spellbook (described later in this section)."
+        ],
+        "special": [],
+        "index": "book",
+        "name": "Book",
+        "equipment_category": {
+          "index": "adventuring-gear",
+          "name": "Adventuring Gear",
+          "url": "/api/2014/equipment-categories/adventuring-gear"
+        },
+        "cost": {
+          "quantity": 25,
+          "unit": "gp"
+        },
+        "weight": 5,
+        "url": "/api/2014/equipment/book",
+        "properties": [],
+        "contents": [],
+        "gear_category": {
+          "index": "standard-gear",
+          "name": "Standard Gear",
+          "url": "/api/2014/equipment-categories/standard-gear"
+        }
+      }
+    ],
+    "Armor": [
+      {
+        "desc": [],
+        "special": [],
+        "index": "plate-armor",
+        "name": "Plate Armor",
+        "equipment_category": {
+          "index": "armor",
+          "name": "Armor",
+          "url": "/api/2014/equipment-categories/armor"
+        },
+        "cost": {
+          "quantity": 1500,
+          "unit": "gp"
+        },
+        "weight": 65,
+        "url": "/api/2014/equipment/plate-armor",
+        "properties": [],
+        "contents": [],
+        "armor_category": "Heavy",
+        "armor_class": {
+          "base": 18,
+          "dex_bonus": false
+        },
+        "str_minimum": 15,
+        "stealth_disadvantage": true
+      }
+    ],
+    "Weapons": [
+      {
+        "desc": [],
+        "special": [],
+        "index": "greataxe",
+        "name": "Greataxe",
+        "equipment_category": {
+          "index": "weapon",
+          "name": "Weapon",
+          "url": "/api/2014/equipment-categories/weapon"
+        },
+        "cost": {
+          "quantity": 30,
+          "unit": "gp"
+        },
+        "weight": 7,
+        "url": "/api/2014/equipment/greataxe",
+        "properties": [
+          {
+            "index": "heavy",
+            "name": "Heavy",
+            "url": "/api/2014/weapon-properties/heavy"
+          },
+          {
+            "index": "two-handed",
+            "name": "Two-Handed",
+            "url": "/api/2014/weapon-properties/two-handed"
+          }
+        ],
+        "contents": [],
+        "weapon_category": "Martial",
+        "weapon_range": "Melee",
+        "category_range": "Martial Melee",
+        "damage": {
+          "damage_dice": "1d12",
+          "damage_type": {
+            "index": "slashing",
+            "name": "Slashing",
+            "url": "/api/2014/damage-types/slashing"
+          }
+        },
+        "range": {
+          "normal": 5,
+          "long": 0
+        }
+      },
+      {
+        "desc": [],
+        "special": [],
+        "index": "rapier",
+        "name": "Rapier",
+        "equipment_category": {
+          "index": "weapon",
+          "name": "Weapon",
+          "url": "/api/2014/equipment-categories/weapon"
+        },
+        "cost": {
+          "quantity": 25,
+          "unit": "gp"
+        },
+        "weight": 2,
+        "url": "/api/2014/equipment/rapier",
+        "properties": [
+          {
+            "index": "finesse",
+            "name": "Finesse",
+            "url": "/api/2014/weapon-properties/finesse"
+          }
+        ],
+        "contents": [],
+        "weapon_category": "Martial",
+        "weapon_range": "Melee",
+        "category_range": "Martial Melee",
+        "damage": {
+          "damage_dice": "1d8",
+          "damage_type": {
+            "index": "piercing",
+            "name": "Piercing",
+            "url": "/api/2014/damage-types/piercing"
+          }
+        },
+        "range": {
+          "normal": 5,
+          "long": 0
+        }
+      }
+    ]
+  },
+  "spells": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ]
+}

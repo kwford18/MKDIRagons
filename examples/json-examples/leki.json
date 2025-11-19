@@ -1,0 +1,1011 @@
+{
+  "name": "Leki",
+  "level": 5,
+  "race": {
+    "index": "tiefling",
+    "name": "Tiefling",
+    "speed": 30,
+    "ability_bonuses": [
+      {
+        "ability_score": {
+          "index": "int",
+          "name": "INT",
+          "url": "/api/2014/ability-scores/int"
+        },
+        "bonus": 1
+      },
+      {
+        "ability_score": {
+          "index": "cha",
+          "name": "CHA",
+          "url": "/api/2014/ability-scores/cha"
+        },
+        "bonus": 2
+      }
+    ],
+    "age": "Tieflings mature at the same rate as humans but live a few years longer.",
+    "alignment": "Tieflings might not have an innate tendency toward evil, but many of them end up there. Evil or not, an independent nature inclines many tieflings toward a chaotic alignment.",
+    "size": "Medium",
+    "size_description": "Tieflings are about the same size and build as humans. Your size is Medium.",
+    "starting_proficiencies": null,
+    "languages": [
+      {
+        "index": "common",
+        "name": "Common",
+        "url": "/api/2014/languages/common"
+      },
+      {
+        "index": "infernal",
+        "name": "Infernal",
+        "url": "/api/2014/languages/infernal"
+      }
+    ],
+    "language_desc": "You can speak, read, and write Common and Infernal.",
+    "traits": [
+      {
+        "index": "darkvision",
+        "name": "Darkvision",
+        "url": "/api/2014/traits/darkvision"
+      },
+      {
+        "index": "hellish-resistance",
+        "name": "Hellish Resistance",
+        "url": "/api/2014/traits/hellish-resistance"
+      },
+      {
+        "index": "infernal-legacy",
+        "name": "Infernal Legacy",
+        "url": "/api/2014/traits/infernal-legacy"
+      }
+    ],
+    "subraces": [],
+    "url": "/api/2014/races/tiefling"
+  },
+  "class": {
+    "index": "cleric",
+    "name": "Cleric",
+    "hit_die": 8,
+    "proficiency_choices": [
+      {
+        "desc": "Choose two from History, Insight, Medicine, Persuasion, and Religion",
+        "choose": 2,
+        "type": "proficiencies",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-history",
+                "name": "Skill: History",
+                "url": "/api/2014/proficiencies/skill-history"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-insight",
+                "name": "Skill: Insight",
+                "url": "/api/2014/proficiencies/skill-insight"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-medicine",
+                "name": "Skill: Medicine",
+                "url": "/api/2014/proficiencies/skill-medicine"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-persuasion",
+                "name": "Skill: Persuasion",
+                "url": "/api/2014/proficiencies/skill-persuasion"
+              }
+            },
+            {
+              "option_type": "reference",
+              "item": {
+                "index": "skill-religion",
+                "name": "Skill: Religion",
+                "url": "/api/2014/proficiencies/skill-religion"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "proficiencies": [
+      {
+        "index": "light-armor",
+        "name": "Light Armor",
+        "url": "/api/2014/proficiencies/light-armor"
+      },
+      {
+        "index": "medium-armor",
+        "name": "Medium Armor",
+        "url": "/api/2014/proficiencies/medium-armor"
+      },
+      {
+        "index": "shields",
+        "name": "Shields",
+        "url": "/api/2014/proficiencies/shields"
+      },
+      {
+        "index": "simple-weapons",
+        "name": "Simple Weapons",
+        "url": "/api/2014/proficiencies/simple-weapons"
+      },
+      {
+        "index": "saving-throw-wis",
+        "name": "Saving Throw: WIS",
+        "url": "/api/2014/proficiencies/saving-throw-wis"
+      },
+      {
+        "index": "saving-throw-cha",
+        "name": "Saving Throw: CHA",
+        "url": "/api/2014/proficiencies/saving-throw-cha"
+      }
+    ],
+    "saving_throws": [
+      {
+        "index": "wis",
+        "name": "WIS",
+        "url": "/api/2014/ability-scores/wis"
+      },
+      {
+        "index": "cha",
+        "name": "CHA",
+        "url": "/api/2014/ability-scores/cha"
+      }
+    ],
+    "starting_equipment": [
+      {
+        "equipment": {
+          "index": "shield",
+          "name": "Shield",
+          "url": "/api/2014/equipment/shield"
+        },
+        "quantity": 1
+      }
+    ],
+    "starting_equipment_options": [
+      {
+        "desc": "(a) a mace or (b) a warhammer (if proficient)",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "mace",
+                "name": "Mace",
+                "url": "/api/2014/equipment/mace"
+              }
+            },
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "warhammer",
+                "name": "Warhammer",
+                "url": "/api/2014/equipment/warhammer"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "desc": "(a) scale mail, (b) leather armor, or (c) chain mail (if proficient)",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "scale-mail",
+                "name": "Scale Mail",
+                "url": "/api/2014/equipment/scale-mail"
+              }
+            },
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "leather-armor",
+                "name": "Leather Armor",
+                "url": "/api/2014/equipment/leather-armor"
+              }
+            },
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "chain-mail",
+                "name": "Chain Mail",
+                "url": "/api/2014/equipment/chain-mail"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "desc": "(a) a light crossbow and 20 bolts or (b) any simple weapon",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "multiple"
+            },
+            {
+              "option_type": "choice",
+              "choice": {
+                "desc": "any simple weapon",
+                "choose": 1,
+                "type": "equipment",
+                "from": {
+                  "option_set_type": "equipment_category",
+                  "equipment_category": {
+                    "index": "simple-weapons",
+                    "name": "Simple Weapons",
+                    "url": "/api/2014/equipment-categories/simple-weapons"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "desc": "(a) a priest’s pack or (b) an explorer’s pack",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "options_array",
+          "options": [
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "priests-pack",
+                "name": "Priest's Pack",
+                "url": "/api/2014/equipment/priests-pack"
+              }
+            },
+            {
+              "option_type": "counted_reference",
+              "count": 1,
+              "of": {
+                "index": "explorers-pack",
+                "name": "Explorer's Pack",
+                "url": "/api/2014/equipment/explorers-pack"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "desc": "holy symbol",
+        "choose": 1,
+        "type": "equipment",
+        "from": {
+          "option_set_type": "equipment_category",
+          "options": null
+        }
+      }
+    ],
+    "class_levels": "/api/2014/classes/cleric/levels",
+    "multi_classing": {
+      "prerequisites": [
+        {
+          "ability_score": {
+            "index": "wis",
+            "name": "WIS",
+            "url": "/api/2014/ability-scores/wis"
+          },
+          "minimum_score": 13
+        }
+      ],
+      "proficiencies": [
+        {
+          "index": "light-armor",
+          "name": "Light Armor",
+          "url": "/api/2014/proficiencies/light-armor"
+        },
+        {
+          "index": "medium-armor",
+          "name": "Medium Armor",
+          "url": "/api/2014/proficiencies/medium-armor"
+        },
+        {
+          "index": "shields",
+          "name": "Shields",
+          "url": "/api/2014/proficiencies/shields"
+        }
+      ]
+    },
+    "subclasses": [
+      {
+        "index": "life",
+        "name": "Life",
+        "url": "/api/2014/subclasses/life"
+      }
+    ],
+    "spellcasting": {
+      "level": 1,
+      "spellcasting_ability": {
+        "index": "wis",
+        "name": "WIS",
+        "url": "/api/2014/ability-scores/wis"
+      },
+      "info": [
+        {
+          "name": "Cantrips",
+          "desc": [
+            "At 1st level, you know three cantrips of your choice from the cleric spell list. You learn additional cleric cantrips of your choice at higher levels, as shown in the Cantrips Known column of the Cleric table."
+          ]
+        },
+        {
+          "name": "Preparing and Casting Spells",
+          "desc": [
+            "The Cleric table shows how many spell slots you have to cast your spells of 1st level and higher. To cast one of these spells, you must expend a slot of the spell's level or higher. You regain all expended spell slots when you finish a long rest.",
+            "You prepare the list of cleric spells that are available for you to cast, choosing from the cleric spell list. When you do so, choose a number of cleric spells equal to your Wisdom modifier + your cleric level (minimum of one spell). The spells must be of a level for which you have spell slots.",
+            "For example, if you are a 3rd-level cleric, you have four 1st-level and two 2nd-level spell slots. With a Wisdom of 16, your list of prepared spells can include six spells of 1st or 2nd level, in any combination. If you prepare the 1st-level spell cure wounds, you can cast it using a 1st-level or 2nd-level slot. Casting the spell doesn't remove it from your list of prepared spells.",
+            "You can change your list of prepared spells when you finish a long rest. Preparing a new list of cleric spells requires time spent in prayer and meditation: at least 1 minute per spell level for each spell on your list."
+          ]
+        },
+        {
+          "name": "Spellcasting Ability",
+          "desc": [
+            "Wisdom is your spellcasting ability for your cleric spells. The power of your spells comes from your devotion to your deity. You use your Wisdom whenever a cleric spell refers to your spellcasting ability. In addition, you use your Wisdom modifier when setting the saving throw DC for a cleric spell you cast and when making an attack roll with one.",
+            "Spell save DC = 8 + your proficiency bonus + your Wisdom modifier",
+            "Spell attack modifier = your proficiency bonus + your Wisdom modifier"
+          ]
+        },
+        {
+          "name": "Ritual Casting",
+          "desc": [
+            "You can cast a cleric spell as a ritual if that spell has the ritual tag and you have the spell prepared."
+          ]
+        },
+        {
+          "name": "Spellcasting Focus",
+          "desc": [
+            "You can use a holy symbol (see Equipment) as a spellcasting focus for your cleric spells."
+          ]
+        }
+      ]
+    },
+    "spells": "/api/2014/classes/cleric/spells",
+    "url": "/api/2014/classes/cleric"
+  },
+  "stats": {
+    "HP": 35,
+    "TempHP": 0,
+    "AC": 11,
+    "Speed": 30
+  },
+  "proficiencies": [
+    "Arcana",
+    "Insight"
+  ],
+  "ability_scores": {
+    "Strength": 10,
+    "Dexterity": 10,
+    "Constitution": 14,
+    "Intelligence": 13,
+    "Wisdom": 15,
+    "Charisma": 15
+  },
+  "skills": {
+    "Athletics": {
+      "Name": "Athletics",
+      "Bonus": 0,
+      "Ability": 0,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Acrobatics": {
+      "Name": "Acrobatics",
+      "Bonus": 0,
+      "Ability": 1,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "SleightOfHand": {
+      "Name": "SleightOfHand",
+      "Bonus": 0,
+      "Ability": 1,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Stealth": {
+      "Name": "Stealth",
+      "Bonus": 0,
+      "Ability": 1,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Arcana": {
+      "Name": "Arcana",
+      "Bonus": 4,
+      "Ability": 3,
+      "Proficient": true,
+      "Expertise": false
+    },
+    "History": {
+      "Name": "History",
+      "Bonus": 1,
+      "Ability": 3,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Investigation": {
+      "Name": "Investigation",
+      "Bonus": 1,
+      "Ability": 3,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Nature": {
+      "Name": "Nature",
+      "Bonus": 1,
+      "Ability": 3,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Religion": {
+      "Name": "Religion",
+      "Bonus": 1,
+      "Ability": 3,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "AnimalHandling": {
+      "Name": "AnimalHandling",
+      "Bonus": 2,
+      "Ability": 4,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Insight": {
+      "Name": "Insight",
+      "Bonus": 5,
+      "Ability": 4,
+      "Proficient": true,
+      "Expertise": false
+    },
+    "Medicine": {
+      "Name": "Medicine",
+      "Bonus": 2,
+      "Ability": 4,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Perception": {
+      "Name": "Perception",
+      "Bonus": 2,
+      "Ability": 4,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Survival": {
+      "Name": "Survival",
+      "Bonus": 2,
+      "Ability": 4,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Deception": {
+      "Name": "Deception",
+      "Bonus": 2,
+      "Ability": 5,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Intimidation": {
+      "Name": "Intimidation",
+      "Bonus": 2,
+      "Ability": 5,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Performance": {
+      "Name": "Performance",
+      "Bonus": 2,
+      "Ability": 5,
+      "Proficient": false,
+      "Expertise": false
+    },
+    "Persuasion": {
+      "Name": "Persuasion",
+      "Bonus": 2,
+      "Ability": 5,
+      "Proficient": false,
+      "Expertise": false
+    }
+  },
+  "saving_throws": {
+    "Strength": 0,
+    "Dexterity": 0,
+    "Constitution": 2,
+    "Intelligence": 1,
+    "Wisdom": 5,
+    "Charisma": 5
+  },
+  "inventory": {
+    "Items": [
+      {
+        "desc": [],
+        "special": [],
+        "index": "abacus",
+        "name": "Abacus",
+        "equipment_category": {
+          "index": "adventuring-gear",
+          "name": "Adventuring Gear",
+          "url": "/api/2014/equipment-categories/adventuring-gear"
+        },
+        "cost": {
+          "quantity": 2,
+          "unit": "gp"
+        },
+        "weight": 2,
+        "url": "/api/2014/equipment/abacus",
+        "properties": [],
+        "contents": [],
+        "gear_category": {
+          "index": "standard-gear",
+          "name": "Standard Gear",
+          "url": "/api/2014/equipment-categories/standard-gear"
+        }
+      },
+      {
+        "desc": [
+          "This sticky, adhesive fluid ignites when exposed to air.",
+          "As an action, you can throw this flask up to 20 feet, shattering it on impact. Make a ranged attack against a creature or object, treating the alchemist's fire as an improvised weapon.",
+          "On a hit, the target takes 1d4 fire damage at the start of each of its turns. A creature can end this damage by using its action to make a DC 10 Dexterity check to extinguish the flames."
+        ],
+        "special": [],
+        "index": "alchemists-fire-flask",
+        "name": "Alchemist's fire (flask)",
+        "equipment_category": {
+          "index": "adventuring-gear",
+          "name": "Adventuring Gear",
+          "url": "/api/2014/equipment-categories/adventuring-gear"
+        },
+        "cost": {
+          "quantity": 50,
+          "unit": "gp"
+        },
+        "weight": 1,
+        "url": "/api/2014/equipment/alchemists-fire-flask",
+        "properties": [],
+        "contents": [],
+        "gear_category": {
+          "index": "standard-gear",
+          "name": "Standard Gear",
+          "url": "/api/2014/equipment-categories/standard-gear"
+        }
+      },
+      {
+        "desc": [
+          "A holy symbol is a representation of a god or pantheon. It might be an amulet depicting a symbol representing a deity, the same symbol carefully engraved or inlaid as an emblem on a shield, or a tiny box holding a fragment of a sacred relic.",
+          "Appendix B lists the symbols commonly associated with many gods in the multiverse. A cleric or paladin can use a holy symbol as a spellcasting focus. To use the symbol in this way, the caster must hold it in hand, wear it visibly, or bear it on a shield."
+        ],
+        "special": [],
+        "index": "amulet",
+        "name": "Amulet",
+        "equipment_category": {
+          "index": "adventuring-gear",
+          "name": "Adventuring Gear",
+          "url": "/api/2014/equipment-categories/adventuring-gear"
+        },
+        "cost": {
+          "quantity": 5,
+          "unit": "gp"
+        },
+        "weight": 1,
+        "url": "/api/2014/equipment/amulet",
+        "properties": [],
+        "contents": [],
+        "gear_category": {
+          "index": "holy-symbols",
+          "name": "Holy Symbols",
+          "url": "/api/2014/equipment-categories/holy-symbols"
+        }
+      },
+      {
+        "desc": [
+          "As an action, you can splash the contents of this vial onto a creature within 5 feet of you or throw the vial up to 20 feet, shattering it on impact. In either case, make a ranged attack against a creature or object, treating the acid as an improvised weapon.",
+          "On a hit, the target takes 2d6 acid damage."
+        ],
+        "special": [],
+        "index": "acid-vial",
+        "name": "Acid (vial)",
+        "equipment_category": {
+          "index": "adventuring-gear",
+          "name": "Adventuring Gear",
+          "url": "/api/2014/equipment-categories/adventuring-gear"
+        },
+        "cost": {
+          "quantity": 25,
+          "unit": "gp"
+        },
+        "weight": 1,
+        "url": "/api/2014/equipment/acid-vial",
+        "properties": [],
+        "contents": [],
+        "gear_category": {
+          "index": "standard-gear",
+          "name": "Standard Gear",
+          "url": "/api/2014/equipment-categories/standard-gear"
+        }
+      }
+    ],
+    "Armor": [
+      {
+        "desc": [],
+        "special": [],
+        "index": "leather-armor",
+        "name": "Leather Armor",
+        "equipment_category": {
+          "index": "armor",
+          "name": "Armor",
+          "url": "/api/2014/equipment-categories/armor"
+        },
+        "cost": {
+          "quantity": 10,
+          "unit": "gp"
+        },
+        "weight": 10,
+        "url": "/api/2014/equipment/leather-armor",
+        "properties": [],
+        "contents": [],
+        "armor_category": "Light",
+        "armor_class": {
+          "base": 11,
+          "dex_bonus": true
+        },
+        "str_minimum": 0,
+        "stealth_disadvantage": false
+      },
+      {
+        "desc": [],
+        "special": [],
+        "index": "padded-armor",
+        "name": "Padded Armor",
+        "equipment_category": {
+          "index": "armor",
+          "name": "Armor",
+          "url": "/api/2014/equipment-categories/armor"
+        },
+        "cost": {
+          "quantity": 5,
+          "unit": "gp"
+        },
+        "weight": 8,
+        "url": "/api/2014/equipment/padded-armor",
+        "properties": [],
+        "contents": [],
+        "armor_category": "Light",
+        "armor_class": {
+          "base": 11,
+          "dex_bonus": true
+        },
+        "str_minimum": 0,
+        "stealth_disadvantage": true
+      }
+    ],
+    "Weapons": [
+      {
+        "desc": [],
+        "special": [],
+        "index": "rapier",
+        "name": "Rapier",
+        "equipment_category": {
+          "index": "weapon",
+          "name": "Weapon",
+          "url": "/api/2014/equipment-categories/weapon"
+        },
+        "cost": {
+          "quantity": 25,
+          "unit": "gp"
+        },
+        "weight": 2,
+        "url": "/api/2014/equipment/rapier",
+        "properties": [
+          {
+            "index": "finesse",
+            "name": "Finesse",
+            "url": "/api/2014/weapon-properties/finesse"
+          }
+        ],
+        "contents": [],
+        "weapon_category": "Martial",
+        "weapon_range": "Melee",
+        "category_range": "Martial Melee",
+        "damage": {
+          "damage_dice": "1d8",
+          "damage_type": {
+            "index": "piercing",
+            "name": "Piercing",
+            "url": "/api/2014/damage-types/piercing"
+          }
+        },
+        "range": {
+          "normal": 5,
+          "long": 0
+        }
+      }
+    ]
+  },
+  "spells": [
+    [
+      {
+        "higher_level": [],
+        "index": "acid-splash",
+        "name": "Acid Splash",
+        "desc": [
+          "You hurl a bubble of acid. Choose one creature within range, or choose two creatures within range that are within 5 feet of each other. A target must succeed on a dexterity saving throw or take 1d6 acid damage.",
+          "This spell's damage increases by 1d6 when you reach 5th level (2d6), 11th level (3d6), and 17th level (4d6)."
+        ],
+        "range": "60 feet",
+        "components": [
+          "V",
+          "S"
+        ],
+        "ritual": false,
+        "duration": "Instantaneous",
+        "concentration": false,
+        "casting_time": "1 action",
+        "level": 0,
+        "attack_type": "",
+        "damage": {
+          "damage_type": {
+            "index": "acid",
+            "name": "Acid",
+            "url": "/api/2014/damage-types/acid"
+          },
+          "damage_at_character_level": {
+            "1": "1d6",
+            "11": "3d6",
+            "17": "4d6",
+            "5": "2d6"
+          }
+        },
+        "school": {
+          "index": "conjuration",
+          "name": "Conjuration",
+          "url": "/api/2014/magic-schools/conjuration"
+        },
+        "classes": [
+          {
+            "index": "sorcerer",
+            "name": "Sorcerer",
+            "url": "/api/2014/classes/sorcerer"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          }
+        ],
+        "url": "/api/2014/spells/acid-splash"
+      }
+    ],
+    [
+      {
+        "higher_level": [],
+        "index": "alarm",
+        "name": "Alarm",
+        "desc": [
+          "You set an alarm against unwanted intrusion. Choose a door, a window, or an area within range that is no larger than a 20-foot cube. Until the spell ends, an alarm alerts you whenever a Tiny or larger creature touches or enters the warded area. When you cast the spell, you can designate creatures that won't set off the alarm. You also choose whether the alarm is mental or audible.",
+          "A mental alarm alerts you with a ping in your mind if you are within 1 mile of the warded area. This ping awakens you if you are sleeping.",
+          "An audible alarm produces the sound of a hand bell for 10 seconds within 60 feet."
+        ],
+        "range": "30 feet",
+        "components": [
+          "V",
+          "S",
+          "M"
+        ],
+        "ritual": true,
+        "duration": "8 hours",
+        "concentration": false,
+        "casting_time": "1 minute",
+        "level": 1,
+        "attack_type": "",
+        "damage": null,
+        "school": {
+          "index": "abjuration",
+          "name": "Abjuration",
+          "url": "/api/2014/magic-schools/abjuration"
+        },
+        "classes": [
+          {
+            "index": "ranger",
+            "name": "Ranger",
+            "url": "/api/2014/classes/ranger"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          }
+        ],
+        "url": "/api/2014/spells/alarm"
+      },
+      {
+        "higher_level": [],
+        "index": "identify",
+        "name": "Identify",
+        "desc": [
+          "You choose one object that you must touch throughout the casting of the spell. If it is a magic item or some other magic-imbued object, you learn its properties and how to use them, whether it requires attunement to use, and how many charges it has, if any. You learn whether any spells are affecting the item and what they are. If the item was created by a spell, you learn which spell created it.",
+          "If you instead touch a creature throughout the casting, you learn what spells, if any, are currently affecting it."
+        ],
+        "range": "Touch",
+        "components": [
+          "V",
+          "S",
+          "M"
+        ],
+        "ritual": true,
+        "duration": "Instantaneous",
+        "concentration": false,
+        "casting_time": "1 minute",
+        "level": 1,
+        "attack_type": "",
+        "damage": null,
+        "school": {
+          "index": "divination",
+          "name": "Divination",
+          "url": "/api/2014/magic-schools/divination"
+        },
+        "classes": [
+          {
+            "index": "bard",
+            "name": "Bard",
+            "url": "/api/2014/classes/bard"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          }
+        ],
+        "url": "/api/2014/spells/identify"
+      },
+      {
+        "higher_level": [],
+        "index": "shield",
+        "name": "Shield",
+        "desc": [
+          "An invisible barrier of magical force appears and protects you. Until the start of your next turn, you have a +5 bonus to AC, including against the triggering attack, and you take no damage from magic missile."
+        ],
+        "range": "Self",
+        "components": [
+          "V",
+          "S"
+        ],
+        "ritual": false,
+        "duration": "1 round",
+        "concentration": false,
+        "casting_time": "1 reaction",
+        "level": 1,
+        "attack_type": "",
+        "damage": null,
+        "school": {
+          "index": "abjuration",
+          "name": "Abjuration",
+          "url": "/api/2014/magic-schools/abjuration"
+        },
+        "classes": [
+          {
+            "index": "sorcerer",
+            "name": "Sorcerer",
+            "url": "/api/2014/classes/sorcerer"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          }
+        ],
+        "url": "/api/2014/spells/shield"
+      }
+    ],
+    [
+      {
+        "higher_level": [],
+        "index": "continual-flame",
+        "name": "Continual Flame",
+        "desc": [
+          "A flame, equivalent in brightness to a torch, springs forth from an object that you touch. The effect looks like a regular flame, but it creates no heat and doesn't use oxygen. A continual flame can be covered or hidden but not smothered or quenched."
+        ],
+        "range": "Touch",
+        "components": [
+          "V",
+          "S",
+          "M"
+        ],
+        "ritual": false,
+        "duration": "Until dispelled",
+        "concentration": false,
+        "casting_time": "1 action",
+        "level": 2,
+        "attack_type": "",
+        "damage": null,
+        "school": {
+          "index": "evocation",
+          "name": "Evocation",
+          "url": "/api/2014/magic-schools/evocation"
+        },
+        "classes": [
+          {
+            "index": "cleric",
+            "name": "Cleric",
+            "url": "/api/2014/classes/cleric"
+          },
+          {
+            "index": "wizard",
+            "name": "Wizard",
+            "url": "/api/2014/classes/wizard"
+          }
+        ],
+        "subclasses": [
+          {
+            "index": "lore",
+            "name": "Lore",
+            "url": "/api/2014/subclasses/lore"
+          }
+        ],
+        "url": "/api/2014/spells/continual-flame"
+      }
+    ],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+  ]
+}

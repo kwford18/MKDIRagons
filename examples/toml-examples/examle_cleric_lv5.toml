@@ -1,0 +1,34 @@
+name = "Leki"
+level = 5
+race = "Tiefling"
+subrace = ""
+class = "Cleric"
+subclass = "Life"
+proficiencies = ["Arcana", "Insight"]
+
+[ability_scores]
+strength = 10
+dexterity = 10
+constitution = 14
+wisdom = 15
+intelligence = 12
+charisma = 13
+
+[inventory]
+weapons = ["Rapier"]
+armor = ["Padded Armor", "Leather Armor"]
+items = ["Amulet", "Abacus", "Acid Vial", "alchemists fire flask"]
+
+[spells]
+level = [
+    ["Acid Splash"],                 # Cantrip
+    ["Alarm", "Identify", "Shield"], # Level 1
+    ["Continual Flame"],             # Level 2
+    [],                              # Level 3
+    [],                              # Level 4
+    [],                              # Level 5
+    [],                              # Level 6
+    [],                              # Level 7
+    [],                              # Level 8
+    [],                              # Level 9
+]
