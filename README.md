@@ -28,11 +28,12 @@ go install github.com/kwford18/MKDIRagons@latest
 
 ## Commands
 
-Command   Description
-  --------- -----------------------------------------
-`build`   Build a JSON character from a TOML file
-`load`    Load & display a JSON character file
-`empty`   Generate an empty TOML template
+| Command | Description |
+|---------|-------------|
+| `build` | Build a JSON character from a TOML file |
+| `load`  | Load & display a JSON character file |
+| `empty` | Generate an empty TOML template |
+
 
 ### Global Flags
 
