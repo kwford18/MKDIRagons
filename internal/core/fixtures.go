@@ -9,12 +9,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// loadFixture loads a JSON fixture file from testdata directory
+// LoadFixture loads a JSON fixture file from testdata directory
 // and returns it as a map for use in mock HTTP responses
 func LoadFixture(t *testing.T, filename string) map[string]interface{} {
 	t.Helper()
 
-	path := filepath.Join("testdata", filename)
+	path := filepath.Join("testdata/fixtures", filename)
 	data, err := os.ReadFile(path)
 	require.NoError(t, err, "Failed to read fixture file: %s", path)
 
@@ -25,19 +25,19 @@ func LoadFixture(t *testing.T, filename string) map[string]interface{} {
 	return result
 }
 
-// loadFixtureRaw loads raw JSON bytes from testdata directory
+// LoadFixtureRaw loads raw JSON bytes from testdata directory
 // Useful for testing malformed JSON or custom unmarshaling
 func LoadFixtureRaw(t *testing.T, filename string) []byte {
 	t.Helper()
 
-	path := filepath.Join("testdata", filename)
+	path := filepath.Join("testdata/fixtures", filename)
 	data, err := os.ReadFile(path)
 	require.NoError(t, err, "Failed to read fixture file: %s", path)
 
 	return data
 }
 
-// loadFixtureInto loads a JSON fixture and unmarshals it directly into the provided struct
+// LoadFixtureInto loads a JSON fixture and unmarshals it directly into the provided struct
 // This is useful for testing the full unmarshaling pipeline
 func LoadFixtureInto(t *testing.T, filename string, target interface{}) {
 	t.Helper()
