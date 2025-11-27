@@ -411,22 +411,22 @@ func BenchmarkTemplateAbilityScoresModifier(b *testing.B) {
 
 // ========== Example Tests ==========
 
-// ExampleTemplateCharacter_ProficiencyBonus demonstrates proficiency bonus
-func ExampleTemplateCharacter_ProficiencyBonus() {
+// ExampleCharacter_ProficiencyBonus demonstrates proficiency bonus
+func ExampleCharacter_ProficiencyBonus() {
 	char := &template.Character{Level: 5}
 	bonus := char.ProficiencyBonus()
 	_ = bonus // 3
 }
 
-// ExampleTemplateCharacter_GetSkillAbility demonstrates skill ability lookup
-func ExampleTemplateCharacter_GetSkillAbility() {
+// ExampleCharacter_GetSkillAbility demonstrates skill ability lookup
+func ExampleCharacter_GetSkillAbility() {
 	char := &template.Character{}
 	ability := char.GetSkillAbility("Athletics")
 	_ = ability // core.Strength
 }
 
-// ExampleTemplateAbilityScores_Modifier demonstrates modifier calculation
-func ExampleTemplateAbilityScores_Modifier() {
+// ExampleAbilityScores_Modifier demonstrates modifier calculation
+func ExampleAbilityScores_Modifier() {
 	scores := template.AbilityScores{
 		Strength: 16,
 	}
