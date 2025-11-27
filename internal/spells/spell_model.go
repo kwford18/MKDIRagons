@@ -6,28 +6,44 @@ import (
 )
 
 type Spell struct {
-	HigherLevel   []string              `json:"higher_level"`
-	Index         string                `json:"index"`
-	Name          string                `json:"name"`
-	Desc          []string              `json:"desc"`
-	Range         string                `json:"range"`
-	Components    []string              `json:"components"`
-	Ritual        bool                  `json:"ritual"`
-	Duration      string                `json:"duration"`
-	Concentration bool                  `json:"concentration"`
-	CastingTime   string                `json:"casting_time"`
-	Level         int                   `json:"level"`
-	AttackType    string                `json:"attack_type"`
-	Damage        *SpellDamage          `json:"damage"`
-	School        reference.Reference   `json:"school"`
-	Classes       []reference.Reference `json:"classes"`
-	Subclasses    []reference.Reference `json:"subclasses"`
-	URL           string                `json:"url"`
+	Index         string   `json:"index"`
+	Name          string   `json:"name"`
+	Desc          []string `json:"desc"`
+	HigherLevel   []string `json:"higher_level,omitempty"`
+	Range         string   `json:"range"`
+	Components    []string `json:"components"`
+	Material      string   `json:"material,omitempty"`
+	Ritual        bool     `json:"ritual"`
+	Duration      string   `json:"duration"`
+	Concentration bool     `json:"concentration"`
+	CastingTime   string   `json:"casting_time"`
+	Level         int      `json:"level"`
+	AttackType    string   `json:"attack_type,omitempty"`
+
+	// Complex nested objects (pointers handle null/missing keys)
+	Damage       *SpellDamage       `json:"damage,omitempty"`
+	DC           *SpellDC           `json:"dc,omitempty"`
+	AreaOfEffect *SpellAreaOfEffect `json:"area_of_effect,omitempty"`
+
+	School     reference.Reference   `json:"school"`
+	Classes    []reference.Reference `json:"classes"`
+	Subclasses []reference.Reference `json:"subclasses"`
+	URL        string                `json:"url"`
 }
 
 type SpellDamage struct {
-	DamageType             reference.Reference `json:"damage_type"`
-	DamageAtCharacterLevel map[string]string   `json:"damage_at_character_level"`
+	DamageType        reference.Reference `json:"damage_type"`
+	DamageAtSlotLevel map[string]string   `json:"damage_at_slot_level"`
+}
+
+type SpellDC struct {
+	DCType    reference.Reference `json:"dc_type"`
+	DCSuccess string              `json:"dc_success"`
+}
+
+type SpellAreaOfEffect struct {
+	Type string `json:"type"`
+	Size int    `json:"size"`
 }
 
 func (s *Spell) GetEndpoint() string {
