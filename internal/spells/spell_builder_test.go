@@ -1,7 +1,6 @@
 package spells_test
 
 import (
-	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -20,31 +19,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
-
-// loadFixture loads a JSON fixture file.
-// Uses t.Errorf to report errors safely from within goroutines.
-func loadFixture(t *testing.T, filename string, target interface{}) {
-	t.Helper()
-
-	// Adjust path as needed based on where you run 'go test'
-	fixtureDir := filepath.Join("testdata", "fixtures")
-	filePath := filepath.Join(fixtureDir, filename)
-
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		t.Errorf("Failed to read fixture file %s: %v", filePath, err)
-		return
-	}
-
-	err = json.Unmarshal(data, target)
-	if err != nil {
-		t.Errorf("Failed to unmarshal fixture file %s: %v", filePath, err)
-	}
-}
 
 // ============================================================================
 // MOCK FETCHERS
@@ -83,8 +57,9 @@ func (m *MockFetcherWithFixtures) FetchJSON(property reference.Fetchable, input 
 
 	// If the test expects success (nil error), load the actual fixture data
 	if args.Error(0) == nil && input != "" {
+		// Access file at testdata/{name}.json
 		fixtureFile := input + ".json"
-		loadFixture(m.t, fixtureFile, property)
+		core.LoadFixtureInto(m.t, fixtureFile, property)
 	}
 
 	return args.Error(0)
@@ -235,7 +210,7 @@ func (suite *FetchSpellsIntegrationTestSuite) SetupSuite() {
 		spellName := pathParts[len(pathParts)-1]
 
 		// 2. Map to fixture file
-		fixturePath := filepath.Join("testdata", "fixtures", spellName+".json")
+		fixturePath := filepath.Join("testdata", spellName+".json")
 
 		// 3. Serve file
 		data, err := os.ReadFile(fixturePath)
@@ -246,7 +221,10 @@ func (suite *FetchSpellsIntegrationTestSuite) SetupSuite() {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		w.Write(data)
+		_, err = w.Write(data)
+		if err != nil {
+			return
+		}
 	}))
 
 	// Point the real HTTPFetcher to our local test server
@@ -262,7 +240,7 @@ func (suite *FetchSpellsIntegrationTestSuite) TearDownSuite() {
 
 func (suite *FetchSpellsIntegrationTestSuite) TestIntegration_FetchRealHTTP_Fireball() {
 	// This test uses the REAL HTTPFetcher (from fetcher.go)
-	// It hits the httptest server, which reads from testdata/fixtures/fireball.json
+	// It hits the httptest server, which reads from testdata/fireball.json
 
 	base := &template.Character{
 		Spells: template.Spells{

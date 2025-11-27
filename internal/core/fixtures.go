@@ -14,7 +14,7 @@ import (
 func LoadFixture(t *testing.T, filename string) map[string]interface{} {
 	t.Helper()
 
-	path := filepath.Join("testdata/fixtures", filename)
+	path := filepath.Join("testdata", filename)
 	data, err := os.ReadFile(path)
 	require.NoError(t, err, "Failed to read fixture file: %s", path)
 
@@ -30,7 +30,7 @@ func LoadFixture(t *testing.T, filename string) map[string]interface{} {
 func LoadFixtureRaw(t *testing.T, filename string) []byte {
 	t.Helper()
 
-	path := filepath.Join("testdata/fixtures", filename)
+	path := filepath.Join("testdata", filename)
 	data, err := os.ReadFile(path)
 	require.NoError(t, err, "Failed to read fixture file: %s", path)
 

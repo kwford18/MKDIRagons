@@ -1,12 +1,10 @@
 package race_test
 
 import (
-	"encoding/json"
 	"errors"
-	"os"
-	"path/filepath"
 	"testing"
 
+	"github.com/kwford18/MKDIRagons/internal/core"
 	"github.com/kwford18/MKDIRagons/internal/race"
 	"github.com/kwford18/MKDIRagons/internal/reference"
 	"github.com/kwford18/MKDIRagons/template"
@@ -14,27 +12,6 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
-
-func loadFixture(t *testing.T, filename string, target interface{}) {
-	t.Helper()
-
-	fixtureDir := filepath.Join("testdata", "fixtures")
-	filePath := filepath.Join(fixtureDir, filename)
-
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		t.Fatalf("Failed to read fixture file %s: %v", filePath, err)
-	}
-
-	err = json.Unmarshal(data, target)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal fixture file %s: %v", filePath, err)
-	}
-}
 
 // ============================================================================
 // MOCK FETCHERS
@@ -63,7 +40,8 @@ func (m *MockFetcherWithFixtures) FetchJSON(property reference.Fetchable, input 
 
 	if args.Error(0) == nil && input != "" {
 		fixtureFile := input + ".json"
-		loadFixture(m.t, fixtureFile, property)
+		// REPLACED: Local helper call with core.LoadFixtureInto
+		core.LoadFixtureInto(m.t, fixtureFile, property)
 	}
 
 	return args.Error(0)

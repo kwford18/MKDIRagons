@@ -1,41 +1,17 @@
 package class_test
 
 import (
-	"encoding/json"
 	"errors"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/kwford18/MKDIRagons/internal/class"
+	"github.com/kwford18/MKDIRagons/internal/core"
 	"github.com/kwford18/MKDIRagons/internal/reference"
 	"github.com/kwford18/MKDIRagons/template"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
-
-// loadFixture loads a JSON fixture file
-func loadFixture(t *testing.T, filename string, target interface{}) {
-	t.Helper()
-
-	fixtureDir := filepath.Join("testdata", "fixtures")
-	filePath := filepath.Join(fixtureDir, filename)
-
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		t.Fatalf("Failed to read fixture file %s: %v", filePath, err)
-	}
-
-	err = json.Unmarshal(data, target)
-	if err != nil {
-		t.Fatalf("Failed to unmarshal fixture file %s: %v", filePath, err)
-	}
-}
 
 // ============================================================================
 // MOCK FETCHERS
@@ -51,7 +27,7 @@ func (m *MockFetcher) FetchJSON(property reference.Fetchable, input string) erro
 	return args.Error(0)
 }
 
-// MockFetcherWithFixtures - mock that loads real fixture data
+// MockFetcherWithFixtures - mock that loads real fixture data using core helper
 type MockFetcherWithFixtures struct {
 	mock.Mock
 	t *testing.T
@@ -64,10 +40,11 @@ func NewMockFetcherWithFixtures(t *testing.T) *MockFetcherWithFixtures {
 func (m *MockFetcherWithFixtures) FetchJSON(property reference.Fetchable, input string) error {
 	args := m.Called(property, input)
 
-	// If mock expects success, load the fixture
+	// If mock expects success, load the fixture using the core package
 	if args.Error(0) == nil && input != "" {
 		fixtureFile := input + ".json"
-		loadFixture(m.t, fixtureFile, property)
+		// REPLACED: Local helper call with core.LoadFixtureInto
+		core.LoadFixtureInto(m.t, fixtureFile, property)
 	}
 
 	return args.Error(0)
