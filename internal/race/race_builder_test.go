@@ -3,11 +3,10 @@ package race_test
 import (
 	"encoding/json"
 	"errors"
-	"net/http"
-	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"testing"
 
-	"github.com/kwford18/MKDIRagons/internal/core"
 	"github.com/kwford18/MKDIRagons/internal/race"
 	"github.com/kwford18/MKDIRagons/internal/reference"
 	"github.com/kwford18/MKDIRagons/template"
@@ -16,9 +15,31 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-// ========== Mock Fetcher ==========
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
 
-// MockFetcher is a mock implementation of core.Fetcher for unit tests
+func loadFixture(t *testing.T, filename string, target interface{}) {
+	t.Helper()
+
+	fixtureDir := filepath.Join("testdata", "fixtures")
+	filePath := filepath.Join(fixtureDir, filename)
+
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		t.Fatalf("Failed to read fixture file %s: %v", filePath, err)
+	}
+
+	err = json.Unmarshal(data, target)
+	if err != nil {
+		t.Fatalf("Failed to unmarshal fixture file %s: %v", filePath, err)
+	}
+}
+
+// ============================================================================
+// MOCK FETCHERS
+// ============================================================================
+
 type MockFetcher struct {
 	mock.Mock
 }
@@ -28,413 +49,358 @@ func (m *MockFetcher) FetchJSON(property reference.Fetchable, input string) erro
 	return args.Error(0)
 }
 
-// ========== Unit Tests with Mock Fetcher ==========
-
-// FetchRaceUnitTestSuite uses mocks for fast, isolated unit tests
-type FetchRaceUnitTestSuite struct {
-	suite.Suite
-	mockFetcher *MockFetcher
-	base        *template.Character
-	testRace    *race.Race
+type MockFetcherWithFixtures struct {
+	mock.Mock
+	t *testing.T
 }
 
-func (suite *FetchRaceUnitTestSuite) SetupTest() {
+func NewMockFetcherWithFixtures(t *testing.T) *MockFetcherWithFixtures {
+	return &MockFetcherWithFixtures{t: t}
+}
+
+func (m *MockFetcherWithFixtures) FetchJSON(property reference.Fetchable, input string) error {
+	args := m.Called(property, input)
+
+	if args.Error(0) == nil && input != "" {
+		fixtureFile := input + ".json"
+		loadFixture(m.t, fixtureFile, property)
+	}
+
+	return args.Error(0)
+}
+
+// ============================================================================
+// TEST SUITE
+// ============================================================================
+
+type RaceBuilderTestSuite struct {
+	suite.Suite
+	mockFetcher         *MockFetcher
+	fixtureBasedFetcher *MockFetcherWithFixtures
+	baseCharacter       *template.Character
+	raceData            *race.Race
+}
+
+func (suite *RaceBuilderTestSuite) SetupTest() {
 	suite.mockFetcher = new(MockFetcher)
-	suite.base = &template.Character{
-		Race: "elf",
+	suite.fixtureBasedFetcher = NewMockFetcherWithFixtures(suite.T())
+
+	suite.baseCharacter = &template.Character{
+		Name:  "Test Human",
+		Level: 5,
+		Race:  "human",
+		Class: "fighter",
+		AbilityScores: template.AbilityScores{
+			Strength:     16,
+			Dexterity:    14,
+			Constitution: 15,
+			Intelligence: 10,
+			Wisdom:       12,
+			Charisma:     8,
+		},
 	}
-	suite.testRace = &race.Race{}
+
+	suite.raceData = &race.Race{}
 }
 
-func (suite *FetchRaceUnitTestSuite) TestFetchRaceSuccess() {
-	// Setup mock to return success
-	suite.mockFetcher.On("FetchJSON", suite.testRace, "elf").Return(nil).Run(func(args mock.Arguments) {
-		// Simulate populating the race data
-		r := args.Get(0).(*race.Race)
-		r.Index = "elf"
-		r.Name = "Elf"
-		r.Speed = 30
-		r.Size = "Medium"
-	})
+func TestRaceBuilderTestSuite(t *testing.T) {
+	suite.Run(t, new(RaceBuilderTestSuite))
+}
 
-	err := race.FetchRaceWithFetcher(suite.mockFetcher, suite.base, suite.testRace)
+// ============================================================================
+// UNIT TESTS - Behavior Testing
+// ============================================================================
+
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_Success() {
+	suite.mockFetcher.On("FetchJSON", suite.raceData, "human").Return(nil)
+
+	err := race.FetchRaceWithFetcher(suite.mockFetcher, suite.baseCharacter, suite.raceData)
 
 	assert.NoError(suite.T(), err)
-	assert.Equal(suite.T(), "elf", suite.testRace.Index)
-	assert.Equal(suite.T(), "Elf", suite.testRace.Name)
-	assert.Equal(suite.T(), 30, suite.testRace.Speed)
 	suite.mockFetcher.AssertExpectations(suite.T())
+	suite.mockFetcher.AssertCalled(suite.T(), "FetchJSON", suite.raceData, "human")
 }
 
-func (suite *FetchRaceUnitTestSuite) TestFetchRaceError() {
-	// Setup mock to return an error
-	expectedErr := errors.New("network error")
-	suite.mockFetcher.On("FetchJSON", suite.testRace, "elf").Return(expectedErr)
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_NetworkError() {
+	expectedError := errors.New("network timeout")
+	suite.mockFetcher.On("FetchJSON", suite.raceData, "human").Return(expectedError)
 
-	err := race.FetchRaceWithFetcher(suite.mockFetcher, suite.base, suite.testRace)
+	err := race.FetchRaceWithFetcher(suite.mockFetcher, suite.baseCharacter, suite.raceData)
 
 	assert.Error(suite.T(), err)
-	assert.Equal(suite.T(), expectedErr, err)
+	assert.Equal(suite.T(), expectedError, err)
 	suite.mockFetcher.AssertExpectations(suite.T())
 }
 
-func (suite *FetchRaceUnitTestSuite) TestFetchRaceEmptyString() {
-	suite.base.Race = ""
-	suite.mockFetcher.On("FetchJSON", suite.testRace, "").Return(errors.New("empty race name"))
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_NotFoundError() {
+	notFoundError := errors.New("404 not found")
+	suite.mockFetcher.On("FetchJSON", suite.raceData, "human").Return(notFoundError)
 
-	err := race.FetchRaceWithFetcher(suite.mockFetcher, suite.base, suite.testRace)
+	err := race.FetchRaceWithFetcher(suite.mockFetcher, suite.baseCharacter, suite.raceData)
 
 	assert.Error(suite.T(), err)
-	suite.mockFetcher.AssertExpectations(suite.T())
+	assert.Equal(suite.T(), notFoundError, err)
 }
 
-func (suite *FetchRaceUnitTestSuite) TestFetchRaceNilBase() {
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_NilFetcher() {
 	assert.Panics(suite.T(), func() {
-		race.FetchRaceWithFetcher(suite.mockFetcher, nil, suite.testRace)
+		_ = race.FetchRaceWithFetcher(nil, suite.baseCharacter, suite.raceData)
 	})
 }
 
-func (suite *FetchRaceUnitTestSuite) TestFetchRaceNilRace() {
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_NilCharacter() {
 	assert.Panics(suite.T(), func() {
-		race.FetchRaceWithFetcher(suite.mockFetcher, suite.base, nil)
+		_ = race.FetchRaceWithFetcher(suite.mockFetcher, nil, suite.raceData)
 	})
 }
 
-func (suite *FetchRaceUnitTestSuite) TestFetchRaceDifferentRaces() {
-	testCases := []struct {
-		raceName      string
-		expectedName  string
-		expectedSpeed int
-	}{
-		{"elf", "Elf", 30},
-		{"dwarf", "Dwarf", 25},
-		{"halfling", "Halfling", 25},
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_EmptyRaceName() {
+	emptyCharacter := &template.Character{
+		Name:          "Test",
+		Level:         1,
+		Race:          "",
+		Class:         "fighter",
+		AbilityScores: template.AbilityScores{Strength: 10},
 	}
 
-	for _, tc := range testCases {
-		suite.Run(tc.raceName, func() {
-			mockFetcher := new(MockFetcher)
-			base := &template.Character{Race: tc.raceName}
-			testRace := &race.Race{}
+	suite.mockFetcher.On("FetchJSON", suite.raceData, "").Return(nil)
 
-			mockFetcher.On("FetchJSON", testRace, tc.raceName).Return(nil).Run(func(args mock.Arguments) {
-				r := args.Get(0).(*race.Race)
-				r.Index = tc.raceName
-				r.Name = tc.expectedName
-				r.Speed = tc.expectedSpeed
-			})
-
-			err := race.FetchRaceWithFetcher(mockFetcher, base, testRace)
-
-			assert.NoError(suite.T(), err)
-			assert.Equal(suite.T(), tc.raceName, testRace.Index)
-			assert.Equal(suite.T(), tc.expectedSpeed, testRace.Speed)
-			mockFetcher.AssertExpectations(suite.T())
-		})
-	}
-}
-
-func TestFetchRaceUnitTestSuite(t *testing.T) {
-	suite.Run(t, new(FetchRaceUnitTestSuite))
-}
-
-// ========== Integration Tests with HTTP Server ==========
-
-// FetchRaceIntegrationTestSuite uses a real HTTP server for integration tests
-type FetchRaceIntegrationTestSuite struct {
-	suite.Suite
-	server  *httptest.Server
-	fetcher *core.HTTPFetcher
-}
-
-func (suite *FetchRaceIntegrationTestSuite) SetupSuite() {
-	// Create a mock HTTP server that mimics the D&D API
-	suite.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch r.URL.Path {
-		case "/races/elf":
-			mockRace := race.Race{
-				Index:     "elf",
-				Name:      "Elf",
-				Speed:     30,
-				Size:      "Medium",
-				Alignment: "Chaotic Good",
-				Age:       "Although elves reach physical maturity at about the same age as humans, the elven understanding of adulthood goes beyond physical growth to encompass worldly experience. An elf typically claims adulthood and an adult name around the age of 100 and can live to be 750 years old.",
-				URL:       "/api/races/elf",
-				AbilityBonuses: []race.AbilityBonus{
-					{
-						AbilityScore: reference.Reference{Index: "dex", Name: "DEX", URL: "/api/ability-scores/dex"},
-						Bonus:        2,
-					},
-				},
-				Languages: []reference.Reference{
-					{Index: "common", Name: "Common", URL: "/api/languages/common"},
-					{Index: "elvish", Name: "Elvish", URL: "/api/languages/elvish"},
-				},
-				Traits: []reference.Reference{
-					{Index: "darkvision", Name: "Darkvision", URL: "/api/traits/darkvision"},
-					{Index: "fey-ancestry", Name: "Fey Ancestry", URL: "/api/traits/fey-ancestry"},
-					{Index: "trance", Name: "Trance", URL: "/api/traits/trance"},
-				},
-				Subraces: []reference.Reference{
-					{Index: "high-elf", Name: "High Elf", URL: "/api/subraces/high-elf"},
-				},
-			}
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(mockRace)
-
-		case "/races/dwarf":
-			mockRace := race.Race{
-				Index: "dwarf",
-				Name:  "Dwarf",
-				Speed: 25,
-				Size:  "Medium",
-				URL:   "/api/races/dwarf",
-				AbilityBonuses: []race.AbilityBonus{
-					{
-						AbilityScore: reference.Reference{Index: "con", Name: "CON"},
-						Bonus:        2,
-					},
-				},
-				Languages: []reference.Reference{
-					{Index: "common", Name: "Common"},
-					{Index: "dwarvish", Name: "Dwarvish"},
-				},
-			}
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(mockRace)
-
-		case "/races/half-elf":
-			mockRace := race.Race{
-				Index:           "half-elf",
-				Name:            "Half-Elf",
-				Speed:           30,
-				Size:            "Medium",
-				SizeDescription: "Half-elves are about the same size as humans, ranging from 5 to 6 feet tall.",
-				AbilityBonuses: []race.AbilityBonus{
-					{
-						AbilityScore: reference.Reference{Index: "cha", Name: "CHA"},
-						Bonus:        2,
-					},
-				},
-			}
-			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(mockRace)
-
-		case "/races/error":
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Internal Server Error"))
-
-		case "/races/invalid-json":
-			w.Header().Set("Content-Type", "application/json")
-			w.Write([]byte(`{"invalid json`))
-
-		case "/races/not-found":
-			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte("Race not found"))
-
-		default:
-			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte("Not Found"))
-		}
-	}))
-
-	// Create a fetcher that uses our test server
-	suite.fetcher = &core.HTTPFetcher{
-		Client:  suite.server.Client(),
-		BaseURL: suite.server.URL + "/",
-	}
-}
-
-func (suite *FetchRaceIntegrationTestSuite) TearDownSuite() {
-	suite.server.Close()
-}
-
-func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceElfSuccess() {
-	base := &template.Character{Race: "elf"}
-	testRace := &race.Race{}
-
-	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
+	err := race.FetchRaceWithFetcher(suite.mockFetcher, emptyCharacter, suite.raceData)
 
 	assert.NoError(suite.T(), err)
-	assert.Equal(suite.T(), "elf", testRace.Index)
-	assert.Equal(suite.T(), "Elf", testRace.Name)
-	assert.Equal(suite.T(), 30, testRace.Speed)
-	assert.Equal(suite.T(), "Medium", testRace.Size)
-	assert.Len(suite.T(), testRace.AbilityBonuses, 1)
-	assert.Equal(suite.T(), 2, testRace.AbilityBonuses[0].Bonus)
-	assert.Equal(suite.T(), "dex", testRace.AbilityBonuses[0].AbilityScore.Index)
-	assert.Len(suite.T(), testRace.Languages, 2)
-	assert.Len(suite.T(), testRace.Traits, 3)
-	assert.Len(suite.T(), testRace.Subraces, 1)
-	assert.NotEmpty(suite.T(), testRace.Age)
+	suite.mockFetcher.AssertCalled(suite.T(), "FetchJSON", suite.raceData, "")
 }
 
-func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceDwarfSuccess() {
-	base := &template.Character{Race: "dwarf"}
-	testRace := &race.Race{}
-
-	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
-
-	assert.NoError(suite.T(), err)
-	assert.Equal(suite.T(), "dwarf", testRace.Index)
-	assert.Equal(suite.T(), "Dwarf", testRace.Name)
-	assert.Equal(suite.T(), 25, testRace.Speed)
-	assert.Equal(suite.T(), "con", testRace.AbilityBonuses[0].AbilityScore.Index)
-	assert.Len(suite.T(), testRace.Languages, 2)
-}
-
-func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceWithComplexData() {
-	base := &template.Character{Race: "half-elf"}
-	testRace := &race.Race{}
-
-	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
-
-	assert.NoError(suite.T(), err)
-	assert.Equal(suite.T(), "half-elf", testRace.Index)
-	assert.Equal(suite.T(), "Half-Elf", testRace.Name)
-	assert.NotEmpty(suite.T(), testRace.SizeDescription)
-	assert.Len(suite.T(), testRace.AbilityBonuses, 1)
-	assert.Equal(suite.T(), "cha", testRace.AbilityBonuses[0].AbilityScore.Index)
-}
-
-func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceServerError() {
-	base := &template.Character{Race: "error"}
-	testRace := &race.Race{}
-
-	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
-
-	assert.Error(suite.T(), err)
-	assert.Contains(suite.T(), err.Error(), "500")
-}
-
-func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceInvalidJSON() {
-	base := &template.Character{Race: "invalid-json"}
-	testRace := &race.Race{}
-
-	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
-
-	assert.Error(suite.T(), err)
-	assert.Contains(suite.T(), err.Error(), "decode")
-}
-
-func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceNotFound() {
-	base := &template.Character{Race: "not-found"}
-	testRace := &race.Race{}
-
-	err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
-
-	assert.Error(suite.T(), err)
-	assert.Contains(suite.T(), err.Error(), "404")
-}
-
-func (suite *FetchRaceIntegrationTestSuite) TestFetchRaceMultipleSequential() {
-	// Test multiple sequential fetches to ensure no state issues
-	races := []string{"elf", "dwarf", "half-elf"}
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_MultipleRaces() {
+	races := []string{"human", "elf", "dwarf", "halfling", "dragonborn", "gnome", "half-elf", "half-orc", "tiefling"}
 
 	for _, raceName := range races {
-		base := &template.Character{Race: raceName}
-		testRace := &race.Race{}
+		character := &template.Character{
+			Name:          "Test",
+			Level:         1,
+			Race:          raceName,
+			Class:         "fighter",
+			AbilityScores: template.AbilityScores{Strength: 10},
+		}
 
-		err := race.FetchRaceWithFetcher(suite.fetcher, base, testRace)
+		mockFetcher := new(MockFetcher)
+		raceData := &race.Race{}
 
-		assert.NoError(suite.T(), err)
-		assert.Equal(suite.T(), raceName, testRace.Index)
+		mockFetcher.On("FetchJSON", raceData, raceName).Return(nil)
+
+		err := race.FetchRaceWithFetcher(mockFetcher, character, raceData)
+
+		assert.NoError(suite.T(), err, "Failed for race: %s", raceName)
+		mockFetcher.AssertExpectations(suite.T())
 	}
 }
 
-func TestFetchRaceIntegrationTestSuite(t *testing.T) {
-	suite.Run(t, new(FetchRaceIntegrationTestSuite))
+// ============================================================================
+// UNIT TESTS - With Fixture Data
+// ============================================================================
+
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_HumanWithFixture() {
+	suite.fixtureBasedFetcher.On("FetchJSON", suite.raceData, "human").Return(nil)
+
+	err := race.FetchRaceWithFetcher(suite.fixtureBasedFetcher, suite.baseCharacter, suite.raceData)
+
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), "Human", suite.raceData.Name)
+	assert.Equal(suite.T(), "human", suite.raceData.Index)
+	assert.Equal(suite.T(), 30, suite.raceData.Speed)
+	assert.Equal(suite.T(), "Medium", suite.raceData.Size)
+	assert.Len(suite.T(), suite.raceData.AbilityBonuses, 6) // All abilities +1
+	assert.NotEmpty(suite.T(), suite.raceData.Languages)
+
+	suite.fixtureBasedFetcher.AssertExpectations(suite.T())
 }
 
-// ========== Tests for Default FetchRace (uses real API) ==========
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_ElfWithFixture() {
+	elfCharacter := &template.Character{
+		Name:  "Test Elf",
+		Level: 3,
+		Race:  "elf",
+		Class: "wizard",
+		AbilityScores: template.AbilityScores{
+			Intelligence: 16,
+			Dexterity:    14,
+			Wisdom:       12,
+		},
+	}
 
-func TestFetchRaceWithRealAPI(t *testing.T) {
+	elfRace := &race.Race{}
+
+	suite.fixtureBasedFetcher.On("FetchJSON", elfRace, "elf").Return(nil)
+
+	err := race.FetchRaceWithFetcher(suite.fixtureBasedFetcher, elfCharacter, elfRace)
+
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), "Elf", elfRace.Name)
+	assert.Equal(suite.T(), "elf", elfRace.Index)
+	assert.Equal(suite.T(), 30, elfRace.Speed)
+	assert.Len(suite.T(), elfRace.AbilityBonuses, 1) // DEX +2
+	assert.Equal(suite.T(), "dex", elfRace.AbilityBonuses[0].AbilityScore.Index)
+	assert.Equal(suite.T(), 2, elfRace.AbilityBonuses[0].Bonus)
+	assert.NotEmpty(suite.T(), elfRace.Traits)
+	assert.NotEmpty(suite.T(), elfRace.Subraces)
+
+	suite.fixtureBasedFetcher.AssertExpectations(suite.T())
+}
+
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_DwarfWithFixture() {
+	dwarfCharacter := &template.Character{
+		Name:  "Test Dwarf",
+		Level: 5,
+		Race:  "dwarf",
+		Class: "cleric",
+		AbilityScores: template.AbilityScores{
+			Wisdom:       16,
+			Constitution: 14,
+			Strength:     12,
+		},
+	}
+
+	dwarfRace := &race.Race{}
+
+	suite.fixtureBasedFetcher.On("FetchJSON", dwarfRace, "dwarf").Return(nil)
+
+	err := race.FetchRaceWithFetcher(suite.fixtureBasedFetcher, dwarfCharacter, dwarfRace)
+
+	assert.NoError(suite.T(), err)
+	assert.Equal(suite.T(), "Dwarf", dwarfRace.Name)
+	assert.Equal(suite.T(), "dwarf", dwarfRace.Index)
+	assert.Equal(suite.T(), 25, dwarfRace.Speed)       // Dwarves are slower
+	assert.Len(suite.T(), dwarfRace.AbilityBonuses, 1) // CON +2
+	assert.Equal(suite.T(), "con", dwarfRace.AbilityBonuses[0].AbilityScore.Index)
+	assert.Equal(suite.T(), 2, dwarfRace.AbilityBonuses[0].Bonus)
+
+	suite.fixtureBasedFetcher.AssertExpectations(suite.T())
+}
+
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_VerifyAbilityBonuses() {
+	suite.fixtureBasedFetcher.On("FetchJSON", suite.raceData, "human").Return(nil)
+
+	err := race.FetchRaceWithFetcher(suite.fixtureBasedFetcher, suite.baseCharacter, suite.raceData)
+
+	assert.NoError(suite.T(), err)
+
+	// Verify all ability scores get +1 for human
+	abilityIndexes := []string{"str", "dex", "con", "int", "wis", "cha"}
+	for _, abilityIndex := range abilityIndexes {
+		found := false
+		for _, bonus := range suite.raceData.AbilityBonuses {
+			if bonus.AbilityScore.Index == abilityIndex {
+				assert.Equal(suite.T(), 1, bonus.Bonus)
+				found = true
+				break
+			}
+		}
+		assert.True(suite.T(), found, "Expected to find ability bonus for %s", abilityIndex)
+	}
+}
+
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_VerifyTraits() {
+	elfRace := &race.Race{}
+	elfCharacter := &template.Character{
+		Name:          "Test Elf",
+		Level:         1,
+		Race:          "elf",
+		Class:         "ranger",
+		AbilityScores: template.AbilityScores{Dexterity: 16},
+	}
+
+	suite.fixtureBasedFetcher.On("FetchJSON", elfRace, "elf").Return(nil)
+
+	err := race.FetchRaceWithFetcher(suite.fixtureBasedFetcher, elfCharacter, elfRace)
+
+	assert.NoError(suite.T(), err)
+	assert.NotEmpty(suite.T(), elfRace.Traits)
+
+	traitNames := make([]string, len(elfRace.Traits))
+	for i, trait := range elfRace.Traits {
+		traitNames[i] = trait.Name
+	}
+
+	assert.Contains(suite.T(), traitNames, "Darkvision")
+	assert.Contains(suite.T(), traitNames, "Keen Senses")
+	assert.Contains(suite.T(), traitNames, "Fey Ancestry")
+}
+
+// ============================================================================
+// INTEGRATION TESTS - Real API (Optional)
+// ============================================================================
+
+func (suite *RaceBuilderTestSuite) TestFetchRace_RealAPI_Human() {
 	if testing.Short() {
-		t.Skip("Skipping integration test with real API in short mode")
+		suite.T().Skip("Skipping integration test in short mode")
 	}
 
-	base := &template.Character{Race: "elf"}
-	testRace := &race.Race{}
+	character := &template.Character{
+		Name:          "Integration Test Human",
+		Level:         1,
+		Race:          "human",
+		Class:         "fighter",
+		AbilityScores: template.AbilityScores{Strength: 16},
+	}
 
-	err := race.FetchRace(base, testRace)
+	raceData := &race.Race{}
 
-	// Only check if call succeeded, don't assert specific data in case API changes
+	err := race.FetchRace(character, raceData)
+
 	if err == nil {
-		assert.NotEmpty(t, testRace.Index)
-		assert.NotEmpty(t, testRace.Name)
+		assert.Equal(suite.T(), "Human", raceData.Name)
+		assert.Equal(suite.T(), 30, raceData.Speed)
+		suite.T().Log("✓ Real API call succeeded")
 	} else {
-		t.Logf("Real API call failed (this is okay in tests): %v", err)
+		suite.T().Logf("⚠ API not available: %v", err)
 	}
 }
 
-// ========== Benchmark Tests ==========
+// ============================================================================
+// EDGE CASE TESTS
+// ============================================================================
 
-func BenchmarkFetchRaceWithMock(b *testing.B) {
-	mockFetcher := new(MockFetcher)
-	mockFetcher.On("FetchJSON", mock.Anything, "elf").Return(nil)
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_SequentialFetches() {
+	suite.mockFetcher.On("FetchJSON", suite.raceData, "human").Return(nil).Once()
+	err1 := race.FetchRaceWithFetcher(suite.mockFetcher, suite.baseCharacter, suite.raceData)
+	assert.NoError(suite.T(), err1)
 
-	base := &template.Character{Race: "elf"}
-
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		testRace := &race.Race{}
-		race.FetchRaceWithFetcher(mockFetcher, base, testRace)
+	elfCharacter := &template.Character{
+		Name:          "Elf",
+		Level:         1,
+		Race:          "elf",
+		Class:         "wizard",
+		AbilityScores: template.AbilityScores{Intelligence: 16},
 	}
+	elfRace := &race.Race{}
+
+	suite.mockFetcher.On("FetchJSON", elfRace, "elf").Return(nil).Once()
+	err2 := race.FetchRaceWithFetcher(suite.mockFetcher, elfCharacter, elfRace)
+	assert.NoError(suite.T(), err2)
+
+	suite.mockFetcher.AssertNumberOfCalls(suite.T(), "FetchJSON", 2)
 }
 
-func BenchmarkFetchRaceWithHTTPServer(b *testing.B) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		mockRace := race.Race{Index: "elf", Name: "Elf", Speed: 30}
-		json.NewEncoder(w).Encode(mockRace)
-	}))
-	defer server.Close()
+func (suite *RaceBuilderTestSuite) TestFetchRaceWithFetcher_RaceNameCaseSensitivity() {
+	testCases := []string{"human", "Human", "HUMAN"}
 
-	fetcher := &core.HTTPFetcher{
-		Client:  server.Client(),
-		BaseURL: server.URL + "/",
+	for _, raceName := range testCases {
+		character := &template.Character{
+			Name:          "Test",
+			Level:         1,
+			Race:          raceName,
+			Class:         "fighter",
+			AbilityScores: template.AbilityScores{Strength: 10},
+		}
+
+		mockFetcher := new(MockFetcher)
+		raceData := &race.Race{}
+
+		mockFetcher.On("FetchJSON", raceData, raceName).Return(nil)
+
+		err := race.FetchRaceWithFetcher(mockFetcher, character, raceData)
+
+		assert.NoError(suite.T(), err, "Failed for race name: %s", raceName)
+		mockFetcher.AssertCalled(suite.T(), "FetchJSON", raceData, raceName)
 	}
-	base := &template.Character{Race: "elf"}
-
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		testRace := &race.Race{}
-		race.FetchRaceWithFetcher(fetcher, base, testRace)
-	}
-}
-
-// ========== Example Tests ==========
-
-func ExampleFetchRace() {
-	base := &template.Character{
-		Race: "elf",
-	}
-	testRace := &race.Race{}
-
-	err := race.FetchRace(base, testRace)
-	if err != nil {
-		// Handle error
-		return
-	}
-
-	// Use the fetched race
-	testRace.Print()
-	// Output: Race: Elf
-}
-
-func ExampleFetchRaceWithFetcher() {
-	// Create a custom fetcher (e.g., for testing)
-	fetcher := core.NewFetcher()
-
-	base := &template.Character{
-		Race: "dwarf",
-	}
-	testRace := &race.Race{}
-
-	err := race.FetchRaceWithFetcher(fetcher, base, testRace)
-	if err != nil {
-		// Handle error
-		return
-	}
-
-	testRace.Print()
 }

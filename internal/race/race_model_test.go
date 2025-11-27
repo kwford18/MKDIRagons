@@ -32,9 +32,6 @@ func (suite *RaceModelTestSuite) SetupTest() {
 				Bonus: 2,
 			},
 		},
-		StartingProficiencies: []reference.Reference{
-			{Index: "skill-perception", Name: "Skill: Perception", URL: "/api/proficiencies/skill-perception"},
-		},
 		Languages: []reference.Reference{
 			{Index: "common", Name: "Common", URL: "/api/languages/common"},
 			{Index: "elvish", Name: "Elvish", URL: "/api/languages/elvish"},
@@ -63,13 +60,6 @@ func (suite *RaceModelTestSuite) TestRaceAbilityBonuses() {
 	assert.Equal(suite.T(), "dex", suite.race.AbilityBonuses[0].AbilityScore.Index)
 	assert.Equal(suite.T(), "DEX", suite.race.AbilityBonuses[0].AbilityScore.Name)
 	assert.Equal(suite.T(), 2, suite.race.AbilityBonuses[0].Bonus)
-}
-
-// TestRaceStartingProficiencies tests starting proficiencies
-func (suite *RaceModelTestSuite) TestRaceStartingProficiencies() {
-	assert.Len(suite.T(), suite.race.StartingProficiencies, 1)
-	assert.Equal(suite.T(), "skill-perception", suite.race.StartingProficiencies[0].Index)
-	assert.Equal(suite.T(), "Skill: Perception", suite.race.StartingProficiencies[0].Name)
 }
 
 // TestRaceLanguages tests languages
@@ -156,7 +146,6 @@ func TestEmptyRace(t *testing.T) {
 	assert.Equal(t, 0, testRace.Speed)
 	assert.Empty(t, testRace.Size)
 	assert.Nil(t, testRace.AbilityBonuses)
-	assert.Nil(t, testRace.StartingProficiencies)
 	assert.Nil(t, testRace.Languages)
 	assert.Nil(t, testRace.Traits)
 	assert.Nil(t, testRace.Subraces)
@@ -198,10 +187,6 @@ func TestComplexRace(t *testing.T) {
 				Bonus:        2,
 			},
 		},
-		StartingProficiencies: []reference.Reference{
-			{Index: "battleaxes", Name: "Battleaxes"},
-			{Index: "handaxes", Name: "Handaxes"},
-		},
 		Languages: []reference.Reference{
 			{Index: "common", Name: "Common"},
 			{Index: "dwarvish", Name: "Dwarvish"},
@@ -225,7 +210,6 @@ func TestComplexRace(t *testing.T) {
 	assert.NotEmpty(t, testRace.SizeDescription)
 	assert.NotEmpty(t, testRace.LanguageDesc)
 	assert.Len(t, testRace.AbilityBonuses, 1)
-	assert.Len(t, testRace.StartingProficiencies, 2)
 	assert.Len(t, testRace.Languages, 2)
 	assert.Len(t, testRace.Traits, 2)
 	assert.Len(t, testRace.Subraces, 2)
