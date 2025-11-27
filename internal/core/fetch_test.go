@@ -125,12 +125,14 @@ func TestFetchJSON_Race_Success(t *testing.T) {
 }
 
 func TestFetchJSON_Spell_Success(t *testing.T) {
+	// Mock response to include complex nested structures
 	mockResponse := map[string]interface{}{
 		"index":        "fireball",
 		"name":         "Fireball",
 		"level":        3,
 		"range":        "150 feet",
 		"components":   []string{"V", "S", "M"},
+		"material":     "A tiny ball of bat guano and sulfur.",
 		"duration":     "Instantaneous",
 		"casting_time": "1 action",
 		"url":          "/api/spells/fireball",
@@ -146,6 +148,32 @@ func TestFetchJSON_Spell_Success(t *testing.T) {
 			{"index": "sorcerer", "name": "Sorcerer", "url": "/api/classes/sorcerer"},
 			{"index": "wizard", "name": "Wizard", "url": "/api/classes/wizard"},
 		},
+		// Nested Damage struct
+		"damage": map[string]interface{}{
+			"damage_type": map[string]string{
+				"index": "fire",
+				"name":  "Fire",
+				"url":   "/api/damage-types/fire",
+			},
+			"damage_at_slot_level": map[string]string{
+				"3": "8d6",
+				"4": "9d6",
+			},
+		},
+		// Nested DC struct
+		"dc": map[string]interface{}{
+			"dc_type": map[string]string{
+				"index": "dex",
+				"name":  "DEX",
+				"url":   "/api/ability-scores/dex",
+			},
+			"dc_success": "half",
+		},
+		// Nested Area of Effect struct
+		"area_of_effect": map[string]interface{}{
+			"type": "sphere",
+			"size": 20,
+		},
 	}
 
 	server := CreateMockServer(t, http.StatusOK, mockResponse)
@@ -155,10 +183,32 @@ func TestFetchJSON_Spell_Success(t *testing.T) {
 	err := core.FetchJSONWithClient(http.DefaultClient, server.URL+"/", spell, "fireball")
 
 	require.NoError(t, err)
+
+	// Basic fields
 	assert.Equal(t, "fireball", spell.Index)
 	assert.Equal(t, "Fireball", spell.Name)
 	assert.Equal(t, 3, spell.Level)
+	assert.Equal(t, "A tiny ball of bat guano and sulfur.", spell.Material)
 	assert.NotEmpty(t, spell.Desc)
+
+	// Complex Nested Structs (Pointers)
+
+	// Test Damage
+	require.NotNil(t, spell.Damage, "Damage should not be nil for Fireball")
+	assert.Equal(t, "fire", spell.Damage.DamageType.Index)
+	assert.Equal(t, "8d6", spell.Damage.DamageAtSlotLevel["3"])
+
+	// Test DC
+	require.NotNil(t, spell.DC, "DC should not be nil for Fireball")
+	assert.Equal(t, "dex", spell.DC.DCType.Index)
+	assert.Equal(t, "half", spell.DC.DCSuccess)
+
+	// Test Area of Effect
+	require.NotNil(t, spell.AreaOfEffect, "AreaOfEffect should not be nil for Fireball")
+	assert.Equal(t, "sphere", spell.AreaOfEffect.Type)
+	assert.Equal(t, 20, spell.AreaOfEffect.Size)
+
+	// Nested Reference Slices
 	assert.Equal(t, "evocation", spell.School.Index)
 	assert.Len(t, spell.Classes, 2)
 }

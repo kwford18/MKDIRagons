@@ -125,6 +125,7 @@ func TestFetchJSON_RealJSON_Dwarf(t *testing.T) {
 }
 
 func TestFetchJSON_RealJSON_Fireball(t *testing.T) {
+	// Assumes "fireball.json" contains the full JSON provided in your first prompt
 	mockResponse := core.LoadFixture(t, "fireball.json")
 
 	server := CreateMockServer(t, http.StatusOK, mockResponse)
@@ -153,6 +154,9 @@ func TestFetchJSON_RealJSON_Fireball(t *testing.T) {
 	assert.Contains(t, spell.Components, "S")
 	assert.Contains(t, spell.Components, "M")
 
+	// Material (New Field)
+	assert.Equal(t, "A tiny ball of bat guano and sulfur.", spell.Material)
+
 	// Description
 	require.Len(t, spell.Desc, 2)
 	assert.Contains(t, spell.Desc[0], "bright streak flashes")
@@ -162,11 +166,23 @@ func TestFetchJSON_RealJSON_Fireball(t *testing.T) {
 	require.Len(t, spell.HigherLevel, 1)
 	assert.Contains(t, spell.HigherLevel[0], "4th level or higher")
 
-	// Damage (Note: Real API uses damage_at_slot_level, not damage_at_character_level)
-	require.NotNil(t, spell.Damage)
+	// Damage (Pointer check + Slot Level check)
+	require.NotNil(t, spell.Damage, "Damage should not be nil")
 	assert.Equal(t, "fire", spell.Damage.DamageType.Index)
-	// Your struct might need updating if it expects DamageAtCharacterLevel
-	// The real API has DamageAtSlotLevel for spells
+	// Verify the map exists and contains the correct dice for level 3
+	require.NotNil(t, spell.Damage.DamageAtSlotLevel)
+	assert.Equal(t, "8d6", spell.Damage.DamageAtSlotLevel["3"])
+	assert.Equal(t, "9d6", spell.Damage.DamageAtSlotLevel["4"])
+
+	// DC (New Field - Pointer check)
+	require.NotNil(t, spell.DC, "DC should not be nil")
+	assert.Equal(t, "dex", spell.DC.DCType.Index)
+	assert.Equal(t, "half", spell.DC.DCSuccess)
+
+	// Area Of Effect (New Field - Pointer check)
+	require.NotNil(t, spell.AreaOfEffect, "AreaOfEffect should not be nil")
+	assert.Equal(t, "sphere", spell.AreaOfEffect.Type)
+	assert.Equal(t, 20, spell.AreaOfEffect.Size)
 
 	// School
 	assert.Equal(t, "evocation", spell.School.Index)
