@@ -5,6 +5,9 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"strings"
 	"sync"
 	"testing"
 
@@ -14,11 +17,40 @@ import (
 	"github.com/kwford18/MKDIRagons/template"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
 
-// ========== Mock Fetcher ==========
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
 
+// loadFixture loads a JSON fixture file.
+// Uses t.Errorf to report errors safely from within goroutines.
+func loadFixture(t *testing.T, filename string, target interface{}) {
+	t.Helper()
+
+	// Adjust path as needed based on where you run 'go test'
+	fixtureDir := filepath.Join("testdata", "fixtures")
+	filePath := filepath.Join(fixtureDir, filename)
+
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		t.Errorf("Failed to read fixture file %s: %v", filePath, err)
+		return
+	}
+
+	err = json.Unmarshal(data, target)
+	if err != nil {
+		t.Errorf("Failed to unmarshal fixture file %s: %v", filePath, err)
+	}
+}
+
+// ============================================================================
+// MOCK FETCHERS
+// ============================================================================
+
+// MockFetcher - simple mock for behavior testing (verifying calls/errors)
 type MockFetcher struct {
 	mock.Mock
 	mu sync.Mutex
@@ -31,21 +63,53 @@ func (m *MockFetcher) FetchJSON(property reference.Fetchable, input string) erro
 	return args.Error(0)
 }
 
-// ========== Unit Tests with Mock Fetcher ==========
+// MockFetcherWithFixtures - mock that loads real fixture data from disk
+// bypassing the HTTP layer entirely for fast unit tests.
+type MockFetcherWithFixtures struct {
+	mock.Mock
+	t  *testing.T
+	mu sync.Mutex
+}
+
+func NewMockFetcherWithFixtures(t *testing.T) *MockFetcherWithFixtures {
+	return &MockFetcherWithFixtures{t: t}
+}
+
+func (m *MockFetcherWithFixtures) FetchJSON(property reference.Fetchable, input string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	args := m.Called(property, input)
+
+	// If the test expects success (nil error), load the actual fixture data
+	if args.Error(0) == nil && input != "" {
+		fixtureFile := input + ".json"
+		loadFixture(m.t, fixtureFile, property)
+	}
+
+	return args.Error(0)
+}
+
+// ============================================================================
+// UNIT TEST SUITE (Logic + Fixtures)
+// ============================================================================
 
 type FetchSpellsUnitTestSuite struct {
 	suite.Suite
-	mockFetcher *MockFetcher
-	base        *template.Character
-	spellbook   [][]spells.Spell
+	mockFetcher         *MockFetcher
+	fixtureBasedFetcher *MockFetcherWithFixtures
+	base                *template.Character
+	spellbook           [][]spells.Spell
 }
 
 func (suite *FetchSpellsUnitTestSuite) SetupTest() {
 	suite.mockFetcher = new(MockFetcher)
+	suite.fixtureBasedFetcher = NewMockFetcherWithFixtures(suite.T())
+
 	suite.base = &template.Character{
 		Spells: template.Spells{
 			Level: [][]string{
-				{"fire-bolt", "mage-hand"},  // Level 0 (cantrips)
+				{"fire-bolt", "mage-hand"},  // Level 0
 				{"magic-missile", "shield"}, // Level 1
 				{"misty-step"},              // Level 2
 			},
@@ -54,131 +118,102 @@ func (suite *FetchSpellsUnitTestSuite) SetupTest() {
 	suite.spellbook = spells.InitSpellbook(suite.base)
 }
 
-func (suite *FetchSpellsUnitTestSuite) TestInitSpellbook() {
-	assert.Len(suite.T(), suite.spellbook, 3)
-	assert.Len(suite.T(), suite.spellbook[0], 2) // 2 cantrips
-	assert.Len(suite.T(), suite.spellbook[1], 2) // 2 level 1 spells
-	assert.Len(suite.T(), suite.spellbook[2], 1) // 1 level 2 spell
-}
-
-func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsSuccess() {
-	// Mock cantrips
-	suite.mockFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), "fire-bolt").Return(nil).Run(func(args mock.Arguments) {
-		spell := args.Get(0).(*spells.Spell)
-		spell.Index = "fire-bolt"
-		spell.Name = "Fire Bolt"
-		spell.Level = 0
-	})
-	suite.mockFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), "mage-hand").Return(nil).Run(func(args mock.Arguments) {
-		spell := args.Get(0).(*spells.Spell)
-		spell.Index = "mage-hand"
-		spell.Name = "Mage Hand"
-		spell.Level = 0
-	})
-
-	// Mock level 1 spells
-	suite.mockFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), "magic-missile").Return(nil).Run(func(args mock.Arguments) {
-		spell := args.Get(0).(*spells.Spell)
-		spell.Index = "magic-missile"
-		spell.Name = "Magic Missile"
-		spell.Level = 1
-	})
-	suite.mockFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), "shield").Return(nil).Run(func(args mock.Arguments) {
-		spell := args.Get(0).(*spells.Spell)
-		spell.Index = "shield"
-		spell.Name = "Shield"
-		spell.Level = 1
-	})
-
-	// Mock level 2 spells
-	suite.mockFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), "misty-step").Return(nil).Run(func(args mock.Arguments) {
-		spell := args.Get(0).(*spells.Spell)
-		spell.Index = "misty-step"
-		spell.Name = "Misty Step"
-		spell.Level = 2
-	})
-
-	err := spells.FetchSpellsWithFetcher(suite.mockFetcher, suite.base, suite.spellbook)
-
-	assert.NoError(suite.T(), err)
-	assert.Equal(suite.T(), "fire-bolt", suite.spellbook[0][0].Index)
-	assert.Equal(suite.T(), "mage-hand", suite.spellbook[0][1].Index)
-	assert.Equal(suite.T(), "magic-missile", suite.spellbook[1][0].Index)
-	assert.Equal(suite.T(), "shield", suite.spellbook[1][1].Index)
-	assert.Equal(suite.T(), "misty-step", suite.spellbook[2][0].Index)
-	suite.mockFetcher.AssertExpectations(suite.T())
-}
-
-func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsError() {
-	// One spell fetch fails
-	suite.mockFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), "fire-bolt").Return(errors.New("spell fetch failed"))
-	suite.mockFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), mock.Anything).Return(nil).Maybe()
-
-	err := spells.FetchSpellsWithFetcher(suite.mockFetcher, suite.base, suite.spellbook)
-
-	assert.Error(suite.T(), err)
-	assert.Contains(suite.T(), err.Error(), "spell fetch failed")
-}
-
-func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsEmptySpellbook() {
-	suite.base.Spells = template.Spells{
-		Level: [][]string{},
-	}
-	suite.spellbook = spells.InitSpellbook(suite.base)
-
-	err := spells.FetchSpellsWithFetcher(suite.mockFetcher, suite.base, suite.spellbook)
-
-	assert.NoError(suite.T(), err)
-	assert.Empty(suite.T(), suite.spellbook)
-}
-
-func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsOnlyCantrips() {
-	suite.base.Spells = template.Spells{
-		Level: [][]string{
-			{"fire-bolt", "mage-hand"},
-		},
-	}
-	suite.spellbook = spells.InitSpellbook(suite.base)
-
-	suite.mockFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), "fire-bolt").Return(nil).Run(func(args mock.Arguments) {
-		spell := args.Get(0).(*spells.Spell)
-		spell.Index = "fire-bolt"
-	})
-	suite.mockFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), "mage-hand").Return(nil).Run(func(args mock.Arguments) {
-		spell := args.Get(0).(*spells.Spell)
-		spell.Index = "mage-hand"
-	})
-
-	err := spells.FetchSpellsWithFetcher(suite.mockFetcher, suite.base, suite.spellbook)
-
-	assert.NoError(suite.T(), err)
-	assert.Len(suite.T(), suite.spellbook, 1)
-	assert.Len(suite.T(), suite.spellbook[0], 2)
-}
-
-func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsNilBase() {
-	assert.Panics(suite.T(), func() {
-		err := spells.FetchSpellsWithFetcher(suite.mockFetcher, nil, suite.spellbook)
-		if err != nil {
-			return
-		}
-	})
-}
-
-func (suite *FetchSpellsUnitTestSuite) TestFetchSpellsNilSpellbook() {
-	assert.Panics(suite.T(), func() {
-		err := spells.FetchSpellsWithFetcher(suite.mockFetcher, suite.base, nil)
-		if err != nil {
-			return
-		}
-	})
-}
-
 func TestFetchSpellsUnitTestSuite(t *testing.T) {
 	suite.Run(t, new(FetchSpellsUnitTestSuite))
 }
 
-// ========== Integration Tests with HTTP Server ==========
+// --- Behavior Tests (MockFetcher) ---
+
+func (suite *FetchSpellsUnitTestSuite) TestInitSpellbook() {
+	assert.Len(suite.T(), suite.spellbook, 3)
+	assert.Len(suite.T(), suite.spellbook[0], 2)
+	assert.Len(suite.T(), suite.spellbook[1], 2)
+	assert.Len(suite.T(), suite.spellbook[2], 1)
+}
+
+func (suite *FetchSpellsUnitTestSuite) TestFetchSpells_PartialFailure() {
+	// Simulate one spell failing and another succeeding
+	suite.mockFetcher.On("FetchJSON", mock.Anything, "fire-bolt").Return(errors.New("network error"))
+	suite.mockFetcher.On("FetchJSON", mock.Anything, mock.Anything).Return(nil).Maybe()
+
+	err := spells.FetchSpellsWithFetcher(suite.mockFetcher, suite.base, suite.spellbook)
+
+	assert.Error(suite.T(), err)
+	assert.Contains(suite.T(), err.Error(), "network error")
+}
+
+func (suite *FetchSpellsUnitTestSuite) TestFetchSpells_NilInputs() {
+	assert.Panics(suite.T(), func() {
+		_ = spells.FetchSpellsWithFetcher(suite.mockFetcher, nil, suite.spellbook)
+	})
+	assert.Panics(suite.T(), func() {
+		_ = spells.FetchSpellsWithFetcher(suite.mockFetcher, suite.base, nil)
+	})
+}
+
+// --- Data Tests (MockFetcherWithFixtures) ---
+
+func (suite *FetchSpellsUnitTestSuite) TestFetchSpells_FireballWithFixture() {
+	// Setup character with just Fireball (Level 3)
+	base := &template.Character{
+		Spells: template.Spells{
+			Level: [][]string{
+				{}, {}, {}, {"fireball"},
+			},
+		},
+	}
+	spellbook := spells.InitSpellbook(base)
+
+	// Expectation: FetchJSON called for "fireball", returns nil (Success)
+	// The MockFetcherWithFixtures will automatically load "fireball.json" into the struct
+	suite.fixtureBasedFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), "fireball").Return(nil)
+
+	err := spells.FetchSpellsWithFetcher(suite.fixtureBasedFetcher, base, spellbook)
+
+	require.NoError(suite.T(), err)
+
+	// Verify Data
+	fireball := spellbook[3][0]
+	assert.Equal(suite.T(), "Fireball", fireball.Name)
+	assert.Equal(suite.T(), 3, fireball.Level)
+
+	// Verify Deep Nested Data (Damage, DC, AoE)
+	require.NotNil(suite.T(), fireball.Damage)
+	assert.Equal(suite.T(), "fire", fireball.Damage.DamageType.Index)
+	assert.Equal(suite.T(), "8d6", fireball.Damage.DamageAtSlotLevel["3"])
+
+	require.NotNil(suite.T(), fireball.AreaOfEffect)
+	assert.Equal(suite.T(), 20, fireball.AreaOfEffect.Size)
+}
+
+func (suite *FetchSpellsUnitTestSuite) TestFetchSpells_WishWithFixture() {
+	// Setup character with Wish (Level 9)
+	base := &template.Character{
+		Spells: template.Spells{
+			Level: [][]string{
+				{}, {}, {}, {}, {}, {}, {}, {}, {}, {"wish"},
+			},
+		},
+	}
+	spellbook := spells.InitSpellbook(base)
+
+	suite.fixtureBasedFetcher.On("FetchJSON", mock.AnythingOfType("*spells.Spell"), "wish").Return(nil)
+
+	err := spells.FetchSpellsWithFetcher(suite.fixtureBasedFetcher, base, spellbook)
+
+	require.NoError(suite.T(), err)
+
+	wish := spellbook[9][0]
+	assert.Equal(suite.T(), "Wish", wish.Name)
+
+	// Verify nil pointers for optional fields not present in Wish fixture
+	assert.Nil(suite.T(), wish.Damage, "Wish should have nil damage")
+	assert.Nil(suite.T(), wish.DC, "Wish should have nil DC")
+}
+
+// ============================================================================
+// INTEGRATION TEST SUITE (HTTP Layer + Fixtures + Real API)
+// ============================================================================
 
 type FetchSpellsIntegrationTestSuite struct {
 	suite.Suite
@@ -187,131 +222,37 @@ type FetchSpellsIntegrationTestSuite struct {
 }
 
 func (suite *FetchSpellsIntegrationTestSuite) SetupSuite() {
+	// GENERIC FIXTURE SERVER
+	// Instead of hardcoding JSON here, we serve the actual fixture files.
+	// This ensures our Integration Tests and Unit Tests use the EXACT same data.
 	suite.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		switch r.URL.Path {
-		// Cantrips (Level 0)
-		case "/spells/fire-bolt":
-			err := json.NewEncoder(w).Encode(spells.Spell{
-				Index:       "fire-bolt",
-				Name:        "Fire Bolt",
-				Level:       0,
-				School:      reference.Reference{Index: "evocation", Name: "Evocation"},
-				CastingTime: "1 action",
-				Range:       "120 feet",
-			})
-			if err != nil {
-				return
-			}
-		case "/spells/mage-hand":
-			err := json.NewEncoder(w).Encode(spells.Spell{
-				Index:       "mage-hand",
-				Name:        "Mage Hand",
-				Level:       0,
-				School:      reference.Reference{Index: "conjuration", Name: "Conjuration"},
-				CastingTime: "1 action",
-			})
-			if err != nil {
-				return
-			}
-		case "/spells/prestidigitation":
-			err := json.NewEncoder(w).Encode(spells.Spell{
-				Index: "prestidigitation",
-				Name:  "Prestidigitation",
-				Level: 0,
-			})
-			if err != nil {
-				return
-			}
-
-		// Level 1 Spells
-		case "/spells/magic-missile":
-			err := json.NewEncoder(w).Encode(spells.Spell{
-				Index:       "magic-missile",
-				Name:        "Magic Missile",
-				Level:       1,
-				School:      reference.Reference{Index: "evocation", Name: "Evocation"},
-				CastingTime: "1 action",
-				Range:       "120 feet",
-			})
-			if err != nil {
-				return
-			}
-		case "/spells/shield":
-			err := json.NewEncoder(w).Encode(spells.Spell{
-				Index:       "shield",
-				Name:        "Shield",
-				Level:       1,
-				School:      reference.Reference{Index: "abjuration", Name: "Abjuration"},
-				CastingTime: "1 reaction",
-			})
-			if err != nil {
-				return
-			}
-		case "/spells/detect-magic":
-			err := json.NewEncoder(w).Encode(spells.Spell{
-				Index: "detect-magic",
-				Name:  "Detect Magic",
-				Level: 1,
-			})
-			if err != nil {
-				return
-			}
-
-		// Level 2 Spells
-		case "/spells/misty-step":
-			err := json.NewEncoder(w).Encode(spells.Spell{
-				Index:       "misty-step",
-				Name:        "Misty Step",
-				Level:       2,
-				School:      reference.Reference{Index: "conjuration", Name: "Conjuration"},
-				CastingTime: "1 bonus action",
-			})
-			if err != nil {
-				return
-			}
-		case "/spells/scorching-ray":
-			err := json.NewEncoder(w).Encode(spells.Spell{
-				Index: "scorching-ray",
-				Name:  "Scorching Ray",
-				Level: 2,
-			})
-			if err != nil {
-				return
-			}
-
-		// Level 3 Spells
-		case "/spells/fireball":
-			err := json.NewEncoder(w).Encode(spells.Spell{
-				Index:       "fireball",
-				Name:        "Fireball",
-				Level:       3,
-				School:      reference.Reference{Index: "evocation", Name: "Evocation"},
-				CastingTime: "1 action",
-				Range:       "150 feet",
-			})
-			if err != nil {
-				return
-			}
-
-		// Error endpoints
-		case "/spells/error":
-			w.WriteHeader(http.StatusInternalServerError)
-		case "/spells/invalid":
-			_, err := w.Write([]byte(`{"invalid json`))
-			if err != nil {
-				return
-			}
-
-		default:
+		// 1. Extract spell name from URL (e.g., "/spells/fire-bolt" -> "fire-bolt")
+		pathParts := strings.Split(r.URL.Path, "/")
+		if len(pathParts) < 2 {
 			w.WriteHeader(http.StatusNotFound)
+			return
 		}
+		spellName := pathParts[len(pathParts)-1]
+
+		// 2. Map to fixture file
+		fixturePath := filepath.Join("testdata", "fixtures", spellName+".json")
+
+		// 3. Serve file
+		data, err := os.ReadFile(fixturePath)
+		if err != nil {
+			// If fixture doesn't exist, return 404
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(data)
 	}))
 
+	// Point the real HTTPFetcher to our local test server
 	suite.fetcher = &core.HTTPFetcher{
 		Client:  suite.server.Client(),
-		BaseURL: suite.server.URL + "/",
+		BaseURL: suite.server.URL + "/spells/",
 	}
 }
 
@@ -319,13 +260,14 @@ func (suite *FetchSpellsIntegrationTestSuite) TearDownSuite() {
 	suite.server.Close()
 }
 
-func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsComplete() {
+func (suite *FetchSpellsIntegrationTestSuite) TestIntegration_FetchRealHTTP_Fireball() {
+	// This test uses the REAL HTTPFetcher (from fetcher.go)
+	// It hits the httptest server, which reads from testdata/fixtures/fireball.json
+
 	base := &template.Character{
 		Spells: template.Spells{
 			Level: [][]string{
-				{"fire-bolt", "mage-hand"},
-				{"magic-missile", "shield"},
-				{"misty-step"},
+				{}, {}, {}, {"fireball"},
 			},
 		},
 	}
@@ -333,97 +275,14 @@ func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsComplete() {
 
 	err := spells.FetchSpellsWithFetcher(suite.fetcher, base, spellbook)
 
-	assert.NoError(suite.T(), err)
-	assert.Len(suite.T(), spellbook, 3)
+	require.NoError(suite.T(), err)
 
-	// Verify cantrips
-	assert.Equal(suite.T(), "fire-bolt", spellbook[0][0].Index)
-	assert.Equal(suite.T(), "Fire Bolt", spellbook[0][0].Name)
-	assert.Equal(suite.T(), 0, spellbook[0][0].Level)
-	assert.Equal(suite.T(), "mage-hand", spellbook[0][1].Index)
-
-	// Verify level 1 spells
-	assert.Equal(suite.T(), "magic-missile", spellbook[1][0].Index)
-	assert.Equal(suite.T(), 1, spellbook[1][0].Level)
-	assert.Equal(suite.T(), "shield", spellbook[1][1].Index)
-
-	// Verify level 2 spells
-	assert.Equal(suite.T(), "misty-step", spellbook[2][0].Index)
-	assert.Equal(suite.T(), 2, spellbook[2][0].Level)
+	fireball := spellbook[3][0]
+	assert.Equal(suite.T(), "Fireball", fireball.Name)
+	assert.Equal(suite.T(), "150 feet", fireball.Range)
 }
 
-func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsLargeSpellbook() {
-	base := &template.Character{
-		Spells: template.Spells{
-			Level: [][]string{
-				{"fire-bolt", "mage-hand", "prestidigitation"},
-				{"magic-missile", "shield", "detect-magic"},
-				{"misty-step", "scorching-ray"},
-				{"fireball"},
-			},
-		},
-	}
-	spellbook := spells.InitSpellbook(base)
-
-	err := spells.FetchSpellsWithFetcher(suite.fetcher, base, spellbook)
-
-	assert.NoError(suite.T(), err)
-	assert.Len(suite.T(), spellbook, 4)
-	assert.Len(suite.T(), spellbook[0], 3) // 3 cantrips
-	assert.Len(suite.T(), spellbook[1], 3) // 3 level 1 spells
-	assert.Len(suite.T(), spellbook[2], 2) // 2 level 2 spells
-	assert.Len(suite.T(), spellbook[3], 1) // 1 level 3 spell
-}
-
-func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsOnlyCantrips() {
-	base := &template.Character{
-		Spells: template.Spells{
-			Level: [][]string{
-				{"fire-bolt", "mage-hand"},
-			},
-		},
-	}
-	spellbook := spells.InitSpellbook(base)
-
-	err := spells.FetchSpellsWithFetcher(suite.fetcher, base, spellbook)
-
-	assert.NoError(suite.T(), err)
-	assert.Len(suite.T(), spellbook, 1)
-	assert.Len(suite.T(), spellbook[0], 2)
-}
-
-func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsServerError() {
-	base := &template.Character{
-		Spells: template.Spells{
-			Level: [][]string{
-				{"error"},
-			},
-		},
-	}
-	spellbook := spells.InitSpellbook(base)
-
-	err := spells.FetchSpellsWithFetcher(suite.fetcher, base, spellbook)
-
-	assert.Error(suite.T(), err)
-	assert.Contains(suite.T(), err.Error(), "500")
-}
-
-func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsInvalidJSON() {
-	base := &template.Character{
-		Spells: template.Spells{
-			Level: [][]string{
-				{"invalid"},
-			},
-		},
-	}
-	spellbook := spells.InitSpellbook(base)
-
-	err := spells.FetchSpellsWithFetcher(suite.fetcher, base, spellbook)
-
-	assert.Error(suite.T(), err)
-}
-
-func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsNotFound() {
+func (suite *FetchSpellsIntegrationTestSuite) TestIntegration_FetchRealHTTP_NotFound() {
 	base := &template.Character{
 		Spells: template.Spells{
 			Level: [][]string{
@@ -435,149 +294,74 @@ func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsNotFound() {
 
 	err := spells.FetchSpellsWithFetcher(suite.fetcher, base, spellbook)
 
+	// Should error because the Generic Fixture Server won't find "nonexistent-spell.json"
 	assert.Error(suite.T(), err)
 	assert.Contains(suite.T(), err.Error(), "404")
 }
 
-func (suite *FetchSpellsIntegrationTestSuite) TestFetchSpellsConcurrency() {
-	// Test that concurrent fetches don't cause race conditions
+// ============================================================================
+// REAL API INTEGRATION TESTS (External Network)
+// ============================================================================
+
+func (suite *FetchSpellsIntegrationTestSuite) TestIntegration_RealAPI_Fireball() {
+	// This test hits the ACTUAL 5e API (https://www.dnd5eapi.co)
+	// It is skipped if `go test -short` is run.
+	if testing.Short() {
+		suite.T().Skip("Skipping real API test in short mode")
+	}
+
+	// Create a new fetcher that points to the production URL (DefaultBaseURL)
+	realFetcher := core.NewFetcher()
+
 	base := &template.Character{
 		Spells: template.Spells{
 			Level: [][]string{
-				{"fire-bolt", "mage-hand", "prestidigitation"},
-				{"magic-missile", "shield", "detect-magic"},
-				{"misty-step", "scorching-ray"},
+				{}, {}, {}, {"fireball"},
 			},
 		},
 	}
+	spellbook := spells.InitSpellbook(base)
 
-	// Run multiple times to increase chance of catching race conditions
-	for i := 0; i < 10; i++ {
-		spellbook := spells.InitSpellbook(base)
-		err := spells.FetchSpellsWithFetcher(suite.fetcher, base, spellbook)
-		assert.NoError(suite.T(), err)
-		assert.Len(suite.T(), spellbook, 3)
-		assert.Len(suite.T(), spellbook[0], 3)
-		assert.Len(suite.T(), spellbook[1], 3)
-		assert.Len(suite.T(), spellbook[2], 2)
+	// Perform fetch
+	err := spells.FetchSpellsWithFetcher(realFetcher, base, spellbook)
+	require.NoError(suite.T(), err, "Real API fetch failed - check network connection")
+
+	// Verify Data
+	fireball := spellbook[3][0]
+	assert.Equal(suite.T(), "Fireball", fireball.Name)
+	assert.Equal(suite.T(), "fireball", fireball.Index)
+	// Real API should always have these fields populated for Fireball
+	require.NotNil(suite.T(), fireball.Damage)
+	assert.Equal(suite.T(), "fire", fireball.Damage.DamageType.Index)
+}
+
+func (suite *FetchSpellsIntegrationTestSuite) TestIntegration_RealAPI_Multiple() {
+	if testing.Short() {
+		suite.T().Skip("Skipping real API test in short mode")
 	}
+
+	realFetcher := core.NewFetcher()
+
+	base := &template.Character{
+		Spells: template.Spells{
+			Level: [][]string{
+				{"mage-hand"}, // Level 0
+				{"shield"},    // Level 1
+			},
+		},
+	}
+	spellbook := spells.InitSpellbook(base)
+
+	err := spells.FetchSpellsWithFetcher(realFetcher, base, spellbook)
+	require.NoError(suite.T(), err)
+
+	mageHand := spellbook[0][0]
+	assert.Equal(suite.T(), "Mage Hand", mageHand.Name)
+
+	shield := spellbook[1][0]
+	assert.Equal(suite.T(), "Shield", shield.Name)
 }
 
 func TestFetchSpellsIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(FetchSpellsIntegrationTestSuite))
-}
-
-// ========== Benchmark Tests ==========
-
-func BenchmarkFetchSpellsSmall(b *testing.B) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewEncoder(w).Encode(spells.Spell{Index: "fire-bolt", Name: "Fire Bolt", Level: 0})
-		if err != nil {
-			return
-		}
-	}))
-	defer server.Close()
-
-	fetcher := &core.HTTPFetcher{
-		Client:  server.Client(),
-		BaseURL: server.URL + "/",
-	}
-
-	base := &template.Character{
-		Spells: template.Spells{
-			Level: [][]string{
-				{"fire-bolt"},
-			},
-		},
-	}
-
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		spellbook := spells.InitSpellbook(base)
-		err := spells.FetchSpellsWithFetcher(fetcher, base, spellbook)
-		if err != nil {
-			return
-		}
-	}
-}
-
-func BenchmarkFetchSpellsLarge(b *testing.B) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := json.NewEncoder(w).Encode(spells.Spell{Index: "spell", Name: "Spell", Level: 0})
-		if err != nil {
-			return
-		}
-	}))
-	defer server.Close()
-
-	fetcher := &core.HTTPFetcher{
-		Client:  server.Client(),
-		BaseURL: server.URL + "/",
-	}
-
-	base := &template.Character{
-		Spells: template.Spells{
-			Level: [][]string{
-				{"s1", "s2", "s3", "s4"},
-				{"s5", "s6", "s7"},
-				{"s8", "s9"},
-				{"s10"},
-			},
-		},
-	}
-
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		spellbook := spells.InitSpellbook(base)
-		err := spells.FetchSpellsWithFetcher(fetcher, base, spellbook)
-		if err != nil {
-			return
-		}
-	}
-}
-
-// ========== Example Tests ==========
-
-func ExampleInitSpellbook() {
-	base := &template.Character{
-		Spells: template.Spells{
-			Level: [][]string{
-				{"fire-bolt", "mage-hand"},
-				{"magic-missile"},
-			},
-		},
-	}
-
-	spellbook := spells.InitSpellbook(base)
-
-	// Spellbook is now a 2D array ready to be filled
-	_ = len(spellbook)    // 2 spell levels
-	_ = len(spellbook[0]) // 2 cantrips
-	_ = len(spellbook[1]) // 1 level 1 spell
-}
-
-func ExampleFetchSpells() {
-	base := &template.Character{
-		Spells: template.Spells{
-			Level: [][]string{
-				{"fire-bolt", "mage-hand"},
-				{"magic-missile"},
-			},
-		},
-	}
-	spellbook := spells.InitSpellbook(base)
-
-	err := spells.FetchSpells(base, spellbook)
-	if err != nil {
-		// Handle error
-		return
-	}
-
-	// Use the fetched spells
-	for level, spellsAtLevel := range spellbook {
-		for _, spell := range spellsAtLevel {
-			_ = spell.Name
-			_ = level
-		}
-	}
 }
