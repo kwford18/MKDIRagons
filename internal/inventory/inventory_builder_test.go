@@ -499,7 +499,7 @@ func (suite *FetchInventoryIntegrationTestSuite) SetupSuite() {
 		switch r.URL.Path {
 		// Armor
 		case "/equipment/leather-armor":
-			json.NewEncoder(w).Encode(inventory.Armor{
+			err := json.NewEncoder(w).Encode(inventory.Armor{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "leather-armor",
 					Name:  "Leather Armor",
@@ -508,8 +508,11 @@ func (suite *FetchInventoryIntegrationTestSuite) SetupSuite() {
 				ArmorCategory: "Light",
 				ArmorClass:    inventory.ArmorClass{Base: 11, DexBonus: true},
 			})
+			if err != nil {
+				return
+			}
 		case "/equipment/shield":
-			json.NewEncoder(w).Encode(inventory.Armor{
+			err := json.NewEncoder(w).Encode(inventory.Armor{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "shield",
 					Name:  "Shield",
@@ -517,8 +520,11 @@ func (suite *FetchInventoryIntegrationTestSuite) SetupSuite() {
 				},
 				ArmorClass: inventory.ArmorClass{Base: 2},
 			})
+			if err != nil {
+				return
+			}
 		case "/equipment/chain-mail":
-			json.NewEncoder(w).Encode(inventory.Armor{
+			err := json.NewEncoder(w).Encode(inventory.Armor{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "chain-mail",
 					Name:  "Chain Mail",
@@ -527,8 +533,11 @@ func (suite *FetchInventoryIntegrationTestSuite) SetupSuite() {
 				ArmorCategory: "Heavy",
 				ArmorClass:    inventory.ArmorClass{Base: 16},
 			})
+			if err != nil {
+				return
+			}
 		case "/equipment/plate-armor":
-			json.NewEncoder(w).Encode(inventory.Armor{
+			err := json.NewEncoder(w).Encode(inventory.Armor{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "plate-armor",
 					Name:  "Plate Armor",
@@ -539,10 +548,13 @@ func (suite *FetchInventoryIntegrationTestSuite) SetupSuite() {
 				StrMinimum:          15,
 				StealthDisadvantage: true,
 			})
+			if err != nil {
+				return
+			}
 
 		// Weapons
 		case "/equipment/longsword":
-			json.NewEncoder(w).Encode(inventory.Weapon{
+			err := json.NewEncoder(w).Encode(inventory.Weapon{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "longsword",
 					Name:  "Longsword",
@@ -554,8 +566,11 @@ func (suite *FetchInventoryIntegrationTestSuite) SetupSuite() {
 					DamageType: reference.Reference{Index: "slashing", Name: "Slashing"},
 				},
 			})
+			if err != nil {
+				return
+			}
 		case "/equipment/shortbow":
-			json.NewEncoder(w).Encode(inventory.Weapon{
+			err := json.NewEncoder(w).Encode(inventory.Weapon{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "shortbow",
 					Name:  "Shortbow",
@@ -567,8 +582,11 @@ func (suite *FetchInventoryIntegrationTestSuite) SetupSuite() {
 					DamageType: reference.Reference{Index: "piercing", Name: "Piercing"},
 				},
 			})
+			if err != nil {
+				return
+			}
 		case "/equipment/dagger":
-			json.NewEncoder(w).Encode(inventory.Weapon{
+			err := json.NewEncoder(w).Encode(inventory.Weapon{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "dagger",
 					Name:  "Dagger",
@@ -580,40 +598,55 @@ func (suite *FetchInventoryIntegrationTestSuite) SetupSuite() {
 					DamageType: reference.Reference{Index: "piercing", Name: "Piercing"},
 				},
 			})
+			if err != nil {
+				return
+			}
 
 		// Items
 		case "/equipment/rope":
-			json.NewEncoder(w).Encode(inventory.Item{
+			err := json.NewEncoder(w).Encode(inventory.Item{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "rope",
 					Name:  "Rope, Hempen (50 feet)",
 					Cost:  inventory.Cost{Quantity: 1, Unit: "gp"},
 				},
 			})
+			if err != nil {
+				return
+			}
 		case "/equipment/torch":
-			json.NewEncoder(w).Encode(inventory.Item{
+			err := json.NewEncoder(w).Encode(inventory.Item{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "torch",
 					Name:  "Torch",
 					Cost:  inventory.Cost{Quantity: 1, Unit: "cp"},
 				},
 			})
+			if err != nil {
+				return
+			}
 		case "/equipment/backpack":
-			json.NewEncoder(w).Encode(inventory.Item{
+			err := json.NewEncoder(w).Encode(inventory.Item{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "backpack",
 					Name:  "Backpack",
 					Cost:  inventory.Cost{Quantity: 2, Unit: "gp"},
 				},
 			})
+			if err != nil {
+				return
+			}
 		case "/equipment/abacus":
-			json.NewEncoder(w).Encode(inventory.Item{
+			err := json.NewEncoder(w).Encode(inventory.Item{
 				BaseEquipment: inventory.BaseEquipment{
 					Index: "abacus",
 					Name:  "Abacus",
 					Cost:  inventory.Cost{Quantity: 2, Unit: "gp"},
 				},
 			})
+			if err != nil {
+				return
+			}
 
 		default:
 			w.WriteHeader(http.StatusNotFound)
