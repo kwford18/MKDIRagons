@@ -14,17 +14,17 @@ import (
 )
 
 type Character struct {
-	Name          string                 `json:"name"`
-	Level         int                    `json:"level"`
-	Race          race.Race              `json:"race"`
-	Class         class.Class            `json:"class"`
-	Stats         stats.Stats            `json:"stats"`
-	Proficiencies []string               `json:"proficiencies"`
-	AbilityScores abilities.AbilityScore `json:"ability_scores"`
-	Skills        skills.SkillList       `json:"skills"`
-	SavingThrows  abilities.AbilityScore `json:"saving_throws"`
-	Inventory     inventory.Inventory    `json:"inventory"`
-	Spells        [][]spells.Spell       `json:"spells"`
+	Name          string                  `json:"name"`
+	Level         int                     `json:"level"`
+	Race          race.Race               `json:"race"`
+	Class         class.Class             `json:"class"`
+	Stats         stats.Stats             `json:"stats"`
+	Proficiencies []string                `json:"proficiencies"`
+	AbilityScores abilities.AbilityScores `json:"ability_scores"`
+	Skills        skills.SkillList        `json:"skills"`
+	SavingThrows  abilities.AbilityScores `json:"saving_throws"`
+	Inventory     inventory.Inventory     `json:"inventory"`
+	Spells        [][]spells.Spell        `json:"spells"`
 }
 
 func (c *Character) ProficiencyBonus() int {

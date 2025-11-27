@@ -6,8 +6,8 @@ import (
 	"math"
 )
 
-// AbilityScore Struct type to represent the player's ability scores
-type AbilityScore struct {
+// AbilityScores Struct type to represent the player's ability scores
+type AbilityScores struct {
 	Strength     int
 	Dexterity    int
 	Constitution int
@@ -17,7 +17,7 @@ type AbilityScore struct {
 }
 
 // Modifier takes an ability and returns the modifier
-func (ab *AbilityScore) Modifier(a core.Ability) int {
+func (ab *AbilityScores) Modifier(a core.Ability) int {
 	// Get the value for a given ability score
 	var score int
 	switch a {
@@ -40,7 +40,7 @@ func (ab *AbilityScore) Modifier(a core.Ability) int {
 }
 
 // Print for Fetchable interface methods
-func (ab *AbilityScore) Print() {
+func (ab *AbilityScores) Print() {
 	fmt.Printf("    - Strength:     %d\n", ab.Strength)
 	fmt.Printf("    - Dexterity:    %d\n", ab.Dexterity)
 	fmt.Printf("    - Constitution: %d\n", ab.Constitution)
@@ -50,6 +50,6 @@ func (ab *AbilityScore) Print() {
 	fmt.Println()
 }
 
-func (ab *AbilityScore) GetEndpoint() string {
+func (ab *AbilityScores) GetEndpoint() string {
 	return "ability-scores/"
 }

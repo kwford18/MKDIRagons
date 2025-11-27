@@ -4,7 +4,7 @@ import (
 	"github.com/kwford18/MKDIRagons/template"
 )
 
-func buildSkill(base *template.Character, name string) Skill {
+func BuildSkill(base *template.Character, name string) Skill {
 	// Calculate bonus by getting the modifier of input skill
 	bonus := base.AbilityScores.Modifier(base.GetSkillAbility(name))
 
@@ -39,23 +39,23 @@ func buildSkill(base *template.Character, name string) Skill {
 
 func BuildSkillList(base *template.Character) SkillList {
 	return SkillList{
-		Athletics:      buildSkill(base, "Athletics"),
-		Acrobatics:     buildSkill(base, "Acrobatics"),
-		SleightOfHand:  buildSkill(base, "SleightOfHand"),
-		Stealth:        buildSkill(base, "Stealth"),
-		Arcana:         buildSkill(base, "Arcana"),
-		History:        buildSkill(base, "History"),
-		Investigation:  buildSkill(base, "Investigation"),
-		Nature:         buildSkill(base, "Nature"),
-		Religion:       buildSkill(base, "Religion"),
-		AnimalHandling: buildSkill(base, "AnimalHandling"),
-		Insight:        buildSkill(base, "Insight"),
-		Medicine:       buildSkill(base, "Medicine"),
-		Perception:     buildSkill(base, "Perception"),
-		Survival:       buildSkill(base, "Survival"),
-		Deception:      buildSkill(base, "Deception"),
-		Intimidation:   buildSkill(base, "Intimidation"),
-		Performance:    buildSkill(base, "Performance"),
-		Persuasion:     buildSkill(base, "Persuasion"),
+		Athletics:      BuildSkill(base, "Athletics"),
+		Acrobatics:     BuildSkill(base, "Acrobatics"),
+		SleightOfHand:  BuildSkill(base, "SleightOfHand"),
+		Stealth:        BuildSkill(base, "Stealth"),
+		Arcana:         BuildSkill(base, "Arcana"),
+		History:        BuildSkill(base, "History"),
+		Investigation:  BuildSkill(base, "Investigation"),
+		Nature:         BuildSkill(base, "Nature"),
+		Religion:       BuildSkill(base, "Religion"),
+		AnimalHandling: BuildSkill(base, "AnimalHandling"),
+		Insight:        BuildSkill(base, "Insight"),
+		Medicine:       BuildSkill(base, "Medicine"),
+		Perception:     BuildSkill(base, "Perception"),
+		Survival:       BuildSkill(base, "Survival"),
+		Deception:      BuildSkill(base, "Deception"),
+		Intimidation:   BuildSkill(base, "Intimidation"),
+		Performance:    BuildSkill(base, "Performance"),
+		Persuasion:     BuildSkill(base, "Persuasion"),
 	}
 }

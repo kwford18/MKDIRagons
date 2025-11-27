@@ -6,11 +6,11 @@ import (
 	"github.com/kwford18/MKDIRagons/template"
 )
 
-func BuildSavingThrows(base *template.Character, abilities AbilityScore, charClass *class.Class) AbilityScore {
+func BuildSavingThrows(base *template.Character, abilities AbilityScores, charClass *class.Class) AbilityScores {
 	profBonus := base.ProficiencyBonus()
 
 	// start from modifiers for all abilities
-	saves := AbilityScore{
+	saves := AbilityScores{
 		Strength:     abilities.Modifier(core.Strength),
 		Dexterity:    abilities.Modifier(core.Dexterity),
 		Constitution: abilities.Modifier(core.Constitution),

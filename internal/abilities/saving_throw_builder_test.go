@@ -15,7 +15,7 @@ import (
 type BuildSavingThrowsTestSuite struct {
 	suite.Suite
 	base          *template.Character
-	abilityScores abilities.AbilityScore
+	abilityScores abilities.AbilityScores
 }
 
 // SetupTest runs before each test
@@ -23,7 +23,7 @@ func (suite *BuildSavingThrowsTestSuite) SetupTest() {
 	suite.base = &template.Character{
 		Level: 1,
 	}
-	suite.abilityScores = abilities.AbilityScore{
+	suite.abilityScores = abilities.AbilityScores{
 		Strength:     16, // +3 modifier
 		Dexterity:    14, // +2 modifier
 		Constitution: 15, // +2 modifier
@@ -262,7 +262,7 @@ func (suite *BuildSavingThrowsTestSuite) TestBuildSavingThrowsInvalidSaveName() 
 
 // TestBuildSavingThrowsNegativeModifiers tests with negative modifiers
 func (suite *BuildSavingThrowsTestSuite) TestBuildSavingThrowsNegativeModifiers() {
-	lowAbilities := abilities.AbilityScore{
+	lowAbilities := abilities.AbilityScores{
 		Strength:     8,  // -1
 		Dexterity:    6,  // -2
 		Constitution: 8,  // -1
@@ -286,7 +286,7 @@ func (suite *BuildSavingThrowsTestSuite) TestBuildSavingThrowsNegativeModifiers(
 
 // TestBuildSavingThrowsMaxAbilities tests with maxed abilities
 func (suite *BuildSavingThrowsTestSuite) TestBuildSavingThrowsMaxAbilities() {
-	maxAbilities := abilities.AbilityScore{
+	maxAbilities := abilities.AbilityScores{
 		Strength:     20, // +5
 		Dexterity:    20, // +5
 		Constitution: 20, // +5
@@ -351,7 +351,7 @@ func TestBuildSavingThrowsTableDriven(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			base := &template.Character{Level: tc.level}
-			abilityScores := abilities.AbilityScore{Strength: tc.strScore}
+			abilityScores := abilities.AbilityScores{Strength: tc.strScore}
 
 			var savingThrows []reference.Reference
 			for _, prof := range tc.proficiencies {
@@ -369,7 +369,7 @@ func TestBuildSavingThrowsTableDriven(t *testing.T) {
 // BenchmarkBuildSavingThrowsNoProficiency benchmarks with no proficiencies
 func BenchmarkBuildSavingThrowsNoProficiency(b *testing.B) {
 	base := &template.Character{Level: 1}
-	abilityScores := abilities.AbilityScore{
+	abilityScores := abilities.AbilityScores{
 		Strength: 16, Dexterity: 14, Constitution: 15,
 		Intelligence: 12, Wisdom: 10, Charisma: 8,
 	}
@@ -384,7 +384,7 @@ func BenchmarkBuildSavingThrowsNoProficiency(b *testing.B) {
 // BenchmarkBuildSavingThrowsWithProficiencies benchmarks with proficiencies
 func BenchmarkBuildSavingThrowsWithProficiencies(b *testing.B) {
 	base := &template.Character{Level: 1}
-	abilityScores := abilities.AbilityScore{
+	abilityScores := abilities.AbilityScores{
 		Strength: 16, Dexterity: 14, Constitution: 15,
 		Intelligence: 12, Wisdom: 10, Charisma: 8,
 	}
@@ -404,7 +404,7 @@ func BenchmarkBuildSavingThrowsWithProficiencies(b *testing.B) {
 // ExampleBuildSavingThrows demonstrates basic usage
 func ExampleBuildSavingThrows() {
 	base := &template.Character{Level: 1}
-	abilityScores := abilities.AbilityScore{
+	abilityScores := abilities.AbilityScores{
 		Strength:     16,
 		Dexterity:    14,
 		Constitution: 15,

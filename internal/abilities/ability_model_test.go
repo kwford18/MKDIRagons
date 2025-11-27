@@ -9,15 +9,15 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-// AbilityScoreTestSuite defines the test suite for AbilityScore
+// AbilityScoreTestSuite defines the test suite for AbilityScores
 type AbilityScoreTestSuite struct {
 	suite.Suite
-	scores *abilities.AbilityScore
+	scores *abilities.AbilityScores
 }
 
 // SetupTest runs before each test
 func (suite *AbilityScoreTestSuite) SetupTest() {
-	suite.scores = &abilities.AbilityScore{
+	suite.scores = &abilities.AbilityScores{
 		Strength:     16,
 		Dexterity:    14,
 		Constitution: 15,
@@ -111,7 +111,7 @@ func TestModifierCalculationEdgeCases(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			scores := &abilities.AbilityScore{
+			scores := &abilities.AbilityScores{
 				Strength: tc.score,
 			}
 			modifier := scores.Modifier(core.Strength)
@@ -122,7 +122,7 @@ func TestModifierCalculationEdgeCases(t *testing.T) {
 
 // TestModifierAllAbilities tests modifier calculation for all abilities
 func TestModifierAllAbilities(t *testing.T) {
-	scores := &abilities.AbilityScore{
+	scores := &abilities.AbilityScores{
 		Strength:     18,
 		Dexterity:    16,
 		Constitution: 14,
@@ -153,7 +153,7 @@ func TestModifierAllAbilities(t *testing.T) {
 
 // TestEmptyAbilityScore tests zero-initialized ability scores
 func TestEmptyAbilityScore(t *testing.T) {
-	scores := &abilities.AbilityScore{}
+	scores := &abilities.AbilityScores{}
 
 	assert.Equal(t, 0, scores.Strength)
 	assert.Equal(t, 0, scores.Dexterity)
@@ -170,7 +170,7 @@ func TestEmptyAbilityScore(t *testing.T) {
 // TestStandardArray tests the standard array ability scores
 func TestStandardArray(t *testing.T) {
 	// Standard array: 15, 14, 13, 12, 10, 8
-	scores := &abilities.AbilityScore{
+	scores := &abilities.AbilityScores{
 		Strength:     15,
 		Dexterity:    14,
 		Constitution: 13,
@@ -190,7 +190,7 @@ func TestStandardArray(t *testing.T) {
 // TestPointBuyMaximums tests point-buy maximum scores
 func TestPointBuyMaximums(t *testing.T) {
 	// Point buy allows max 15 before racial bonuses
-	scores := &abilities.AbilityScore{
+	scores := &abilities.AbilityScores{
 		Strength:     15,
 		Dexterity:    15,
 		Constitution: 15,
@@ -211,7 +211,7 @@ func TestPointBuyMaximums(t *testing.T) {
 // TestHighLevelAbilityScores tests scores with ASIs applied
 func TestHighLevelAbilityScores(t *testing.T) {
 	// Character with multiple ASIs (max is 20)
-	scores := &abilities.AbilityScore{
+	scores := &abilities.AbilityScores{
 		Strength:     20,
 		Dexterity:    20,
 		Constitution: 18,
@@ -230,7 +230,7 @@ func TestHighLevelAbilityScores(t *testing.T) {
 
 // TestAbilityScoreModification tests that ability scores can be modified
 func TestAbilityScoreModification(t *testing.T) {
-	scores := &abilities.AbilityScore{
+	scores := &abilities.AbilityScores{
 		Strength: 10,
 	}
 
@@ -248,7 +248,7 @@ func TestAbilityScoreModification(t *testing.T) {
 
 // TestNegativeAbilityScores tests negative ability scores (unusual but possible)
 func TestNegativeAbilityScores(t *testing.T) {
-	scores := &abilities.AbilityScore{
+	scores := &abilities.AbilityScores{
 		Strength: -2,
 	}
 
@@ -258,7 +258,7 @@ func TestNegativeAbilityScores(t *testing.T) {
 
 // BenchmarkModifierCalculation benchmarks the Modifier method
 func BenchmarkModifierCalculation(b *testing.B) {
-	scores := &abilities.AbilityScore{
+	scores := &abilities.AbilityScores{
 		Strength: 16,
 	}
 
@@ -270,7 +270,7 @@ func BenchmarkModifierCalculation(b *testing.B) {
 
 // BenchmarkModifierAllAbilities benchmarks calculating all modifiers
 func BenchmarkModifierAllAbilities(b *testing.B) {
-	scores := &abilities.AbilityScore{
+	scores := &abilities.AbilityScores{
 		Strength:     16,
 		Dexterity:    14,
 		Constitution: 15,
@@ -290,9 +290,9 @@ func BenchmarkModifierAllAbilities(b *testing.B) {
 	}
 }
 
-// ExampleAbilityScore demonstrates basic AbilityScore usage
-func ExampleAbilityScore() {
-	scores := &abilities.AbilityScore{
+// ExampleAbilityScores demonstrates basic AbilityScores usage
+func ExampleAbilityScores() {
+	scores := &abilities.AbilityScores{
 		Strength:     16,
 		Dexterity:    14,
 		Constitution: 15,
@@ -305,9 +305,9 @@ func ExampleAbilityScore() {
 	_ = strMod // 3
 }
 
-// ExampleAbilityScore_Modifier demonstrates the Modifier method
-func ExampleAbilityScore_Modifier() {
-	scores := &abilities.AbilityScore{
+// ExampleAbilityScores_Modifier demonstrates the Modifier method
+func ExampleAbilityScores_Modifier() {
+	scores := &abilities.AbilityScores{
 		Wisdom: 16,
 	}
 

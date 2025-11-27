@@ -6,7 +6,7 @@ import (
 )
 
 // BuildAbilityScores builds struct using values from base TemplateCharacter
-func BuildAbilityScores(base *template.Character, race race.Race) AbilityScore {
+func BuildAbilityScores(base *template.Character, race race.Race) AbilityScores {
 	// Apply Racial bonus
 OuterLoop:
 	for _, ability := range race.AbilityBonuses {
@@ -28,7 +28,7 @@ OuterLoop:
 		}
 	}
 
-	return AbilityScore{
+	return AbilityScores{
 		Strength:     base.AbilityScores.Strength,
 		Dexterity:    base.AbilityScores.Dexterity,
 		Constitution: base.AbilityScores.Constitution,

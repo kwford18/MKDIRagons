@@ -26,7 +26,7 @@ func averageHP(hitDie int) (int, error) {
 }
 
 // BuildStats generates the combat stats of a character and populates + returns the Stats struct with values
-func BuildStats(level int, abilityScores abilities.AbilityScore, class class.Class, rollHP bool, armor *inventory.Armor) (Stats, error) {
+func BuildStats(level int, abilityScores abilities.AbilityScores, class class.Class, rollHP bool, armor *inventory.Armor) (Stats, error) {
 	var HP int
 
 	// Ability score bonuses to avoid repeat calls
