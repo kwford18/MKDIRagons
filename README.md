@@ -44,6 +44,7 @@ go install github.com/kwford18/MKDIRagons@latest
 
 -   `--print, -p` --- Print the generated character to the console
 -   `--rollHP, -r` --- Roll HP instead of using averages
+-   `--output, -o` --- Specify output directory for saving character sheet
 
 ## Default Directories
 
@@ -63,6 +64,11 @@ MKDIRagons empty
 
 ``` bash
 MKDIRagons build -f example_character.toml
+```
+
+### Specify Output Directory
+``` bash
+MKDIRagons build -f example_character.toml -o path/to/dir
 ```
 
 ### Print Character During Build
