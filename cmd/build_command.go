@@ -14,6 +14,7 @@ var (
 	buildFile string
 	printChar bool
 	rollHP    bool
+	output    string
 )
 
 var buildCmd = &cobra.Command{
@@ -43,7 +44,7 @@ var buildCmd = &cobra.Command{
 			char.Print()
 		}
 
-		if err := io.SaveJSON(char); err != nil {
+		if err := io.SaveJSON(char, output); err != nil {
 			return fmt.Errorf("failed to save character as JSON: %w", err)
 		}
 
@@ -61,7 +62,10 @@ func init() {
 	// --print -p flag for printing character info when parsing TOML
 	buildCmd.Flags().BoolVarP(&printChar, "print", "p", false, "Print character info when building")
 
-	// --rollHP -r flag for whether or not a character should roll for HP or use the average of hit die
+	// --rollHP -r flag for whether a character should roll for HP or use the average of hit die
 	buildCmd.Flags().BoolVarP(&rollHP, "rollHP", "r", false, "Roll for character's HP instead of using hit die average")
+
+	// --output -o flag for providing a path to the directory to save json
+	buildCmd.Flags().StringVarP(&output, "output", "o", "characters/", "Path to desired output directory")
 
 }
