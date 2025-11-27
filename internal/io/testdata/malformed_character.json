@@ -1,0 +1,9 @@
+{
+  "name": "Broken Character",
+  "race": "Human",
+  "class": "Fighter",
+  "level": 1,
+  "stats": {
+    "strength": 16,
+    "dexterity": "THIS_SHOULD_BE_A_NUMBER",
+    "constitution": 14,
