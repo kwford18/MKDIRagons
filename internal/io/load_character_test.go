@@ -43,7 +43,7 @@ func TestLoadCharacter(t *testing.T) {
 	})
 
 	t.Run("fails when json is malformed", func(t *testing.T) {
-		filename := filepath.Join(testDataPath, "malformed.json")
+		filename := filepath.Join(testDataPath, "malformed_character.json")
 
 		// Execute
 		char, err := io.LoadCharacter(filename)
@@ -51,7 +51,7 @@ func TestLoadCharacter(t *testing.T) {
 		// Verify
 		assert.Error(t, err)
 		assert.Nil(t, char)
-		// We expect the specific error wrapping message defined in your io.go
-		assert.Contains(t, err.Error(), "could not open file: open testdata/malformed.json: no such file or directory")
+
+		assert.Contains(t, err.Error(), "could not decode JSON")
 	})
 }
