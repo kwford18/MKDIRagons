@@ -37,6 +37,9 @@ characters/
 # TOML character files
 toml-characters/
 
+# Example files
+examples/
+
 # backups
 backup/
 

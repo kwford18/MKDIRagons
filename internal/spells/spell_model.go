@@ -1,9 +1,64 @@
 package spells
 
 import (
+	"encoding/json"
 	"fmt"
+
+	"bytes"
+
 	"github.com/kwford18/MKDIRagons/internal/reference"
 )
+
+// UnmarshalJSON handles the 5e API's inconsistent damage field types.
+func (s *Spell) UnmarshalJSON(data []byte) error {
+	type Alias Spell
+	aux := &struct {
+		Damage json.RawMessage `json:"damage,omitempty"`
+		*Alias
+	}{
+		Alias: (*Alias)(s),
+	}
+
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	if len(aux.Damage) == 0 {
+		s.Damage = nil
+		return nil
+	}
+
+	trimmed := bytes.TrimSpace(aux.Damage)
+
+	// Scenario 1: Empty array (e.g., Alarm) or null
+	if bytes.Equal(trimmed, []byte("[]")) || bytes.Equal(trimmed, []byte("null")) {
+		s.Damage = nil
+		return nil
+	}
+
+	// Scenario 2: Array of objects (e.g., Acid Splash)
+	if bytes.HasPrefix(trimmed, []byte("[")) {
+		var dmgArray []SpellDamage
+		if err := json.Unmarshal(trimmed, &dmgArray); err != nil {
+			return err
+		}
+		if len(dmgArray) > 0 {
+			s.Damage = &dmgArray[0] // Assign the first damage object
+		}
+		return nil
+	}
+
+	// Scenario 3: Single object (e.g., Fireball)
+	if bytes.HasPrefix(trimmed, []byte("{")) {
+		s.Damage = &SpellDamage{}
+		if err := json.Unmarshal(trimmed, s.Damage); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return nil
+}
 
 type Spell struct {
 	Index         string   `json:"index"`
@@ -32,8 +87,9 @@ type Spell struct {
 }
 
 type SpellDamage struct {
-	DamageType        reference.Reference `json:"damage_type"`
-	DamageAtSlotLevel map[string]string   `json:"damage_at_slot_level"`
+	DamageType             reference.Reference `json:"damage_type"`
+	DamageAtSlotLevel      map[string]string   `json:"damage_at_slot_level,omitempty"`
+	DamageAtCharacterLevel map[string]string   `json:"damage_at_character_level,omitempty"`
 }
 
 type SpellDC struct {
